@@ -3,7 +3,7 @@ import type { NextPage } from 'next'
 import { useSession } from 'next-auth/react'
 import { useState } from 'react'
 import Header from '../components/Header/Header'
-import MainContent from '../components/MainContent'
+import Feed from '../components/Feed/Feed'
 import fetcher from '../utils/fetcher'
 import { trpc } from '../utils/trpc'
 
@@ -41,7 +41,7 @@ const Home: NextPage = () => {
     <>
       <Header />
       <Container fluid px={0} sx={{ height: 'calc(100vh - 60px)', backgroundColor: '#FAFAFA' }}>
-        <MainContent />
+        <Feed />
       </Container>
     </>
   )

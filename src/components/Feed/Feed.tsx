@@ -1,7 +1,6 @@
 import { Container } from '@mantine/core'
-import { useMediaQuery } from '@mantine/hooks'
-import React from 'react'
-import PostCard from './Card/PostCard'
+import PostCard from '../Card/PostCard'
+import Suggestions from './Suggestions'
 
 const posts = [
   {
@@ -30,14 +29,26 @@ const posts = [
   },
 ]
 
-const MainContent = () => {
-  const matches = useMediaQuery('(min-width: 768px)', false)
-
+const Feed = () => {
   return (
-    <Container fluid px={0} sx={{ minHeight: 'calc(100vh - 60px)', backgroundColor: '#FAFAFA' }}>
-      <Container fluid={matches ? false : true} px={0}>
+    <Container fluid px={0} sx={{ paddingTop: '60px', minHeight: 'calc(100vh - 60px)', backgroundColor: '#FAFAFA' }}>
+      <Container
+        id='text'
+        px={0}
+        py='2rem'
+        sx={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'flex-start',
+          flexDirection: 'column',
+
+          '@media (min-width: 768px)': {
+            flexDirection: 'row',
+          },
+        }}>
         <Container
-          py='2rem'
           px={0}
           sx={{
             width: '100%',
@@ -49,9 +60,10 @@ const MainContent = () => {
           }}>
           {posts && posts.map((post) => <PostCard key={post.id} post={post} />)}
         </Container>
+        <Suggestions />
       </Container>
     </Container>
   )
 }
 
-export default MainContent
+export default Feed

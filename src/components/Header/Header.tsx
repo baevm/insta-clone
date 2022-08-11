@@ -1,36 +1,35 @@
-import { Box, Container } from '@mantine/core'
-import { useMediaQuery } from '@mantine/hooks'
+import { Anchor, Container } from '@mantine/core'
 import Image from 'next/image'
+import Link from 'next/link'
 import React from 'react'
 import Buttons from './Buttons'
 import Search from './Search'
 
 const Header = () => {
-  const matches = useMediaQuery('(min-width: 768px)', false)
-
   return (
-    <>
-      <Container
-        fluid
-        px='xs'
-        sx={{
-          height: '60px',
-          borderBottom: '1px solid lightgray',
-        }}>
-        <Container
-          fluid={matches ? false : true}
-          px={0}
-          sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Box sx={{ width: '103px', height: '36px', display: 'flex', alignItems: 'center' }}>
+    <Container
+      fluid
+      px='xs'
+      sx={{
+        height: '60px',
+        borderBottom: '1px solid lightgray',
+        position: 'fixed',
+        width: '100%',
+        backgroundColor: 'white',
+        top: 0,
+        zIndex: 9999,
+      }}>
+      <Container px={0} sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Link href='/' passHref>
+          <Anchor sx={{ width: '103px', height: '36px', display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
             <Image src='/logo.svg' width={103} height={36} alt='logo' />
-          </Box>
+          </Anchor>
+        </Link>
+        <Search />
 
-          <Search />
-
-          <Buttons />
-        </Container>
+        <Buttons />
       </Container>
-    </>
+    </Container>
   )
 }
 
