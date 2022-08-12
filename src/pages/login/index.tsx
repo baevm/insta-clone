@@ -25,6 +25,7 @@ const Login = () => {
 
 export default Login
 
+Login.noHeader = true
 
 export async function getServerSideProps(context: any) {
   const session = await unstable_getServerSession(context.req, context.res, nextAuthOptions)

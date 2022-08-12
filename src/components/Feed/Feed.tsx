@@ -31,37 +31,34 @@ const posts = [
 
 const Feed = () => {
   return (
-    <Container fluid px={0} sx={{ paddingTop: '60px', minHeight: 'calc(100vh - 60px)', backgroundColor: '#FAFAFA' }}>
+    <Container
+      px={0}
+      py='2rem'
+      sx={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        flexDirection: 'column',
+
+        '@media (min-width: 768px)': {
+          flexDirection: 'row',
+        },
+      }}>
       <Container
-        id='text'
         px={0}
-        py='2rem'
         sx={{
           width: '100%',
+          maxWidth: '480px',
           height: '100%',
           display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'flex-start',
           flexDirection: 'column',
-
-          '@media (min-width: 768px)': {
-            flexDirection: 'row',
-          },
+          gap: '2rem',
         }}>
-        <Container
-          px={0}
-          sx={{
-            width: '100%',
-            maxWidth: '480px',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '2rem',
-          }}>
-          {posts && posts.map((post) => <PostCard key={post.id} post={post} />)}
-        </Container>
-        <Suggestions />
+        {posts && posts.map((post) => <PostCard key={post.id} post={post} />)}
       </Container>
+      <Suggestions />
     </Container>
   )
 }

@@ -7,14 +7,25 @@ import { httpBatchLink } from '@trpc/client/links/httpBatchLink'
 import { loggerLink } from '@trpc/client/links/loggerLink'
 import { url } from '../constants/url.const'
 import superjson from 'superjson'
-import { SessionProvider } from "next-auth/react"; 
+import { SessionProvider } from 'next-auth/react'
+import Layout from '../components/Layout'
+import type { NextComponentType } from 'next'
 
-function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
-  
+type CustomAppProps = AppProps & {
+  Component: NextComponentType & { noHeader?: boolean }
+}
+
+function MyApp({ Component, pageProps: { session, ...pageProps } }: CustomAppProps) {
   return (
     <SessionProvider session={session}>
       <MantineProvider withGlobalStyles withNormalizeCSS>
-        <Component {...pageProps} />
+        {Component.noHeader ? (
+          <Component {...pageProps} />
+        ) : (
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        )}
       </MantineProvider>
     </SessionProvider>
   )

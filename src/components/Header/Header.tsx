@@ -21,7 +21,7 @@ const Header = () => {
       }}>
       <Container px={0} sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Link href='/' passHref>
-          <Anchor sx={{ width: '103px', height: '36px', display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+          <Anchor sx={{ width: '300px', height: '36px', display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
             <Image src='/logo.svg' width={103} height={36} alt='logo' />
           </Anchor>
         </Link>
