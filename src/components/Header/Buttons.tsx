@@ -9,8 +9,10 @@ import {
   IoCompassOutline,
   IoHeartOutline,
   IoSettingsOutline,
+  IoHomeOutline,
+  IoHomeSharp,
 } from 'react-icons/io5'
-import { MdHome, MdOutlineAddBox } from 'react-icons/md'
+import { MdOutlineAddBox } from 'react-icons/md'
 
 import AddPostModal from './AddPostModal'
 
@@ -19,16 +21,14 @@ const Buttons = () => {
   const router = useRouter()
   const { data } = useSession()
 
-  
-
   return (
     <>
       {isModalOpened && <AddPostModal isModalOpened={isModalOpened} setIsModalOpened={setIsModalOpened} />}
 
       <Box sx={{ height: '36px', display: 'flex', alignItems: 'center' }}>
         {/* Button to home page */}
-        <ActionIcon color='dark' variant='transparent' size='lg' mx='0.4rem'>
-          <MdHome size='1.8rem' />
+        <ActionIcon color='dark' variant='transparent' size='lg' mx='0.4rem' onClick={() => router.push('/')}>
+          {router.asPath === '/' ? <IoHomeSharp size='1.6rem' /> : <IoHomeOutline size='1.6rem' />}
         </ActionIcon>
         {/* Button to messages */}
         <ActionIcon color='dark' variant='transparent' size='lg' mx='0.4rem'>

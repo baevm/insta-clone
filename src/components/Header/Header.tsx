@@ -17,7 +17,7 @@ const Header = () => {
         width: '100%',
         backgroundColor: 'white',
         top: 0,
-        zIndex: 9999,
+        zIndex: 1000,
       }}>
       <Container px={0} sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Link href='/' passHref>
