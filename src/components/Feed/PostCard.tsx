@@ -1,5 +1,6 @@
 import {
   ActionIcon,
+  Anchor,
   Avatar,
   Box,
   Button,
@@ -16,6 +17,8 @@ import {
 import React, { useState } from 'react'
 import { MdMoreHoriz } from 'react-icons/md'
 import { IoHeartOutline, IoChatbubbleOutline, IoPaperPlaneOutline, IoBookmarkOutline } from 'react-icons/io5'
+import { formatDate } from '../../utils/formatDate'
+import Link from 'next/link'
 
 const PostCard = ({ post }: any) => {
   const [showMore, setShowMore] = useState(false)
@@ -54,10 +57,16 @@ const PostCard = ({ post }: any) => {
         <Card.Section py='xs' px='xs'>
           <Group position='apart' align='center'>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Avatar radius='xl' />
-              <Text pl='0.5rem' weight='bold' size='sm'>
-                {post.poster}
-              </Text>
+              <Link href={`/${post.User.name}`} passHref>
+                <Anchor>
+                  <Avatar radius='xl' src={post.User.avatar ? post.User.avatar : ''} />
+                </Anchor>
+              </Link>
+              <Link href={`/${post.User.name}`} passHref>
+                <Anchor pl='0.5rem' weight='bold' size='sm' color='dark' underline={false}>
+                  {post.User.name}
+                </Anchor>
+              </Link>
             </Box>
             <ActionIcon color='dark' variant='transparent' size='md' onClick={() => setIsOpenModal(true)}>
               <MdMoreHoriz size='1.8rem' />
@@ -102,28 +111,29 @@ const PostCard = ({ post }: any) => {
               {post.poster}
             </Box>{' '}
             <Box component='span' sx={{ fontSize: '14px' }}>
-              {showMore ? post.caption : post.caption.substring(0, 90) + '...'}
+              {/* {showMore ? post.caption : post.caption.substring(0, 90) + '...'} */}
+              {post.caption}
             </Box>
-            {!showMore && (
+            {/* {!showMore && (
               <Button variant='subtle' onClick={() => setShowMore(!showMore)} color='dark'>
                 Show more
               </Button>
-            )}
+            )} */}
             <Box>
-              <Text size='sm' color='gray'>
+              {/*  <Text size='sm' color='gray'>
                 View all comments
-              </Text>
-              <Box>
+              </Text> */}
+              {/*  <Box>
                 <Box component='span' sx={{ fontWeight: 'bold', fontSize: '14px' }}>
                   RandomDude1
                 </Box>{' '}
                 <Box component='span' sx={{ fontSize: '14px' }}>
                   Comment from another user
                 </Box>
-              </Box>
+              </Box> */}
               <Box>
                 <Text size='xs' color='gray'>
-                  May 17
+                  {formatDate(post.createdAt)}
                 </Text>
               </Box>
             </Box>

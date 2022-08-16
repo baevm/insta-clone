@@ -32,7 +32,15 @@ const Post = ({ post }: any) => {
   return (
     <>
       <Grid.Col span={4} onClick={() => setIsModalOpened(true)} sx={{ cursor: 'pointer' }}>
-        <NextImage src={post.image} alt='post' width='100%' height='100%' layout='responsive' quality={100} />
+        <NextImage
+          src={post.image}
+          alt='post'
+          width='100%'
+          height='100%'
+          layout='responsive'
+          quality={100}
+          style={{ backgroundColor: 'black' }}
+        />
       </Grid.Col>
 
       {isModalOpened && (

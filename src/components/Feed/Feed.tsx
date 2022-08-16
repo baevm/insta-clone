@@ -1,35 +1,20 @@
 import { Container } from '@mantine/core'
-import PostCard from '../Card/PostCard'
+import PostCard from './PostCard'
 import Suggestions from './Suggestions'
 
-const posts = [
-  {
-    id: 1,
-    poster: 'Account1',
-    caption:
-      'Test caption. Testing veryvery loooooong caption so it fits inside a card without overflowing.Test caption. Testing veryvery loooooong caption so it fits inside a card without overflowing......',
-    image:
-      'https://res.cloudinary.com/dgeksii7s/image/upload/v1660050512/react-upload/298302482_400294935529537_8214724098189740147_n.jpg_btuvu0.webp',
-    likes: 425,
-    date: '2020-01-01',
-  },
-  {
-    id: 2,
-    caption: 'Test caption. Testing veryvery loooooong caption so it fits inside a card without overflowing......',
-    image: 'https://res.cloudinary.com/dgeksii7s/image/upload/v1660031079/react-upload/y69byiukjrk34rrhvbua.png',
-    likes: 425,
-    date: '2020-01-01',
-  },
-  {
-    id: 3,
-    caption: 'Test caption. Testing veryvery loooooong caption so it fits inside a card without overflowing......',
-    image: 'https://res.cloudinary.com/dgeksii7s/image/upload/v1660031079/react-upload/y69byiukjrk34rrhvbua.png',
-    likes: 425,
-    date: '2020-01-01',
-  },
-]
+const Feed = ({ feed, suggestions }: any) => {
 
-const Feed = () => {
+  const displaySortedPosts = () => {
+    const posts = feed.following.flatMap((f: any) => f.posts)
+
+   
+    const sortedPosts = posts
+      .sort((a: any, b: any) => -a.createdAt.localeCompare(b.createdAt))
+      .map((post: any) => <PostCard key={post.id} post={post} />)
+    return sortedPosts
+  }
+
+  console.log(feed)
   return (
     <Container
       px={0}
@@ -56,9 +41,11 @@ const Feed = () => {
           flexDirection: 'column',
           gap: '2rem',
         }}>
-        {posts && posts.map((post) => <PostCard key={post.id} post={post} />)}
+
+
+        {feed.following && displaySortedPosts()}
       </Container>
-      <Suggestions />
+      <Suggestions name={feed.name} avatar={feed.avatar} suggestions={suggestions} />
     </Container>
   )
 }

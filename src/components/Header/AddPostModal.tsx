@@ -1,21 +1,22 @@
 import {
-  Accordion, Avatar,
+  Accordion,
+  Avatar,
   Box,
   Button,
-  Center, Group,
+  Center,
+  Group,
   Image,
   Input,
-  Loader, Modal,
+  Loader,
+  Modal,
   Text,
-  Textarea
+  Textarea,
 } from '@mantine/core'
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone'
 import { useMediaQuery } from '@mantine/hooks'
 import React, { useRef, useState } from 'react'
 import { BsUpload } from 'react-icons/bs'
-import {
-  IoLocationOutline
-} from 'react-icons/io5'
+import { IoLocationOutline } from 'react-icons/io5'
 import { MdClose, MdPhoto } from 'react-icons/md'
 import { trpc } from '../../utils/trpc'
 
@@ -62,7 +63,6 @@ const AddPostModal = ({ isModalOpened, setIsModalOpened }: any) => {
     mutate({ image: img, caption })
   }
 
- 
   return (
     <Modal
       opened={isModalOpened}
@@ -71,7 +71,8 @@ const AddPostModal = ({ isModalOpened, setIsModalOpened }: any) => {
       size={'1100px'}
       withCloseButton={false}
       padding={0}
-      radius={10}>
+      radius={10}
+      sx={{ zIndex: 2000 }}>
       <Group position='apart' sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem' }}>
         <div></div>
         <Box>Create new post</Box>

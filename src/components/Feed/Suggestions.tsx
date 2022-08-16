@@ -1,19 +1,33 @@
 import { Anchor, Avatar, Box, Button, Group, Text } from '@mantine/core'
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
+import React from 'react'
+import { trpc } from '../../utils/trpc'
 
-const suggestions = [
-  { id: 1, name: 'test2' },
-  { id: 2, name: 'test123123' },
-  { id: 3, name: 'adasdqq111' },
-]
+const Suggestions = ({ name, avatar, suggestions }: any) => {
+  const { data } = useSession()
+  const { mutate } = trpc.useMutation('follow.follow')
 
-const Suggestions = () => {
+  const handleFollow = (id: string) => {
+    mutate({ userId: id })
+  }
+
+ 
+
   return (
     <Box sx={{ width: '35%' }}>
       <Group position='apart'>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Avatar radius='xl' size='lg' />
-          <Text weight='bold'>dezzerlol</Text>
+          <Link href={`/${name}`} passHref>
+            <Anchor>
+              <Avatar radius='xl' size='md' src={avatar ? avatar : ''} />
+            </Anchor>
+          </Link>
+          <Link href={`/${name}`} passHref>
+            <Anchor weight='bold' ml='0.5rem' color='dark' underline={false}>
+              {name}
+            </Anchor>
+          </Link>
         </Box>
         <Box>
           <Button variant='subtle'>Switch</Button>
@@ -30,15 +44,15 @@ const Suggestions = () => {
       </Group>
 
       <Box>
-        {suggestions.map((s) => (
+        {suggestions.map((s: any) => (
           <Group position='apart' key={s.id}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Link href={`/${s.name}`} passHref>
                 <Anchor>
-                  <Avatar size='md' />
+                  <Avatar size='md' radius='xl' src={s.avatar ? s.avatar : ''} />
                 </Anchor>
               </Link>
-              <Box>
+              <Box ml='0.5rem'>
                 <Link href={`/${s.name}`} passHref>
                   <Anchor weight='bold' color='dark' underline={false}>
                     {s.name}
@@ -49,9 +63,18 @@ const Suggestions = () => {
                 </Text>
               </Box>
             </Box>
+
+            {/*  {s.followedBy.map((f: any) =>
+              f.id === data?.user.id ? (
+                <Box sx={{ fontSize: '12px', paddingRight: '1rem', color: 'gray' }} key={f.id}>Followed</Box>
+              ) : ( */}
             <Box>
-              <Button variant='subtle'>Follow</Button>
+              <Button variant='subtle' onClick={() => handleFollow(s.id)}>
+                Follow
+              </Button>
             </Box>
+            {/*    )
+            )} */}
           </Group>
         ))}
       </Box>
@@ -59,4 +82,4 @@ const Suggestions = () => {
   )
 }
 
-export default Suggestions
+export default React.memo(Suggestions)
