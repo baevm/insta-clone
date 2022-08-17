@@ -1,24 +1,11 @@
-import {
-  ActionIcon,
-  AspectRatio,
-  Avatar,
-  Box,
-  Container,
-  Grid,
-  Group,
-  Image,
-  Input,
-  Modal,
-  Text,
-  Textarea,
-  Title,
-} from '@mantine/core'
+import { Carousel } from '@mantine/carousel'
+import { ActionIcon, Avatar, Box, Container, Grid, Group, Image, Text, Textarea, Title } from '@mantine/core'
 import NextImage from 'next/image'
-import React, { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
+import { IoBookmarkOutline, IoChatbubbleEllipsesOutline, IoHeartOutline, IoPaperPlaneOutline } from 'react-icons/io5'
 import { MdMoreHoriz } from 'react-icons/md'
 import { useDisableBodyScroll } from '../../utils/useDisableBodyScroll'
 import { useOutsideClick } from '../../utils/useOutsideClick'
-import { IoBookmarkOutline, IoChatbubbleEllipsesOutline, IoHeartOutline, IoPaperPlaneOutline } from 'react-icons/io5'
 
 const Post = ({ post }: any) => {
   const [isModalOpened, setIsModalOpened] = useState(false)
@@ -33,7 +20,7 @@ const Post = ({ post }: any) => {
     <>
       <Grid.Col span={4} onClick={() => setIsModalOpened(true)} sx={{ cursor: 'pointer' }}>
         <NextImage
-          src={post.image}
+          src={post.images[0]}
           alt='post'
           width='100%'
           height='100%'
@@ -74,10 +61,35 @@ const Post = ({ post }: any) => {
               flexDirection: 'row',
             }}
             ref={modalRef}>
-            <Box sx={{ maxWidth: 850, width: '70%', backgroundColor: 'black', display: 'flex' }}>
-              <AspectRatio ratio={1 / 1}>
-                <Image src={post.image} alt='post' width={850} />
-              </AspectRatio>
+            <Box sx={{ maxWidth: 850, width: '70%', display: 'flex', alignItems: 'center', backgroundColor: 'black' }}>
+              {post.images.length > 1 ? (
+                <Carousel
+                  slideSize='100%'
+                  height={'100%'}
+                  slideGap='md'
+                  styles={{
+                    control: {
+                      '&[data-inactive]': {
+                        opacity: 0,
+                        cursor: 'default',
+                      },
+                    },
+                  }}>
+                  {post.images.map((image: string, index: number) => (
+                    <Carousel.Slide
+                      key={index}
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Image src={image} alt='post' width={850} />
+                    </Carousel.Slide>
+                  ))}
+                </Carousel>
+              ) : (
+                <Image src={post.images} alt='post' width={850} />
+              )}
             </Box>
 
             <Box

@@ -14,7 +14,7 @@ const Feed = ({ feed, suggestions }: any) => {
     return sortedPosts
   }
 
-  console.log(feed)
+  
   return (
     <Container
       px={0}

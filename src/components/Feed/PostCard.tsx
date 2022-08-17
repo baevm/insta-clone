@@ -1,27 +1,26 @@
+import { Carousel } from '@mantine/carousel'
 import {
   ActionIcon,
   Anchor,
   Avatar,
   Box,
-  Button,
   Card,
   Center,
   Divider,
   Group,
   Image,
-  Input,
   Modal,
+  Spoiler,
   Text,
   Textarea,
 } from '@mantine/core'
-import React, { useState } from 'react'
-import { MdMoreHoriz } from 'react-icons/md'
-import { IoHeartOutline, IoChatbubbleOutline, IoPaperPlaneOutline, IoBookmarkOutline } from 'react-icons/io5'
-import { formatDate } from '../../utils/formatDate'
 import Link from 'next/link'
+import { useState } from 'react'
+import { IoBookmarkOutline, IoChatbubbleOutline, IoHeartOutline, IoPaperPlaneOutline } from 'react-icons/io5'
+import { MdMoreHoriz } from 'react-icons/md'
+import { formatDate } from '../../utils/formatDate'
 
 const PostCard = ({ post }: any) => {
-  const [showMore, setShowMore] = useState(false)
   const [isOpenModal, setIsOpenModal] = useState(false)
 
   return (
@@ -75,7 +74,27 @@ const PostCard = ({ post }: any) => {
         </Card.Section>
 
         <Card.Section>
-          <Image src={post.image} alt='post' />
+          {post.images.length > 1 ? (
+            <Carousel
+              styles={{
+                control: {
+                  '&[data-inactive]': {
+                    opacity: 0,
+                    cursor: 'default',
+                  },
+                },
+              }}>
+              {post.images.map((image: any) => (
+                <Carousel.Slide
+                  key={image}
+                  sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'black' }}>
+                  <Image src={image} alt='post' />
+                </Carousel.Slide>
+              ))}
+            </Carousel>
+          ) : (
+            <Image src={post.images} alt='post' />
+          )}
         </Card.Section>
 
         <Card.Section py='xs' px='xs'>
@@ -110,20 +129,20 @@ const PostCard = ({ post }: any) => {
             <Box component='span' sx={{ fontWeight: 'bold', fontSize: '14px' }}>
               {post.poster}
             </Box>{' '}
-            <Box component='span' sx={{ fontSize: '14px' }}>
-              {/* {showMore ? post.caption : post.caption.substring(0, 90) + '...'} */}
+            <Spoiler
+              showLabel='Show more'
+              hideLabel='Hide'
+              maxHeight={110}
+              color='black'
+              sx={{ fontSize: '14px' }}
+              styles={{ control: { color: 'gray' } }}>
               {post.caption}
-            </Box>
-            {/* {!showMore && (
-              <Button variant='subtle' onClick={() => setShowMore(!showMore)} color='dark'>
-                Show more
-              </Button>
-            )} */}
+            </Spoiler>
             <Box>
-              {/*  <Text size='sm' color='gray'>
+              <Text size='sm' color='gray'>
                 View all comments
-              </Text> */}
-              {/*  <Box>
+              </Text>
+              {/* <Box id='post-comments'>
                 <Box component='span' sx={{ fontWeight: 'bold', fontSize: '14px' }}>
                   RandomDude1
                 </Box>{' '}

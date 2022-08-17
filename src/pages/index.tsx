@@ -35,7 +35,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             caption: true,
             likes: true,
             likedUsers: true,
-            image: true,
+            images: true,
             createdAt: true,
             User: {
               select: { id: true, name: true, avatar: true },
@@ -50,7 +50,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                 caption: true,
                 likes: true,
                 likedUsers: true,
-                image: true,
+                images: true,
                 createdAt: true,
                 User: {
                   select: { id: true, name: true, avatar: true },

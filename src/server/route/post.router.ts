@@ -1,14 +1,14 @@
 import * as trpc from '@trpc/server'
 import { cloudinary } from '../../services/cloudinary'
 import { createRouter } from '../createRouter'
-import { DeletePostSchema, PostSchema } from '../schemas/post.schema'
+import { DeletePostSchema, LikePostSchema, PostSchema } from '../schemas/post.schema'
 
 export const postRouter = createRouter()
   .mutation('create-post', {
     input: PostSchema,
 
     resolve: async ({ ctx, input }) => {
-      const { caption, image } = input
+      const { caption, images } = input
 
       if (!ctx.session) {
         throw new trpc.TRPCError({
@@ -17,14 +17,21 @@ export const postRouter = createRouter()
         })
       }
 
-      const data = await cloudinary.uploader.upload(image, { upload_preset: 'react-upload' })
+      let urls = []
 
-      const imageUrl = data.secure_url
+      for (const file of images) {
+        const path = await cloudinary.uploader.upload(file, { upload_preset: 'react-upload' })
+        urls.push(path.secure_url)
+      }
+
+      /*  const data = await cloudinary.uploader.upload(image, { upload_preset: 'react-upload' }) */
+
+      /* const imageUrl = data.secure_url */
 
       const post = await ctx.prisma.post.create({
         data: {
           caption,
-          image: imageUrl,
+          images: urls,
           userId: ctx.session?.user.id,
         },
       })
@@ -39,7 +46,7 @@ export const postRouter = createRouter()
       return {
         status: 201,
         message: 'Post created.',
-        result: { image: post?.image, caption: post?.caption },
+        result: { image: post?.images, caption: post?.caption },
       }
     },
   })
@@ -68,5 +75,12 @@ export const postRouter = createRouter()
         status: 200,
         message: 'Post deleted.',
       }
+    },
+  })
+  .mutation('like-post', {
+    input: LikePostSchema,
+
+    resolve: async ({ ctx, input }) => {
+      const { postId } = input
     },
   })

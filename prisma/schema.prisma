@@ -67,7 +67,7 @@ model Post {
   id         String   @id @default(cuid())
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  image      String
+  images      String[]
   caption    String?
   User       User?    @relation(fields: [userId], references: [id])
   userId     String?
