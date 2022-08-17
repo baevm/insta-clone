@@ -1,16 +1,16 @@
-import { Container } from '@mantine/core'
+import { Box, Button, Card, Container, Group, Title } from '@mantine/core'
 import PostCard from './PostCard'
 import Suggestions from './Suggestions'
+import SuggestionsCarousel from './SuggestionsCarousel'
 
 const Feed = ({ feed, suggestions }: any) => {
-
   const displaySortedPosts = () => {
-    const posts = feed.following.flatMap((f: any) => f.posts)
+    const OtherUsersPosts = feed.following.flatMap((f: any) => f.posts)
+    const AllPosts = [...OtherUsersPosts, ...feed.posts]
 
-   
-    const sortedPosts = posts
-      .sort((a: any, b: any) => -a.createdAt.localeCompare(b.createdAt))
-      .map((post: any) => <PostCard key={post.id} post={post} />)
+    const sortedPosts = AllPosts.sort((a: any, b: any) => -a.createdAt.localeCompare(b.createdAt)).map((post: any) => (
+      <PostCard key={post.id} post={post} />
+    ))
     return sortedPosts
   }
 
@@ -25,11 +25,7 @@ const Feed = ({ feed, suggestions }: any) => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'flex-start',
-        flexDirection: 'column',
-
-        '@media (min-width: 768px)': {
-          flexDirection: 'row',
-        },
+        flexDirection: 'row',
       }}>
       <Container
         px={0}
@@ -41,9 +37,8 @@ const Feed = ({ feed, suggestions }: any) => {
           flexDirection: 'column',
           gap: '2rem',
         }}>
-
-
         {feed.following && displaySortedPosts()}
+        <SuggestionsCarousel suggestions={suggestions}/>
       </Container>
       <Suggestions name={feed.name} avatar={feed.avatar} suggestions={suggestions} />
     </Container>

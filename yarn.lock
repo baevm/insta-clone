@@ -252,6 +252,13 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
+"@mantine/carousel@^5.1.6":
+  version "5.1.6"
+  resolved "https://registry.yarnpkg.com/@mantine/carousel/-/carousel-5.1.6.tgz#9597fdb3332d07fdbbebdc6b1789bc6df796fefa"
+  integrity sha512-znY9RXyu2F2mbH7iFnwLG2lyvPBdDx4IiSTHcyZ87ti5tXyu8usoUdeXM8KkoCctm3Vx2adnJuD230Rq0hfBbQ==
+  dependencies:
+    "@mantine/utils" "5.1.6"
+
 "@mantine/core@^5.1.0":
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/@mantine/core/-/core-5.1.0.tgz#9f41c6862ea5c03001c62b34bdc745999a1c07c7"
@@ -309,6 +316,11 @@
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/@mantine/utils/-/utils-5.1.1.tgz#2fa9ecaac4fe61cc3e07c4953ca23a1bc9ac765c"
   integrity sha512-2FiSrD1lYuDHSGVi1QL5iskO8/Bnd6eDrwdpEWS/PJfg6iEz80HnmBxf/xzkDBaNdK3/n8g2kOaOcw5Ff1OFkA==
+
+"@mantine/utils@5.1.6":
+  version "5.1.6"
+  resolved "https://registry.yarnpkg.com/@mantine/utils/-/utils-5.1.6.tgz#992cd1e8850467533aa88dc5fd933650674abf5e"
+  integrity sha512-y7va2keQ+TPwn2j668r889NhQWO0OhSvaxT5P8n2iBaTyPg+Xp5Jm2IE5UjI+OrZErrgmQq1sxbfg6v5vdK+0A==
 
 "@mapbox/node-pre-gyp@^1.0.0":
   version "1.0.9"
@@ -1225,6 +1237,18 @@ duplexer2@^0.1.2:
   integrity sha512-asLFVfWWtJ90ZyOUHMqk7/S2w2guQKxUI2itj3d92ADHhxUSbCMGi1f1cBcJ7xM1To+pE/Khbwo1yuNbMEPKeA==
   dependencies:
     readable-stream "^2.0.2"
+
+embla-carousel-react@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/embla-carousel-react/-/embla-carousel-react-7.0.0.tgz#a4f352d814734d399afc02f201db6d5ea03716a1"
+  integrity sha512-y17TYtqvvziWbDwwfX5dh8n4qU1luytz4+6WWMBnR4pJfLfkKBGsqYNZ4WhmAgUcYL1Uliti8Cjg+NJd46MPxw==
+  dependencies:
+    embla-carousel "7.0.0"
+
+embla-carousel@7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/embla-carousel/-/embla-carousel-7.0.0.tgz#a65d0b97866ff83135568eb7a92fb0bd6b99368a"
+  integrity sha512-vgyElJaBRTtzWROQuO9Qx/VlibzKdhwnuQ2Ldh5/7/jddrB4XTI6IQlgR5ZglRaXjH4nXjVtUSwWWZMEIZQLFQ==
 
 emoji-regex@^8.0.0:
   version "8.0.0"

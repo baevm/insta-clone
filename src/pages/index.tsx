@@ -25,7 +25,23 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       where: {
         id: session?.user.id,
       },
-      include: {
+      select: {
+        email: true,
+        name: true,
+
+        posts: {
+          select: {
+            id: true,
+            caption: true,
+            likes: true,
+            likedUsers: true,
+            image: true,
+            createdAt: true,
+            User: {
+              select: { id: true, name: true, avatar: true },
+            },
+          },
+        },
         following: {
           select: {
             posts: {

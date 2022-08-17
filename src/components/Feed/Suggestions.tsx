@@ -12,10 +12,8 @@ const Suggestions = ({ name, avatar, suggestions }: any) => {
     mutate({ userId: id })
   }
 
- 
-
   return (
-    <Box sx={{ width: '35%' }}>
+    <Box sx={{ width: '35%', '@media (max-width: 756px)': { display: 'none' } }}>
       <Group position='apart'>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Link href={`/${name}`} passHref>
