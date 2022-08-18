@@ -26,7 +26,6 @@ const Profile: React.FC<{ profile: ProfileProps }> = ({ profile }) => {
     return sortedPosts
   }
 
-
   return (
     <Container
       size={935}
@@ -51,7 +50,9 @@ const Profile: React.FC<{ profile: ProfileProps }> = ({ profile }) => {
 
           <Tabs.Panel value='/'>
             {profile.posts.length > 0 ? (
-              <Grid py='1rem'>{displaySortedPosts()}</Grid>
+              <Grid py='1rem' m={0}>
+                {displaySortedPosts()}
+              </Grid>
             ) : (
               <Center sx={{ height: '500px', flexDirection: 'column' }}>
                 <MdOutlinePhotoCamera size={40} />
