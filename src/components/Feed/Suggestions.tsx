@@ -1,11 +1,9 @@
 import { Anchor, Avatar, Box, Button, Group, Text } from '@mantine/core'
-import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import React from 'react'
 import { trpc } from '../../utils/trpc'
 
 const Suggestions = ({ name, avatar, suggestions }: any) => {
-  const { data } = useSession()
   const { mutate } = trpc.useMutation('follow.follow')
 
   const handleFollow = (id: string) => {

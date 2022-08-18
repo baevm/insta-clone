@@ -41,7 +41,7 @@ export const nextAuthOptions: NextAuthOptions = {
         })
 
         if (!user) {
-          return null
+          throw new Error("User with this email doesn't exist")
         }
 
         if (user && bcrypt.compareSync(creds.password, user.password!)) {

@@ -4,17 +4,16 @@ import NextImage from 'next/image'
 import { useRef, useState } from 'react'
 import { IoBookmarkOutline, IoChatbubbleEllipsesOutline, IoHeartOutline, IoPaperPlaneOutline } from 'react-icons/io5'
 import { MdMoreHoriz } from 'react-icons/md'
+import { getTimeAgo } from '../../utils/formatDate'
 import { useDisableBodyScroll } from '../../utils/useDisableBodyScroll'
 import { useOutsideClick } from '../../utils/useOutsideClick'
 
-const Post = ({ post }: any) => {
+const Post = ({ post, username, avatar }: any) => {
   const [isModalOpened, setIsModalOpened] = useState(false)
   const modalRef = useRef<HTMLDivElement>(null)
 
   useDisableBodyScroll(isModalOpened)
   useOutsideClick(modalRef, () => setIsModalOpened(false))
-
-  console.log(post)
 
   return (
     <>
@@ -25,6 +24,7 @@ const Post = ({ post }: any) => {
           width='100%'
           height='100%'
           layout='responsive'
+          objectFit='cover'
           quality={100}
           style={{ backgroundColor: 'black' }}
         />
@@ -101,9 +101,9 @@ const Post = ({ post }: any) => {
                 position='apart'
                 sx={{ height: '7%', borderBottom: '1px solid lightgray' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Avatar radius='xl' />
+                  <Avatar radius='xl' src={avatar} />
                   <Text weight='bold' size='sm' px='1rem' color='#262626'>
-                    nickanme
+                    {username}
                   </Text>
                 </Box>
                 <Box>
@@ -113,17 +113,40 @@ const Post = ({ post }: any) => {
                 </Box>
               </Group>
 
-              <Box
-                id='comments'
-                sx={{
-                  height: '75%',
-                  borderBottom: '1px solid lightgray',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Title order={3}>No comments yet</Title>
-              </Box>
+              {post.caption ? (
+                <Box
+                  p='0.5rem'
+                  sx={{
+                    height: '75%',
+                    display: 'flex',
+                  }}>
+                  <Avatar src={avatar} mr='0.5rem' radius='xl' alt='avatar' />
+                  <Box>
+                    <Box py='0.2rem' color='black' sx={{ fontSize: '14px' }}>
+                      <Box component='span' sx={{ fontWeight: 'bold', fontSize: '14px' }}>
+                        {username}
+                      </Box>{' '}
+                      {post.caption}
+                    </Box>
+
+                    <Text size='xs' color='gray'>
+                      {getTimeAgo(post.createdAt)}
+                    </Text>
+                  </Box>
+                </Box>
+              ) : (
+                <Box
+                  id='comments'
+                  sx={{
+                    height: '75%',
+                    borderBottom: '1px solid lightgray',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Title order={3}>No comments yet</Title>
+                </Box>
+              )}
 
               <Box id='comments-controls' sx={{ height: '18%' }}>
                 <Box p='0.5rem' sx={{ borderBottom: '1px solid lightgray' }}>

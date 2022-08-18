@@ -28,7 +28,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       select: {
         email: true,
         name: true,
-
         posts: {
           select: {
             id: true,
@@ -65,15 +64,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     console.error(error)
   }
 
-  //TODO: filter user suggestions where the session user is not following and limit to 5 random
+  // filter user suggestions where the session user is not following another user and limit to 4
   try {
     suggestions = await prisma.user.findMany({
       where: {
-        OR: [
-          {
-            NOT: { id: session?.user.id },
-          },
-        ],
+        AND: [{ NOT: { id: session?.user.id } }, { NOT: { followedBy: { some: { id: session?.user.id } } } }],
       },
       select: {
         id: true,

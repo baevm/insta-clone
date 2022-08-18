@@ -32,6 +32,7 @@ const PostCard = ({ post }: any) => {
         onClose={() => setIsOpenModal(false)}
         withCloseButton={false}
         padding={0}
+        zIndex={2000}
         styles={(theme) => ({
           modal: {
             borderRadius: '10px',
@@ -126,18 +127,21 @@ const PostCard = ({ post }: any) => {
           </Box>
 
           <Box py='xs'>
-            <Box component='span' sx={{ fontWeight: 'bold', fontSize: '14px' }}>
-              {post.poster}
-            </Box>{' '}
-            <Spoiler
-              showLabel='Show more'
-              hideLabel='Hide'
-              maxHeight={110}
-              color='black'
-              sx={{ fontSize: '14px' }}
-              styles={{ control: { color: 'gray' } }}>
-              {post.caption}
-            </Spoiler>
+            {post.caption && (
+              <Spoiler
+                showLabel='Show more'
+                hideLabel='Hide'
+                maxHeight={110}
+                color='black'
+                sx={{ fontSize: '14px' }}
+                styles={{ control: { color: 'gray' } }}>
+                <Box component='span' sx={{ fontWeight: 'bold', fontSize: '14px' }}>
+                  {post.User.name}
+                </Box>{' '}
+                {post.caption}
+              </Spoiler>
+            )}
+
             <Box>
               <Text size='sm' color='gray'>
                 View all comments

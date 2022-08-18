@@ -12,13 +12,20 @@ import ProfileHeader from './ProfileHeader'
 const Profile: React.FC<{ profile: ProfileProps }> = ({ profile }) => {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState<string | null>('/')
- 
 
   const handleTabChange = (value: any) => {
     setActiveTab(value)
     const path = value === '/' ? `/${profile.name}` : `/${profile.name}/${value}`
     router.push(`${path}`)
   }
+
+  const displaySortedPosts = () => {
+    const sortedPosts = profile.posts
+      .sort((a: any, b: any) => -a.createdAt.localeCompare(b.createdAt))
+      .map((post: any) => <Post post={post} username={profile.name} avatar={profile.avatar} key={post.id} />)
+    return sortedPosts
+  }
+
 
   return (
     <Container
@@ -43,12 +50,8 @@ const Profile: React.FC<{ profile: ProfileProps }> = ({ profile }) => {
           </Tabs.List>
 
           <Tabs.Panel value='/'>
-            {profile.posts ? (
-              <Grid py='1rem'>
-                {profile.posts.map((post: any) => (
-                  <Post post={post} key={post.id}/>
-                ))}
-              </Grid>
+            {profile.posts.length > 0 ? (
+              <Grid py='1rem'>{displaySortedPosts()}</Grid>
             ) : (
               <Center sx={{ height: '500px', flexDirection: 'column' }}>
                 <MdOutlinePhotoCamera size={40} />
@@ -62,8 +65,6 @@ const Profile: React.FC<{ profile: ProfileProps }> = ({ profile }) => {
           <Tabs.Panel value='tagged'>Tagged</Tabs.Panel>
         </Tabs>
       </Box>
-
-     
     </Container>
   )
 }
