@@ -1,5 +1,17 @@
 import { Carousel } from '@mantine/carousel'
-import { ActionIcon, Avatar, Box, Container, Grid, Group, Image, Text, Textarea, Title } from '@mantine/core'
+import {
+  ActionIcon,
+  AspectRatio,
+  Avatar,
+  Box,
+  Container,
+  Grid,
+  Group,
+  Image,
+  Text,
+  Textarea,
+  Title,
+} from '@mantine/core'
 import NextImage from 'next/image'
 import { useRef, useState } from 'react'
 import { IoBookmarkOutline, IoChatbubbleEllipsesOutline, IoHeartOutline, IoPaperPlaneOutline } from 'react-icons/io5'
@@ -53,19 +65,19 @@ const Post = ({ post, username, avatar }: any) => {
             p={0}
             sx={{
               backgroundColor: 'white',
-              width: '100%',
-              height: '900px',
+              width: '90%',
+              height: '90%',
               borderTopRightRadius: 5,
               borderBottomRightRadius: 5,
               display: 'flex',
               flexDirection: 'row',
             }}
             ref={modalRef}>
-            <Box sx={{ maxWidth: 850, width: '70%', display: 'flex', alignItems: 'center', backgroundColor: 'black' }}>
+            <Box sx={{ maxWidth: '80rem', width: '100%', display: 'flex', alignItems: 'center', backgroundColor: 'black' }}>
               {post.images.length > 1 ? (
                 <Carousel
                   slideSize='100%'
-                  height={'100%'}
+                  height='100%'
                   slideGap='md'
                   styles={{
                     control: {
@@ -83,12 +95,13 @@ const Post = ({ post, username, avatar }: any) => {
                         justifyContent: 'center',
                         alignItems: 'center',
                       }}>
-                      <Image src={image} alt='post' width={850} />
+                      <Image src={image} alt='post' width='850' />
                     </Carousel.Slide>
                   ))}
                 </Carousel>
               ) : (
-                <Image src={post.images} alt='post' width={850} />
+                
+                  <Image src={post.images} alt='post' width='100%' />
               )}
             </Box>
 

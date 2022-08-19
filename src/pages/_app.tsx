@@ -56,3 +56,13 @@ export default withTRPC<AppRouter>({
   },
   ssr: false,
 })(MyApp)
+
+
+// TODO:
+// 200% in windows settings breaks whole profile layout
+// add commenting to posts
+// add likes to posts
+// 
+//
+//
+//
