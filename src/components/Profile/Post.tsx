@@ -66,12 +66,12 @@ const Post = ({ post, username, avatar }: any) => {
             p={0}
             sx={{
               backgroundColor: 'white',
-              width: '90%',
-              height: '90%',
               borderTopRightRadius: 5,
               borderBottomRightRadius: 5,
               display: 'flex',
               flexDirection: 'row',
+              width: '90vw',
+              height: '90vh',
 
               '@media (max-width: 956px)': {
                 flexDirection: 'column',
@@ -86,8 +86,9 @@ const Post = ({ post, username, avatar }: any) => {
                 display: 'flex',
                 alignItems: 'center',
                 backgroundColor: 'black',
-                width: 'clamp(15rem, 100%, 50rem)',
-                height: 'clamp(15rem, 90%)',
+                justifyContent: 'center',
+                width: 'clamp(15rem, 100%, 800px)',
+                height: 'clamp(15rem, 100%)',
 
                 '@media (max-width: 956px)': {
                   borderBottom: '1px solid lightgray',
@@ -128,8 +129,8 @@ const Post = ({ post, username, avatar }: any) => {
             <Box
               id='comments-section'
               sx={{
-                minHeight: '100%',
-                minWidth: '300px',
+                minHeight: '90vh',
+                minWidth: '400px',
                 width: 'calc(100% - 800px)',
                 borderLeft: '1px solid lightgray',
 
@@ -174,7 +175,7 @@ const Post = ({ post, username, avatar }: any) => {
                 </Box>
               )}
 
-              <Box id='comments-controls' sx={{ height: '18%' }}>
+              <Box id='comments-controls' sx={{ minHeight: '18%' }}>
                 <Box p='0.5rem' sx={{ borderBottom: '1px solid lightgray' }}>
                   <Group position='apart' mb='0.5rem'>
                     <Box sx={{ display: 'flex' }}>

@@ -68,7 +68,7 @@ export default withTRPC<AppRouter>({
 // 200% in windows settings breaks whole profile layout
 // add commenting to posts
 // add likes to posts
-//
-//
+// add searching
+// check profiles without logging in, 
 //
 //
