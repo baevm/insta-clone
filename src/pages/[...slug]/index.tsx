@@ -47,7 +47,18 @@ export const getServerSideProps = async (ctx: any) => {
         avatar: true,
         email: true,
         id: true,
-        posts: true,
+        posts: {
+          include: {
+            comments: {
+              select: {
+                body: true,
+                createdAt: true,
+                id: true,
+                User: { select: { name: true, id: true, avatar: true } },
+              },
+            },
+          },
+        },
         followedBy: true,
         following: true,
         description: true,

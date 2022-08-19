@@ -66,9 +66,10 @@ export default withTRPC<AppRouter>({
 
 // TODO:
 // 200% in windows settings breaks whole profile layout
-// add commenting to posts
 // add likes to posts
 // add searching
 // check profiles without logging in, 
-//
-//
+// fix second modal closes first modal in post
+// delete post
+// delete comment
+// mutations react query

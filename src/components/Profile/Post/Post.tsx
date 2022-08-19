@@ -1,36 +1,25 @@
 import { Carousel } from '@mantine/carousel'
-import {
-  ActionIcon,
-  AspectRatio,
-  Avatar,
-  Box,
-  Container,
-  Grid,
-  Group,
-  Image,
-  Text,
-  Textarea,
-  Title,
-} from '@mantine/core'
+import { ActionIcon, Box, Button, Container, Grid, Group, Image, Text, Textarea, Title } from '@mantine/core'
 import NextImage from 'next/image'
-import { useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { IoBookmarkOutline, IoChatbubbleEllipsesOutline, IoHeartOutline, IoPaperPlaneOutline } from 'react-icons/io5'
-import { MdMoreHoriz } from 'react-icons/md'
-import { getTimeAgo } from '../../utils/formatDate'
-import { useDisableBodyScroll } from '../../utils/useDisableBodyScroll'
-import { useOutsideClick } from '../../utils/useOutsideClick'
+import { trpc } from '../../../utils/trpc'
+import { useDisableBodyScroll } from '../../../utils/useDisableBodyScroll'
+import { useOutsideClick } from '../../../utils/useOutsideClick'
+import Comment from './Comment'
+import CommentControls from './CommentControls'
 import PostHeader from './PostHeader'
 
-const Post = ({ post, username, avatar }: any) => {
-  const [isModalOpened, setIsModalOpened] = useState(false)
+const Post = ({ post, username, avatar, userId }: any) => {
+  const [isPostOpened, setIsPostOpened] = useState(false)
   const modalRef = useRef<HTMLDivElement>(null)
 
-  useDisableBodyScroll(isModalOpened)
-  useOutsideClick(modalRef, () => setIsModalOpened(false))
+  useDisableBodyScroll(isPostOpened)
+  useOutsideClick(modalRef, () => setIsPostOpened(false))
 
   return (
     <>
-      <Grid.Col span={4} onClick={() => setIsModalOpened(true)} sx={{ cursor: 'pointer' }}>
+      <Grid.Col span={4} onClick={() => setIsPostOpened(true)} sx={{ cursor: 'pointer' }}>
         <NextImage
           src={post.images[0]}
           alt='post'
@@ -43,7 +32,7 @@ const Post = ({ post, username, avatar }: any) => {
         />
       </Grid.Col>
 
-      {isModalOpened && (
+      {isPostOpened && (
         <Box
           sx={{
             position: 'fixed',
@@ -140,30 +129,26 @@ const Post = ({ post, username, avatar }: any) => {
               }}>
               <PostHeader username={username} avatar={avatar} type='desktop' />
 
-              {post.caption ? (
+              {post.caption || post.comments ? (
                 <Box
                   p='0.5rem'
                   sx={{
                     height: '75%',
                     display: 'flex',
+                    flexDirection: 'column',
                   }}>
-                  <Avatar src={avatar} mr='0.5rem' radius='xl' alt='avatar' />
-                  <Box>
-                    <Box py='0.2rem' color='black' sx={{ fontSize: '14px' }}>
-                      <Box component='span' sx={{ fontWeight: 'bold', fontSize: '14px' }}>
-                        {username}
-                      </Box>{' '}
-                      {post.caption}
-                    </Box>
+                  {post.caption && (
+                    <Comment avatar={avatar} date={post.createdAt} name={username} text={post.caption} />
+                  )}
 
-                    <Text size='xs' color='gray'>
-                      {getTimeAgo(post.createdAt)}
-                    </Text>
-                  </Box>
+                  {post.comments &&
+                    post.comments.map((c: any) => (
+                      <Comment avatar={c.User.avatar} date={c.createdAt} name={c.User.name} text={c.body} key={c.id} />
+                    ))}
                 </Box>
               ) : (
                 <Box
-                  id='comments'
+                  id='no-comments'
                   sx={{
                     minHeight: '75%',
                     borderBottom: '1px solid lightgray',
@@ -175,43 +160,7 @@ const Post = ({ post, username, avatar }: any) => {
                 </Box>
               )}
 
-              <Box id='comments-controls' sx={{ minHeight: '18%' }}>
-                <Box p='0.5rem' sx={{ borderBottom: '1px solid lightgray' }}>
-                  <Group position='apart' mb='0.5rem'>
-                    <Box sx={{ display: 'flex' }}>
-                      <ActionIcon variant='transparent' color='dark' mr='0.5rem'>
-                        <IoHeartOutline size={30} />
-                      </ActionIcon>
-                      <ActionIcon variant='transparent' color='dark' mx='0.5rem'>
-                        <IoChatbubbleEllipsesOutline size={30} />
-                      </ActionIcon>
-                      <ActionIcon variant='transparent' color='dark' mx='0.5rem'>
-                        <IoPaperPlaneOutline size={30} />
-                      </ActionIcon>
-                    </Box>
-                    <Box>
-                      <ActionIcon variant='transparent' color='dark' mx='0.5rem'>
-                        <IoBookmarkOutline size={30} />
-                      </ActionIcon>
-                    </Box>
-                  </Group>
-
-                  <Box p='0.2rem'>
-                    <Text weight='bold' size='sm'>
-                      {post.likes} likes
-                    </Text>
-                  </Box>
-                </Box>
-                <Box>
-                  <Textarea
-                    variant='unstyled'
-                    px='0.5rem'
-                    sx={{ height: '100%' }}
-                    minRows={3}
-                    placeholder='Add a comment...'
-                  />
-                </Box>
-              </Box>
+              <CommentControls postId={post.id} likes={post.likes} />
             </Box>
           </Container>
         </Box>
@@ -220,4 +169,4 @@ const Post = ({ post, username, avatar }: any) => {
   )
 }
 
-export default Post
+export default React.memo(Post)

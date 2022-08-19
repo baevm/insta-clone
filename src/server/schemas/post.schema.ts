@@ -23,8 +23,20 @@ export const LikePostSchema = z.object({
   postId: z.string(),
 })
 
+export const AddCommentSchema = z.object({
+  postId: z.string(),
+  comment: z.string(),
+})
+
+export const DeleteCommentSchema = z.object({
+  postId: z.string(),
+})
+
 export type IDeletePostSchema = z.infer<typeof DeletePostSchema>
 
 export type IPostSchema = z.infer<typeof PostSchema>
 
 export type ILikePostSchema = z.infer<typeof LikePostSchema>
+
+export type IAddCommentSchema = z.infer<typeof AddCommentSchema>
+export type IDeleteCommentSchema = z.infer<typeof DeletePostSchema>

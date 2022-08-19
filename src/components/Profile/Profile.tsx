@@ -1,4 +1,5 @@
 import { Box, Center, Container, Grid, Modal, Tabs, Title } from '@mantine/core'
+import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
@@ -6,10 +7,11 @@ import { IoMdGrid } from 'react-icons/io'
 import { MdOutlinePhotoCamera } from 'react-icons/md'
 import { RiAccountPinBoxLine } from 'react-icons/ri'
 import { ProfileProps } from '../../types/profile.type'
-import Post from './Post'
+import Post from './Post/Post'
 import ProfileHeader from './ProfileHeader'
 
 const Profile: React.FC<{ profile: ProfileProps }> = ({ profile }) => {
+  const {data} = useSession()
   const router = useRouter()
   const [activeTab, setActiveTab] = useState<string | null>('/')
 
@@ -22,7 +24,7 @@ const Profile: React.FC<{ profile: ProfileProps }> = ({ profile }) => {
   const displaySortedPosts = () => {
     const sortedPosts = profile.posts
       .sort((a: any, b: any) => -a.createdAt.localeCompare(b.createdAt))
-      .map((post: any) => <Post post={post} username={profile.name} avatar={profile.avatar} key={post.id} />)
+      .map((post: any) => <Post post={post} username={profile.name} userId={data?.user.id} avatar={profile.avatar} key={post.id} />)
     return sortedPosts
   }
 

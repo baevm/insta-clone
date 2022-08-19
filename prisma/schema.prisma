@@ -61,16 +61,30 @@ model User {
   accounts Account[]
   sessions Session[]
   posts    Post[]
+  comments Comments[]
 }
 
 model Post {
-  id         String   @id @default(cuid())
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  images      String[]
+  id         String     @id @default(cuid())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  images     String[]
   caption    String?
-  User       User?    @relation(fields: [userId], references: [id])
+  User       User?      @relation(fields: [userId], references: [id])
   userId     String?
-  likes      Int      @default(0)
-  likedUsers String[] @default([])
+  likes      Int        @default(0)
+  likedUsers String[]   @default([])
+  comments    Comments[]
+}
+
+model Comments {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  body      String
+
+  Post   Post?   @relation(fields: [postId], references: [id])
+  postId String?
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String?
 }

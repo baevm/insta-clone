@@ -1,7 +1,7 @@
 import * as trpc from '@trpc/server'
 import { cloudinary } from '../../services/cloudinary'
 import { createRouter } from '../createRouter'
-import { DeletePostSchema, LikePostSchema, PostSchema } from '../schemas/post.schema'
+import { AddCommentSchema, DeletePostSchema, LikePostSchema, PostSchema } from '../schemas/post.schema'
 
 export const postRouter = createRouter()
   .mutation('create-post', {
@@ -84,3 +84,33 @@ export const postRouter = createRouter()
       const { postId } = input
     },
   })
+  .mutation('add-comment', {
+    input: AddCommentSchema,
+
+    resolve: async ({ ctx, input }) => {
+      const { postId, comment } = input
+
+      if (!ctx.session) {
+        throw new trpc.TRPCError({
+          code: 'FORBIDDEN',
+          message: 'You must be logged in to comment.',
+        })
+      }
+
+      const commentAdded = await ctx.prisma.comments.create({
+        data: {
+          postId,
+          userId: ctx.session.user.id,
+          body: comment,
+        },
+      })
+
+      return {
+        status: 200,
+        message: 'Comment added.',
+      }
+    },
+  })
+/*   .mutation('delete-comment', {
+    input: DeleteCommentSchema,
+  }) */
