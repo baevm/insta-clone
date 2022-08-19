@@ -10,6 +10,7 @@ import superjson from 'superjson'
 import { SessionProvider } from 'next-auth/react'
 import Layout from '../components/Layout'
 import type { NextComponentType } from 'next'
+import Head from 'next/head'
 
 type CustomAppProps = AppProps & {
   Component: NextComponentType & { noHeader?: boolean }
@@ -17,17 +18,23 @@ type CustomAppProps = AppProps & {
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: CustomAppProps) {
   return (
-    <SessionProvider session={session}>
-      <MantineProvider withGlobalStyles withNormalizeCSS>
-        {Component.noHeader ? (
-          <Component {...pageProps} />
-        ) : (
-          <Layout>
+    <>
+      <Head>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+      </Head>
+
+      <SessionProvider session={session}>
+        <MantineProvider withGlobalStyles withNormalizeCSS>
+          {Component.noHeader ? (
             <Component {...pageProps} />
-          </Layout>
-        )}
-      </MantineProvider>
-    </SessionProvider>
+          ) : (
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          )}
+        </MantineProvider>
+      </SessionProvider>
+    </>
   )
 }
 
@@ -57,12 +64,11 @@ export default withTRPC<AppRouter>({
   ssr: false,
 })(MyApp)
 
-
 // TODO:
 // 200% in windows settings breaks whole profile layout
 // add commenting to posts
 // add likes to posts
-// 
+//
 //
 //
 //

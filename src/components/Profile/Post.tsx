@@ -19,6 +19,7 @@ import { MdMoreHoriz } from 'react-icons/md'
 import { getTimeAgo } from '../../utils/formatDate'
 import { useDisableBodyScroll } from '../../utils/useDisableBodyScroll'
 import { useOutsideClick } from '../../utils/useOutsideClick'
+import PostHeader from './PostHeader'
 
 const Post = ({ post, username, avatar }: any) => {
   const [isModalOpened, setIsModalOpened] = useState(false)
@@ -71,14 +72,34 @@ const Post = ({ post, username, avatar }: any) => {
               borderBottomRightRadius: 5,
               display: 'flex',
               flexDirection: 'row',
+
+              '@media (max-width: 956px)': {
+                flexDirection: 'column',
+                overflowY: 'scroll',
+              },
             }}
             ref={modalRef}>
-            <Box sx={{ maxWidth: '80rem', width: '100%', display: 'flex', alignItems: 'center', backgroundColor: 'black' }}>
+            <PostHeader username={username} avatar={avatar} type='mobile' />
+
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                backgroundColor: 'black',
+                width: 'clamp(15rem, 100%, 50rem)',
+                height: 'clamp(15rem, 90%)',
+
+                '@media (max-width: 956px)': {
+                  borderBottom: '1px solid lightgray',
+                },
+              }}>
               {post.images.length > 1 ? (
                 <Carousel
                   slideSize='100%'
                   height='100%'
                   slideGap='md'
+                  align='center'
+                  sx={{ flex: 1 }}
                   styles={{
                     control: {
                       '&[data-inactive]': {
@@ -95,36 +116,28 @@ const Post = ({ post, username, avatar }: any) => {
                         justifyContent: 'center',
                         alignItems: 'center',
                       }}>
-                      <Image src={image} alt='post' width='850' />
+                      <Image src={image} alt='post' />
                     </Carousel.Slide>
                   ))}
                 </Carousel>
               ) : (
-                
-                  <Image src={post.images} alt='post' width='100%' />
+                <Image src={post.images} alt='post' />
               )}
             </Box>
 
             <Box
               id='comments-section'
-              sx={{ height: '100%', width: 'calc(100% - 850px)', borderLeft: '1px solid lightgray' }}>
-              <Group
-                id='comments-header'
-                p='0.5rem'
-                position='apart'
-                sx={{ height: '7%', borderBottom: '1px solid lightgray' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Avatar radius='xl' src={avatar} />
-                  <Text weight='bold' size='sm' px='1rem' color='#262626'>
-                    {username}
-                  </Text>
-                </Box>
-                <Box>
-                  <ActionIcon variant='transparent'>
-                    <MdMoreHoriz size={30} />
-                  </ActionIcon>
-                </Box>
-              </Group>
+              sx={{
+                minHeight: '100%',
+                minWidth: '300px',
+                width: 'calc(100% - 800px)',
+                borderLeft: '1px solid lightgray',
+
+                '@media (max-width: 956px)': {
+                  width: '100%',
+                },
+              }}>
+              <PostHeader username={username} avatar={avatar} type='desktop' />
 
               {post.caption ? (
                 <Box
@@ -151,7 +164,7 @@ const Post = ({ post, username, avatar }: any) => {
                 <Box
                   id='comments'
                   sx={{
-                    height: '75%',
+                    minHeight: '75%',
                     borderBottom: '1px solid lightgray',
                     display: 'flex',
                     alignItems: 'center',
