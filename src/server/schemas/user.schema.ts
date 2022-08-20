@@ -14,5 +14,9 @@ export const UserLoginSchema = z.object({
   password: z.string().min(6, { message: 'Must be 6 or more characters long' }),
 })
 
+export const GetProfileSchema = z.object({
+  slug: z.any(),
+})
+
 export type ISignupSchema = z.infer<typeof UserSignupSchema>
 export type ILoginSchema = z.infer<typeof UserLoginSchema>

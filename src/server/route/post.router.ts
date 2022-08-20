@@ -4,6 +4,86 @@ import { createRouter } from '../createRouter'
 import { AddCommentSchema, DeletePostSchema, LikePostSchema, PostSchema } from '../schemas/post.schema'
 
 export const postRouter = createRouter()
+  .query('get-feed', {
+    resolve: async ({ ctx }) => {
+      if (!ctx.session) {
+        throw new trpc.TRPCError({
+          code: 'FORBIDDEN',
+          message: 'You must be logged in to access this resource',
+        })
+      }
+
+      const feed = await ctx.prisma.user.findUnique({
+        where: {
+          id: ctx.session?.user.id,
+        },
+        select: {
+          email: true,
+          name: true,
+          posts: {
+            select: {
+              id: true,
+              caption: true,
+              likes: true,
+              likedUsers: true,
+              images: true,
+              createdAt: true,
+              User: {
+                select: { id: true, name: true, avatar: true },
+              },
+            },
+          },
+          following: {
+            select: {
+              posts: {
+                select: {
+                  id: true,
+                  caption: true,
+                  likes: true,
+                  likedUsers: true,
+                  images: true,
+                  createdAt: true,
+                  User: {
+                    select: { id: true, name: true, avatar: true },
+                  },
+                },
+              },
+            },
+          },
+        },
+      })
+
+      return {
+        feed: JSON.parse(JSON.stringify(feed)),
+      }
+    },
+  })
+  .query('get-suggestions', {
+    resolve: async ({ ctx }) => {
+      if (!ctx.session) {
+        throw new trpc.TRPCError({
+          code: 'FORBIDDEN',
+          message: 'You must be logged in to create a post',
+        })
+      }
+
+      const suggestions = await ctx.prisma.user.findMany({
+        where: {
+          AND: [{ NOT: { id: ctx.session?.user.id } }, { NOT: { followedBy: { some: { id: ctx.session?.user.id } } } }],
+        },
+        select: {
+          id: true,
+          name: true,
+          followedBy: true,
+          avatar: true,
+        },
+        take: 4,
+      })
+      return {
+        suggestions: JSON.parse(JSON.stringify(suggestions)),
+      }
+    },
+  })
   .mutation('create-post', {
     input: PostSchema,
 
@@ -111,6 +191,7 @@ export const postRouter = createRouter()
       }
     },
   })
+
 /*   .mutation('delete-comment', {
     input: DeleteCommentSchema,
   }) */

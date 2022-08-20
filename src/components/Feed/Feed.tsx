@@ -14,7 +14,6 @@ const Feed = ({ feed, suggestions }: any) => {
     return sortedPosts
   }
 
-  
   return (
     <Container
       px={0}
@@ -37,10 +36,10 @@ const Feed = ({ feed, suggestions }: any) => {
           flexDirection: 'column',
           gap: '2rem',
         }}>
-        {feed.following && displaySortedPosts()}
-        <SuggestionsCarousel suggestions={suggestions}/>
+        {feed && displaySortedPosts()}
+        <SuggestionsCarousel suggestions={suggestions} />
       </Container>
-      <Suggestions name={feed.name} avatar={feed.avatar} suggestions={suggestions} />
+      {feed && <Suggestions name={feed.name} avatar={feed.avatar} suggestions={suggestions} />}
     </Container>
   )
 }

@@ -24,9 +24,15 @@ import { trpc } from '../../utils/trpc'
 type Stages = 'upload' | 'preview' | 'post'
 
 const AddPostModal = ({ isModalOpened, setIsModalOpened }: any) => {
+  const utils = trpc.useContext()
   const matches = useMediaQuery('(min-width: 556px)', false)
   const openRef = useRef<() => void>(null)
-  const { mutate, isLoading } = trpc.useMutation(['post.create-post'])
+  const { mutate, isLoading } = trpc.useMutation(['post.create-post'], {
+    onSuccess() {
+      utils.invalidateQueries('post.get-feed')
+      utils.invalidateQueries('user.get-profile')
+    },
+  })
   const [files, setFiles] = useState<File[]>([])
   const [caption, setCaption] = useState('')
   const [stage, setStage] = useState<Stages>('upload') // modal tabs

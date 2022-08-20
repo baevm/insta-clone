@@ -46,7 +46,10 @@ export default withTRPC<AppRouter>({
       queryClientConfig: {
         defaultOptions: {
           queries: {
-            staleTime: 60,
+            staleTime: Infinity,
+            /* refetchOnWindowFocus: false, */
+            /* refetchOnReconnect: false, */
+            
           },
         },
       },
@@ -68,7 +71,7 @@ export default withTRPC<AppRouter>({
 // 200% in windows settings breaks whole profile layout
 // add likes to posts
 // add searching
-// check profiles without logging in, 
+// check profiles without logging in,
 // fix second modal closes first modal in post
 // delete post
 // delete comment

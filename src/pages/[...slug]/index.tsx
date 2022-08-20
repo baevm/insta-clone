@@ -1,15 +1,25 @@
-import { Anchor, Box, Center, Text, Title } from '@mantine/core'
+import { Anchor, Center, Text, Title } from '@mantine/core'
+import { createSSGHelpers } from '@trpc/react/ssg'
+import { GetServerSidePropsContext } from 'next'
 import Link from 'next/link'
+import superjson from 'superjson'
 import Profile from '../../components/Profile/Profile'
-import { ProfileProps } from '../../types/profile.type'
-import prisma from '../../utils/prisma'
+import { createContext } from '../../server/createContext'
+import { appRouter } from '../../server/route/app.router'
+import { trpc } from '../../utils/trpc'
 
 type Props = {
-  data: { error?: boolean; profile: ProfileProps }
+  slug: any
 }
 
-const ProfilePage = ({ data }: Props) => {
-  if (data.error) {
+const ProfilePage = ({ slug }: Props) => {
+  const { data } = trpc.useQuery(['user.get-profile', { slug }], {
+    retry: false,
+    retryOnMount: false,
+    refetchOnWindowFocus: false,
+  })
+
+  if (!data) {
     return (
       <Center sx={{ flexDirection: 'column' }} py='4rem'>
         <Title order={3}>Sorry this page isn&apos;t avaliable</Title>
@@ -23,64 +33,30 @@ const ProfilePage = ({ data }: Props) => {
     )
   }
 
-  return (
-    <>
-      <Profile profile={data.profile} />
-    </>
-  )
+  return <Profile profile={data!.profile} />
 }
 
 export default ProfilePage
 
-export const getServerSideProps = async (ctx: any) => {
-  const slug = ctx.params.slug
-  let data
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+  const slug = context.params?.slug
 
-  if (slug.length === 1) {
-    data = await prisma.user.findUnique({
-      where: {
-        name: slug[0],
-      },
+  const ssg = createSSGHelpers({
+    router: appRouter,
+    ctx: await createContext(context),
+    transformer: superjson,
+  })
 
-      select: {
-        name: true,
-        avatar: true,
-        email: true,
-        id: true,
-        posts: {
-          include: {
-            comments: {
-              select: {
-                body: true,
-                createdAt: true,
-                id: true,
-                User: { select: { name: true, id: true, avatar: true } },
-              },
-            },
-          },
-        },
-        followedBy: true,
-        following: true,
-        description: true,
-      },
-    })
-  }
-
-  /* if (slug.length === 2 && slug.includes('tagged')) {
-    data = { username: 'username', id: 1, tagged: true }
-  } */
-
-  if (!data) {
-    return {
-      props: {
-        data: { error: true },
-      },
-    }
+  try {
+    await ssg.fetchQuery('user.get-profile', { slug })
+  } catch (error) {
+    console.error(error)
   }
 
   return {
     props: {
-      data: { profile: JSON.parse(JSON.stringify(data)) },
+      trpcState: ssg.dehydrate(),
+      slug,
     },
   }
 }

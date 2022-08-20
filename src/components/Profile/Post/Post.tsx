@@ -1,9 +1,7 @@
 import { Carousel } from '@mantine/carousel'
-import { ActionIcon, Box, Button, Container, Grid, Group, Image, Text, Textarea, Title } from '@mantine/core'
+import { Box, Container, Grid, Image, Title } from '@mantine/core'
 import NextImage from 'next/image'
 import React, { useRef, useState } from 'react'
-import { IoBookmarkOutline, IoChatbubbleEllipsesOutline, IoHeartOutline, IoPaperPlaneOutline } from 'react-icons/io5'
-import { trpc } from '../../../utils/trpc'
 import { useDisableBodyScroll } from '../../../utils/useDisableBodyScroll'
 import { useOutsideClick } from '../../../utils/useOutsideClick'
 import Comment from './Comment'
@@ -27,7 +25,7 @@ const Post = ({ post, username, avatar, userId }: any) => {
           height='100%'
           layout='responsive'
           objectFit='cover'
-          quality={100}
+          quality={85}
           style={{ backgroundColor: 'black' }}
         />
       </Grid.Col>
