@@ -134,6 +134,8 @@ const AddPostModal = ({ isModalOpened, setIsModalOpened }: any) => {
         )}
       </Group>
 
+      
+
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', width: '100%' }}>
         <Box sx={{ display: 'flex', flexDirection: matches ? 'row' : 'column', width: '100%' }}>
           {stage === 'upload' && (

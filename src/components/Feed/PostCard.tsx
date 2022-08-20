@@ -4,24 +4,38 @@ import {
   Anchor,
   Avatar,
   Box,
+  Button,
   Card,
   Center,
   Divider,
   Group,
   Image,
-  Modal,
-  Spoiler,
+  Modal, Spoiler,
   Text,
-  Textarea,
+  Textarea
 } from '@mantine/core'
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useState } from 'react'
 import { IoBookmarkOutline, IoChatbubbleOutline, IoHeartOutline, IoPaperPlaneOutline } from 'react-icons/io5'
 import { MdMoreHoriz } from 'react-icons/md'
 import { formatDate } from '../../utils/formatDate'
+import { trpc } from '../../utils/trpc'
 
-const PostCard = ({ post }: any) => {
+const PostCard = ({ post, setIsToastVisible }: any) => {
+  const { data } = useSession()
+  const utils = trpc.useContext()
   const [isOpenModal, setIsOpenModal] = useState(false)
+  const deletePost = trpc.useMutation(['post.delete-post'], {
+    async onSuccess() {
+      await utils.invalidateQueries('post.get-feed')
+      setIsToastVisible(true)
+
+      setTimeout(() => {
+        setIsToastVisible(false)
+      }, 6000)
+    },
+  })
 
   return (
     <>
@@ -38,19 +52,60 @@ const PostCard = ({ post }: any) => {
             borderRadius: '10px',
           },
         })}>
-        <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', color: 'red', cursor: 'pointer' }}>
-          Report
-        </Center>
-        <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', color: 'red', cursor: 'pointer' }}>
-          Unfollow
-        </Center>
-        <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>Go to post</Center>
-        <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>Share to</Center>
-        <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>Copy link</Center>
-        <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>Embed</Center>
-        <Center sx={{ padding: '0.5rem', cursor: 'pointer' }} onClick={() => setIsOpenModal(false)}>
-          Cancel
-        </Center>
+        {data?.user.id === post.User.id ? (
+          <Box>
+            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', color: 'red', cursor: 'pointer' }}>
+              <Button variant='white' fullWidth compact color='red' onClick={() => deletePost.mutate({ id: post.id })}>
+                Delete
+              </Button>
+            </Center>
+            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>
+              <Button variant='white' fullWidth compact color='dark' disabled>
+                Edit
+              </Button>
+            </Center>
+            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>
+              <Button variant='white' fullWidth compact color='dark' disabled>
+                Hide like count
+              </Button>
+            </Center>
+            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>
+              <Button variant='white' fullWidth compact color='dark' disabled>
+                Turn off commenting
+              </Button>
+            </Center>
+            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>
+              <Button variant='white' fullWidth compact color='dark' disabled>
+                Go to post
+              </Button>
+            </Center>
+            <Center sx={{ padding: '0.5rem', cursor: 'pointer' }} onClick={() => setIsOpenModal(false)}>
+              <Button variant='white' fullWidth compact color='dark'>
+                Cancel
+              </Button>
+            </Center>
+          </Box>
+        ) : (
+          <Box>
+            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', color: 'red', cursor: 'pointer' }}>
+              Report
+            </Center>
+            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', color: 'red', cursor: 'pointer' }}>
+              Unfollow
+            </Center>
+            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>
+              Go to post
+            </Center>
+            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>Share to</Center>
+            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>
+              Copy link
+            </Center>
+            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>Embed</Center>
+            <Center sx={{ padding: '0.5rem', cursor: 'pointer' }} onClick={() => setIsOpenModal(false)}>
+              Cancel
+            </Center>
+          </Box>
+        )}
       </Modal>
 
       <Card withBorder radius='md'>

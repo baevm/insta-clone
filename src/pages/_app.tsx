@@ -49,7 +49,6 @@ export default withTRPC<AppRouter>({
             staleTime: Infinity,
             /* refetchOnWindowFocus: false, */
             /* refetchOnReconnect: false, */
-            
           },
         },
       },
@@ -73,6 +72,7 @@ export default withTRPC<AppRouter>({
 // add searching
 // check profiles without logging in,
 // fix second modal closes first modal in post
-// delete post
+// delete post in profile page
 // delete comment
-// mutations react query
+// following and followers modal on profile
+// animations
