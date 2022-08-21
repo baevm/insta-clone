@@ -28,7 +28,7 @@ const Profile: React.FC<{ profile: ProfileProps }> = ({ profile }) => {
       .map((post: any) => (
         <Post
           post={post}
-          username={profile.name}
+          name={profile.name}
           userId={data?.user.id}
           avatar={profile.avatar}
           key={post.id}

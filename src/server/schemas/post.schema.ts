@@ -29,7 +29,7 @@ export const AddCommentSchema = z.object({
 })
 
 export const DeleteCommentSchema = z.object({
-  postId: z.string(),
+  commentId: z.string(),
 })
 
 export type IDeletePostSchema = z.infer<typeof DeletePostSchema>

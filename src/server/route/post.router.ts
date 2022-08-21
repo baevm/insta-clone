@@ -1,7 +1,13 @@
 import * as trpc from '@trpc/server'
 import { cloudinary } from '../../services/cloudinary'
 import { createRouter } from '../createRouter'
-import { AddCommentSchema, DeletePostSchema, LikePostSchema, PostSchema } from '../schemas/post.schema'
+import {
+  AddCommentSchema,
+  DeleteCommentSchema,
+  DeletePostSchema,
+  LikePostSchema,
+  PostSchema,
+} from '../schemas/post.schema'
 
 export const postRouter = createRouter()
   .query('get-feed', {
@@ -192,7 +198,24 @@ export const postRouter = createRouter()
       }
     },
   })
-
-/*   .mutation('delete-comment', {
+  .mutation('delete-comment', {
     input: DeleteCommentSchema,
-  }) */
+
+    resolve: async ({ ctx, input }) => {
+      const { commentId } = input
+
+      if (!commentId) {
+        throw new trpc.TRPCError({
+          code: 'BAD_REQUEST',
+        })
+      }
+
+      const commentDeleted = await ctx.prisma.comments.delete({
+        where: {
+          id: commentId,
+        },
+      })
+
+      return { status: 201, message: 'Comment deleted.' }
+    },
+  })

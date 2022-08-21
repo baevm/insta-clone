@@ -72,8 +72,8 @@ export default withTRPC<AppRouter>({
 // add searching
 // check profiles without logging in,
 // fix second modal closes first modal in post
-// delete post in profile page
 // delete comment
 // following and followers modal on profile
 // animations
 // redux for interface updates ???
+// change caption to comment instead of separet

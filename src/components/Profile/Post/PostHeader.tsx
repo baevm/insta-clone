@@ -1,22 +1,20 @@
 import { ActionIcon, Avatar, Box, Button, Center, Group, Modal, Text } from '@mantine/core'
 import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { MdMoreHoriz } from 'react-icons/md'
 import { trpc } from '../../../utils/trpc'
 
-const PostHeader = ({
-  username,
-  avatar,
-  type,
-  setIsToastVisible,
-  postId,
-}: {
-  username: string
+type Props = {
+  name: string
   avatar: string
   type: 'mobile' | 'desktop'
   setIsToastVisible: any
   postId: string
-}) => {
+}
+
+const PostHeader = ({ name, avatar, type, setIsToastVisible, postId }: Props) => {
+  const router = useRouter()
   const { data } = useSession()
   const [isOpenModal, setIsOpenModal] = useState(false)
   const utils = trpc.useContext()
@@ -24,6 +22,7 @@ const PostHeader = ({
   const deletePost = trpc.useMutation(['post.delete-post'], {
     async onSuccess() {
       await utils.invalidateQueries('user.get-profile')
+      router.push(`/${name}`)
       setIsToastVisible(true)
 
       setTimeout(() => {
@@ -47,11 +46,11 @@ const PostHeader = ({
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Avatar radius='xl' src={avatar} />
           <Text weight='bold' size='sm' px='1rem' color='#262626'>
-            {username}
+            {name}
           </Text>
         </Box>
         <Box>
-          {data?.user.name === username ? (
+          {data?.user.name === name ? (
             <ActionIcon variant='transparent' onClick={() => setIsOpenModal(true)}>
               <MdMoreHoriz size={30} />
             </ActionIcon>
