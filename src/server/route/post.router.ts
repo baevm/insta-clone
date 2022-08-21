@@ -20,6 +20,7 @@ export const postRouter = createRouter()
         select: {
           email: true,
           name: true,
+          avatar: true,
           posts: {
             select: {
               id: true,
@@ -54,7 +55,7 @@ export const postRouter = createRouter()
       })
 
       return {
-        feed: JSON.parse(JSON.stringify(feed)),
+        feed: JSON.parse(JSON.stringify(feed)) as typeof feed,
       }
     },
   })
@@ -80,7 +81,7 @@ export const postRouter = createRouter()
         take: 4,
       })
       return {
-        suggestions: JSON.parse(JSON.stringify(suggestions)),
+        suggestions: JSON.parse(JSON.stringify(suggestions)) as typeof suggestions,
       }
     },
   })

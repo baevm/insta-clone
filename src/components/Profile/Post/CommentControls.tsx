@@ -21,7 +21,7 @@ const CommentControls = ({ postId, likes }: Props) => {
     setComment('')
   }
   return (
-    <Box id='comments-controls' sx={{ minHeight: '18%', width: '100%' }}>
+    <Box id='comments-controls' sx={{ minHeight: '18%', width: '100%', borderTop: '1px solid lightgray' }}>
       <Box p='0.5rem' sx={{ borderBottom: '1px solid lightgray' }}>
         <Group position='apart' mb='0.5rem'>
           <Box sx={{ display: 'flex' }}>

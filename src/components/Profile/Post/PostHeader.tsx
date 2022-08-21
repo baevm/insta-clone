@@ -1,9 +1,36 @@
-import { ActionIcon, Avatar, Box, Center, Group, Modal, Text } from '@mantine/core'
+import { ActionIcon, Avatar, Box, Button, Center, Group, Modal, Text } from '@mantine/core'
+import { useSession } from 'next-auth/react'
 import React, { useState } from 'react'
 import { MdMoreHoriz } from 'react-icons/md'
+import { trpc } from '../../../utils/trpc'
 
-const PostHeader = ({ username, avatar, type }: { username: string; avatar: string; type: 'mobile' | 'desktop' }) => {
+const PostHeader = ({
+  username,
+  avatar,
+  type,
+  setIsToastVisible,
+  postId,
+}: {
+  username: string
+  avatar: string
+  type: 'mobile' | 'desktop'
+  setIsToastVisible: any
+  postId: string
+}) => {
+  const { data } = useSession()
   const [isOpenModal, setIsOpenModal] = useState(false)
+  const utils = trpc.useContext()
+
+  const deletePost = trpc.useMutation(['post.delete-post'], {
+    async onSuccess() {
+      await utils.invalidateQueries('user.get-profile')
+      setIsToastVisible(true)
+
+      setTimeout(() => {
+        setIsToastVisible(false)
+      }, 6000)
+    },
+  })
 
   return (
     <>
@@ -24,9 +51,13 @@ const PostHeader = ({ username, avatar, type }: { username: string; avatar: stri
           </Text>
         </Box>
         <Box>
-          <ActionIcon variant='transparent' onClick={() => setIsOpenModal(true)}>
-            <MdMoreHoriz size={30} />
-          </ActionIcon>
+          {data?.user.name === username ? (
+            <ActionIcon variant='transparent' onClick={() => setIsOpenModal(true)}>
+              <MdMoreHoriz size={30} />
+            </ActionIcon>
+          ) : (
+            <div></div>
+          )}
         </Box>
       </Group>
 
@@ -43,19 +74,38 @@ const PostHeader = ({ username, avatar, type }: { username: string; avatar: stri
             borderRadius: '10px',
           },
         })}>
-        <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', color: 'red', cursor: 'pointer' }}>
-          Delete
+        <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', color: 'red' }}>
+          <Button variant='white' fullWidth compact color='red' onClick={() => deletePost.mutate({ id: postId })}>
+            Delete
+          </Button>
         </Center>
 
-        <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>Share to</Center>
-        <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>Copy link</Center>
-        <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>Embed</Center>
-        <Center
-          sx={{ padding: '0.5rem', cursor: 'pointer' }}
-          onClick={() => {
-            setIsOpenModal(false)
-          }}>
-          Cancel
+        <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem' }}>
+          <Button variant='white' fullWidth compact disabled>
+            Share to
+          </Button>
+        </Center>
+        <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem' }}>
+          <Button variant='white' fullWidth compact disabled>
+            Copy link
+          </Button>
+        </Center>
+        <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem' }}>
+          <Button variant='white' fullWidth compact disabled>
+            Embed
+          </Button>
+        </Center>
+        <Center sx={{ padding: '0.5rem' }}>
+          <Button
+            variant='white'
+            fullWidth
+            compact
+            color='dark'
+            onClick={() => {
+              setIsOpenModal(false)
+            }}>
+            Cancel
+          </Button>
         </Center>
       </Modal>
     </>

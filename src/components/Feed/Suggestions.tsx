@@ -1,9 +1,17 @@
 import { Anchor, Avatar, Box, Button, Group, Text } from '@mantine/core'
 import Link from 'next/link'
 import React from 'react'
+import { Suggestions } from '../../types/app.types'
 import { trpc } from '../../utils/trpc'
 
-const Suggestions = ({ name, avatar, suggestions }: any) => {
+
+type Props = {
+  name: string | null
+  avatar: string | null
+  suggestions: Suggestions
+}
+
+const Suggestions = ({ name, avatar, suggestions }: Props) => {
   const { mutate } = trpc.useMutation('follow.follow')
 
   const handleFollow = (id: string) => {
@@ -26,7 +34,9 @@ const Suggestions = ({ name, avatar, suggestions }: any) => {
           </Link>
         </Box>
         <Box>
-          <Button variant='subtle'>Switch</Button>
+          <Button variant='subtle' compact>
+            Switch
+          </Button>
         </Box>
       </Group>
 
@@ -34,13 +44,13 @@ const Suggestions = ({ name, avatar, suggestions }: any) => {
         <Text pl='0.5rem' color='gray' weight='bold'>
           Suggestions for you
         </Text>
-        <Button variant='subtle' color='dark'>
+        <Button variant='subtle' compact color='dark'>
           See all
         </Button>
       </Group>
 
       <Box>
-        {suggestions.map((s: any) => (
+        {suggestions.map((s: typeof suggestions[number]) => (
           <Group position='apart' key={s.id}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Link href={`/${s.name}`} passHref>
@@ -60,17 +70,9 @@ const Suggestions = ({ name, avatar, suggestions }: any) => {
               </Box>
             </Box>
 
-            {/*  {s.followedBy.map((f: any) =>
-              f.id === data?.user.id ? (
-                <Box sx={{ fontSize: '12px', paddingRight: '1rem', color: 'gray' }} key={f.id}>Followed</Box>
-              ) : ( */}
-            <Box>
-              <Button variant='subtle' onClick={() => handleFollow(s.id)}>
-                Follow
-              </Button>
-            </Box>
-            {/*    )
-            )} */}
+            <Button variant='subtle' compact onClick={() => handleFollow(s.id)}>
+              Follow
+            </Button>
           </Group>
         ))}
       </Box>

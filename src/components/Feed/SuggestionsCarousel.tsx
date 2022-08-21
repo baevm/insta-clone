@@ -3,13 +3,20 @@ import React from 'react'
 import { Carousel } from '@mantine/carousel'
 import { trpc } from '../../utils/trpc'
 import Link from 'next/link'
+import { Suggestions } from '../../types/app.types'
 
-const SuggestionsCarousel = ({ suggestions }: any) => {
-  const { mutate } = trpc.useMutation('follow.follow')
+const SuggestionsCarousel = ({ suggestions }: { suggestions: Suggestions }) => {
+  const utils = trpc.useContext()
+  const { mutate } = trpc.useMutation('follow.follow', {
+    onSuccess() {
+      utils.invalidateQueries('post.get-suggestions')
+    },
+  })
 
   const handleFollow = (id: string) => {
     mutate({ userId: id })
   }
+  
   return (
     <Card withBorder radius='md'>
       <Card.Section pt='md' px='md'>
@@ -17,18 +24,17 @@ const SuggestionsCarousel = ({ suggestions }: any) => {
           <Title order={6} sx={{ color: 'gray' }}>
             Suggestions for you
           </Title>
-          <Box>
-            <Button size='xs' compact variant='subtle'>
-              See all
-            </Button>
-          </Box>
+
+          <Button size='xs' compact variant='subtle'>
+            See all
+          </Button>
         </Group>
       </Card.Section>
 
       <Card.Section py='md' px='md'>
         <Carousel slideSize='40%' height={200} slideGap='xs' align='start'>
           {suggestions &&
-            suggestions.map((s: any) => (
+            suggestions.map((s: Suggestions[number]) => (
               <Carousel.Slide
                 p='1rem'
                 key={s.id}
@@ -49,7 +55,7 @@ const SuggestionsCarousel = ({ suggestions }: any) => {
                     {s.name}
                   </Anchor>
                 </Link>
-                <Button size='xs' mt='2rem'>
+                <Button size='xs' mt='2rem' onClick={() => handleFollow(s.id)}>
                   Follow
                 </Button>
               </Carousel.Slide>

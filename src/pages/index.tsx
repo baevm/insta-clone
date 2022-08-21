@@ -1,19 +1,12 @@
-import type { GetServerSideProps, GetServerSidePropsContext, NextPage } from 'next'
-import { unstable_getServerSession } from 'next-auth'
-import Feed from '../components/Feed/Feed'
-import prisma from '../utils/prisma'
-import { nextAuthOptions } from './api/auth/[...nextauth]'
 import { createSSGHelpers } from '@trpc/react/ssg'
-import { appRouter } from '../server/route/app.router'
-import { createContext } from '../server/createContext'
+import type { GetServerSideProps, GetServerSidePropsContext, NextPage } from 'next'
 import superjson from 'superjson'
-import { trpc } from '../utils/trpc'
+import Feed from '../components/Feed/Feed'
+import { createContext } from '../server/createContext'
+import { appRouter } from '../server/route/app.router'
 
 const Home: NextPage = () => {
-  const { data: feed } = trpc.useQuery(['post.get-feed'])
-  const { data: suggestions } = trpc.useQuery(['post.get-suggestions'])
-
-  return <Feed feed={feed?.feed} suggestions={suggestions?.suggestions} />
+  return <Feed />
 }
 
 export default Home

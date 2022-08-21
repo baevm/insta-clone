@@ -10,9 +10,10 @@ import {
   Divider,
   Group,
   Image,
-  Modal, Spoiler,
+  Modal,
+  Spoiler,
   Text,
-  Textarea
+  Textarea,
 } from '@mantine/core'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
@@ -22,7 +23,24 @@ import { MdMoreHoriz } from 'react-icons/md'
 import { formatDate } from '../../utils/formatDate'
 import { trpc } from '../../utils/trpc'
 
-const PostCard = ({ post, setIsToastVisible }: any) => {
+type Props = {
+  post: {
+    User: {
+      name: string | null
+      id: string
+      avatar: string | null
+    } | null
+    id: string
+    createdAt: Date
+    caption: string | null
+    likes: number
+    likedUsers: string[]
+    images: string[]
+  }
+  setIsToastVisible: (v: boolean) => void
+}
+
+const PostCard = ({ post, setIsToastVisible }: Props) => {
   const { data } = useSession()
   const utils = trpc.useContext()
   const [isOpenModal, setIsOpenModal] = useState(false)
@@ -52,29 +70,29 @@ const PostCard = ({ post, setIsToastVisible }: any) => {
             borderRadius: '10px',
           },
         })}>
-        {data?.user.id === post.User.id ? (
+        {data?.user.id === post.User?.id ? (
           <Box>
-            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', color: 'red', cursor: 'pointer' }}>
+            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem' }}>
               <Button variant='white' fullWidth compact color='red' onClick={() => deletePost.mutate({ id: post.id })}>
                 Delete
               </Button>
             </Center>
-            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>
+            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem' }}>
               <Button variant='white' fullWidth compact color='dark' disabled>
                 Edit
               </Button>
             </Center>
-            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>
+            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem' }}>
               <Button variant='white' fullWidth compact color='dark' disabled>
                 Hide like count
               </Button>
             </Center>
-            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>
+            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem' }}>
               <Button variant='white' fullWidth compact color='dark' disabled>
                 Turn off commenting
               </Button>
             </Center>
-            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>
+            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem' }}>
               <Button variant='white' fullWidth compact color='dark' disabled>
                 Go to post
               </Button>
@@ -112,14 +130,14 @@ const PostCard = ({ post, setIsToastVisible }: any) => {
         <Card.Section py='xs' px='xs'>
           <Group position='apart' align='center'>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Link href={`/${post.User.name}`} passHref>
+              <Link href={`/${post.User?.name}`} passHref>
                 <Anchor>
-                  <Avatar radius='xl' src={post.User.avatar ? post.User.avatar : ''} />
+                  <Avatar radius='xl' src={post.User?.avatar ? post.User.avatar : ''} />
                 </Anchor>
               </Link>
-              <Link href={`/${post.User.name}`} passHref>
+              <Link href={`/${post.User?.name}`} passHref>
                 <Anchor pl='0.5rem' weight='bold' size='sm' color='dark' underline={false}>
-                  {post.User.name}
+                  {post.User?.name}
                 </Anchor>
               </Link>
             </Box>
@@ -149,7 +167,7 @@ const PostCard = ({ post, setIsToastVisible }: any) => {
               ))}
             </Carousel>
           ) : (
-            <Image src={post.images} alt='post' />
+            <Image src={post.images[0]} alt='post' />
           )}
         </Card.Section>
 
@@ -191,7 +209,7 @@ const PostCard = ({ post, setIsToastVisible }: any) => {
                 sx={{ fontSize: '14px' }}
                 styles={{ control: { color: 'gray' } }}>
                 <Box component='span' sx={{ fontWeight: 'bold', fontSize: '14px' }}>
-                  {post.User.name}
+                  {post.User?.name}
                 </Box>{' '}
                 {post.caption}
               </Spoiler>

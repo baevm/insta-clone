@@ -39,7 +39,7 @@ const ProfilePage = ({ slug }: Props) => {
 export default ProfilePage
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  const slug = context.params?.slug
+  const slug = context.params?.profile
 
   const ssg = createSSGHelpers({
     router: appRouter,

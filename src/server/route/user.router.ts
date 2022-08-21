@@ -44,17 +44,17 @@ export const userRouter = createRouter()
       const { slug } = input
       let data
 
-      if (slug.length > 1) {
+      /* if (slug.length > 1) {
         throw new trpc.TRPCError({
           code: 'BAD_REQUEST',
           message: 'Link is invalid',
         })
-      }
+      } */
 
-      if (slug?.length === 1) {
+      if (slug) {
         data = await ctx.prisma.user.findUnique({
           where: {
-            name: slug[0],
+            name: slug,
           },
 
           select: {

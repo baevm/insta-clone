@@ -76,3 +76,4 @@ export default withTRPC<AppRouter>({
 // delete comment
 // following and followers modal on profile
 // animations
+// redux for interface updates ???

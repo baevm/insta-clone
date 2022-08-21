@@ -1,24 +1,31 @@
-import { Box, Container } from '@mantine/core'
+import { Container } from '@mantine/core'
 import { useState } from 'react'
+import { trpc } from '../../utils/trpc'
+import Toast from '../Toast'
 import PostCard from './PostCard'
 import Suggestions from './Suggestions'
 import SuggestionsCarousel from './SuggestionsCarousel'
 
-const Feed = ({ feed, suggestions }: any) => {
+const Feed = () => {
   const [isToastVisible, setIsToastVisible] = useState(false)
+  const { data: f } = trpc.useQuery(['post.get-feed'])
+  const { data: s } = trpc.useQuery(['post.get-suggestions'])
+  const feed = f!.feed!
+  const suggestions = s!.suggestions!
 
   // map authed user posts with posts of users he follows
   const displaySortedPosts = () => {
-    const OtherUsersPosts = feed.following.flatMap((f: any) => f.posts)
-    const AllPosts = [...OtherUsersPosts, ...feed.posts]
+    const OtherUsersPosts = feed!.following.flatMap((f: any) => f.posts)
+    const AllPosts = [...OtherUsersPosts, ...feed!.posts]
 
-    const sortedPosts = AllPosts.sort((a: any, b: any) => -a.createdAt.localeCompare(b.createdAt)).map((post: any) => (
-      <PostCard key={post.id} post={post} setIsToastVisible={setIsToastVisible} isToastVisible={isToastVisible} />
-    ))
+    const sortedPosts = AllPosts.sort((a: any, b: any) => -a.createdAt.localeCompare(b.createdAt)).map(
+      (post: typeof feed.posts[number]) => <PostCard key={post.id} post={post} setIsToastVisible={setIsToastVisible} />
+    )
 
     return sortedPosts
   }
 
+  console.log(feed)
   return (
     <Container
       px={0}
@@ -46,32 +53,7 @@ const Feed = ({ feed, suggestions }: any) => {
       </Container>
       {feed && <Suggestions name={feed.name} avatar={feed.avatar} suggestions={suggestions} />}
 
-      {isToastVisible && (
-        <Box
-          sx={{
-            position: 'fixed',
-            bottom: '0',
-            left: '0',
-            backgroundColor: '#262626',
-            color: 'white',
-            padding: '0.5rem',
-            minWidth: '100vw',
-            fontSize: '14px',
-            transition: 'transform .6s ease-in-out',
-            animation: 'toast-in-top .7s',
-
-            '@keyframes toast-in-top': {
-              from: {
-                transform: 'translateY(100%)',
-              },
-              to: {
-                transform: 'translateY(0)',
-              },
-            },
-          }}>
-          Post deleted.
-        </Box>
-      )}
+      {isToastVisible && <Toast text='Post deleted.' />}
     </Container>
   )
 }
