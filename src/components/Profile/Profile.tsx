@@ -1,17 +1,20 @@
-import { Box, Center, Container, Grid, Modal, Tabs, Title } from '@mantine/core'
-import Image from 'next/image'
+import { Box, Center, Container, Grid, Tabs, Title } from '@mantine/core'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { IoMdGrid } from 'react-icons/io'
 import { MdOutlinePhotoCamera } from 'react-icons/md'
 import { RiAccountPinBoxLine } from 'react-icons/ri'
-import { ProfileProps } from '../../types/profile.type'
-import Post from './Post'
+import { ProfileProps } from '../../types/app.types'
+import Toast from '../Toast'
+import Post from './Post/Post'
 import ProfileHeader from './ProfileHeader'
 
 const Profile: React.FC<{ profile: ProfileProps }> = ({ profile }) => {
+  const { data } = useSession()
   const router = useRouter()
   const [activeTab, setActiveTab] = useState<string | null>('/')
+  const [isToastVisible, setIsToastVisible] = useState(false)
 
   const handleTabChange = (value: any) => {
     setActiveTab(value)
@@ -22,9 +25,19 @@ const Profile: React.FC<{ profile: ProfileProps }> = ({ profile }) => {
   const displaySortedPosts = () => {
     const sortedPosts = profile.posts
       .sort((a: any, b: any) => -a.createdAt.localeCompare(b.createdAt))
-      .map((post: any) => <Post post={post} username={profile.name} avatar={profile.avatar} key={post.id} />)
+      .map((post: any) => (
+        <Post
+          post={post}
+          name={profile.name}
+          userId={data?.user.id}
+          avatar={profile.avatar}
+          key={post.id}
+          setIsToastVisible={setIsToastVisible}
+        />
+      ))
     return sortedPosts
   }
+
 
   return (
     <Container
@@ -66,6 +79,7 @@ const Profile: React.FC<{ profile: ProfileProps }> = ({ profile }) => {
           <Tabs.Panel value='tagged'>Tagged</Tabs.Panel>
         </Tabs>
       </Box>
+      {isToastVisible && <Toast text='Post deleted.' />}
     </Container>
   )
 }

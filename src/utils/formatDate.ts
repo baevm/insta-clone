@@ -19,7 +19,7 @@ export const getTimeAgo = (dateToFormat: any) => {
   const secondsAgo = Math.round((Date.now() - Number(date)) / 1000)
 
   if (secondsAgo < MINUTE) {
-    return secondsAgo + ` second${secondsAgo !== 1 ? 's' : ''} ago`
+    return ` less than a minute ago`
   }
 
   let divisor
