@@ -59,5 +59,36 @@ export const followRouter = createRouter()
   .mutation('unfollow', {
     input: FollowSchema,
 
-    async resolve({ ctx, input }) {},
+    async resolve({ ctx, input }) {
+      const { userId } = input
+
+      if (!ctx.session) {
+        throw new trpc.TRPCError({
+          code: 'FORBIDDEN',
+          message: 'You must be logged in to follow user',
+        })
+      }
+
+      try {
+        const unfollowed = await ctx.prisma.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            followedBy: {
+              disconnect: {
+                id: ctx.session.user.id,
+              },
+            },
+          },
+        })
+      } catch (e) {
+        throw new trpc.TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Something went wrong',
+        })
+      }
+
+      return { status: 201, message: 'User unfollowed' }
+    },
   })

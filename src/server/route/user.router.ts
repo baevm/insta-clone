@@ -74,8 +74,8 @@ export const userRouter = createRouter()
                 },
               },
             },
-            followedBy: true,
-            following: true,
+            followedBy: { select: { avatar: true, createdAt: true, description: true, id: true, name: true } },
+            following: { select: { avatar: true, createdAt: true, description: true, id: true, name: true } },
             description: true,
           },
         })

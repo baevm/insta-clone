@@ -30,11 +30,10 @@ export const postRouter = createRouter()
           posts: {
             select: {
               id: true,
-              caption: true,
-              likes: true,
               likedUsers: true,
               images: true,
               createdAt: true,
+              comments: { select: { body: true, createdAt: true, id: true, User: { select: { name: true } } } },
               User: {
                 select: { id: true, name: true, avatar: true },
               },
@@ -45,11 +44,10 @@ export const postRouter = createRouter()
               posts: {
                 select: {
                   id: true,
-                  caption: true,
-                  likes: true,
                   likedUsers: true,
                   images: true,
                   createdAt: true,
+                  comments: { select: { body: true, createdAt: true, id: true, User: { select: { name: true } } } },
                   User: {
                     select: { id: true, name: true, avatar: true },
                   },
@@ -106,22 +104,30 @@ export const postRouter = createRouter()
 
       let urls = []
 
+      // upload files to cloudindary and get their urls
       for (const file of images) {
         const path = await cloudinary.uploader.upload(file, { upload_preset: 'react-upload' })
         urls.push(path.secure_url)
       }
 
-      /*  const data = await cloudinary.uploader.upload(image, { upload_preset: 'react-upload' }) */
-
-      /* const imageUrl = data.secure_url */
-
+      // create post in a db with urls of files
       const post = await ctx.prisma.post.create({
         data: {
-          caption,
           images: urls,
           userId: ctx.session?.user.id,
         },
       })
+
+      // if caption exists, create comment with it
+      if (caption) {
+        await ctx.prisma.comments.create({
+          data: {
+            postId: post.id,
+            userId: ctx.session.user.id,
+            body: caption!,
+          },
+        })
+      }
 
       if (!post) {
         throw new trpc.TRPCError({
@@ -133,7 +139,7 @@ export const postRouter = createRouter()
       return {
         status: 201,
         message: 'Post created.',
-        result: { image: post?.images, caption: post?.caption },
+        /*  result: { image: post?.images, caption: post?.caption }, */
       }
     },
   })
@@ -150,11 +156,21 @@ export const postRouter = createRouter()
         })
       }
 
-      const delPost = await ctx.prisma.post.delete({
+      const delPost = ctx.prisma.post.delete({
         where: {
           id,
         },
       })
+
+      const delCommentsFromPost = ctx.prisma.comments.deleteMany({
+        where: {
+          postId: id,
+        },
+      })
+
+      const transaction = await ctx.prisma.$transaction([delCommentsFromPost, delPost])
+
+      
 
       // del image from cloudinary after deleting post
 

@@ -16,7 +16,7 @@ import { MdOutlineAddBox } from 'react-icons/md'
 
 import AddPostModal from './AddPostModal'
 
-const Buttons = () => {
+const Buttons = ({ avatar }: { avatar: string }) => {
   const [isModalOpened, setIsModalOpened] = useState(false)
   const router = useRouter()
   const { data } = useSession()
@@ -31,7 +31,7 @@ const Buttons = () => {
           {router.asPath === '/' ? <IoHomeSharp size='1.6rem' /> : <IoHomeOutline size='1.6rem' />}
         </ActionIcon>
         {/* Button to messages */}
-        <ActionIcon color='dark' variant='transparent' size='lg' mx='0.4rem'>
+        <ActionIcon disabled color='dark' variant='transparent' size='lg' mx='0.4rem'>
           <IoChatbubbleEllipsesOutline size='1.6rem' />
         </ActionIcon>
         {/* Button to add post */}
@@ -39,18 +39,18 @@ const Buttons = () => {
           <MdOutlineAddBox size='1.8rem' />
         </ActionIcon>
         {/* Button ??? */}
-        <ActionIcon color='dark' variant='transparent' size='lg' mx='0.4rem'>
+        <ActionIcon disabled color='dark' variant='transparent' size='lg' mx='0.4rem'>
           <IoCompassOutline size='1.8rem' />
         </ActionIcon>
         {/* Button to favorites */}
-        <ActionIcon color='dark' variant='transparent' size='lg' mx='0.4rem'>
+        <ActionIcon disabled color='dark' variant='transparent' size='lg' mx='0.4rem'>
           <IoHeartOutline size='1.8rem' />
         </ActionIcon>
 
         {/* Avatar menu */}
         <Menu shadow='md' width={200} withArrow>
           <Menu.Target>
-            <Avatar radius='xl' mx='0.4rem' sx={{ cursor: 'pointer' }} />
+            <Avatar src={avatar} radius='xl' mx='0.4rem' sx={{ cursor: 'pointer' }} />
           </Menu.Target>
           <Menu.Dropdown p={0}>
             <Menu.Item icon={<HiOutlineUserCircle size={16} />} onClick={() => router.push(`/${data?.user.name}`)}>

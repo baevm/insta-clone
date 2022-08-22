@@ -25,7 +25,7 @@ const Feed = () => {
     return sortedPosts
   }
 
-  console.log(feed)
+
   return (
     <Container
       px={0}

@@ -32,10 +32,9 @@ type Props = {
     } | null
     id: string
     createdAt: Date
-    caption: string | null
-    likes: number
     likedUsers: string[]
     images: string[]
+    comments: any
   }
   setIsToastVisible: (v: boolean) => void
 }
@@ -44,6 +43,8 @@ const PostCard = ({ post, setIsToastVisible }: Props) => {
   const { data } = useSession()
   const utils = trpc.useContext()
   const [isOpenModal, setIsOpenModal] = useState(false)
+  const [newComment, setNewComment] = useState('')
+
   const deletePost = trpc.useMutation(['post.delete-post'], {
     async onSuccess() {
       await utils.invalidateQueries('post.get-feed')
@@ -55,6 +56,7 @@ const PostCard = ({ post, setIsToastVisible }: Props) => {
     },
   })
 
+  const addComment = trpc.useMutation(['post.add-comment'])
   return (
     <>
       <Modal
@@ -195,38 +197,28 @@ const PostCard = ({ post, setIsToastVisible }: Props) => {
         <Card.Section px='xs'>
           <Box>
             <Text weight='bold' size='sm'>
-              {post.likes} likes
+              {post.likedUsers.length} likes
             </Text>
           </Box>
 
           <Box py='xs'>
-            {post.caption && (
-              <Spoiler
-                showLabel='Show more'
-                hideLabel='Hide'
-                maxHeight={110}
-                color='black'
-                sx={{ fontSize: '14px' }}
-                styles={{ control: { color: 'gray' } }}>
+            {post.comments.length > 0 && (
+              <Box color='black' sx={{ fontSize: '14px' }}>
                 <Box component='span' sx={{ fontWeight: 'bold', fontSize: '14px' }}>
-                  {post.User?.name}
+                  {post.comments[0].User?.name}
                 </Box>{' '}
-                {post.caption}
-              </Spoiler>
+                {post.comments[0].body}
+              </Box>
             )}
 
             <Box>
-              <Text size='sm' color='gray'>
-                View all comments
+              <Text size='sm'>
+                <Link href={`/p/${post.id}`} passHref>
+                  <Anchor underline={false} color='gray'>
+                    View all comments
+                  </Anchor>
+                </Link>
               </Text>
-              {/* <Box id='post-comments'>
-                <Box component='span' sx={{ fontWeight: 'bold', fontSize: '14px' }}>
-                  RandomDude1
-                </Box>{' '}
-                <Box component='span' sx={{ fontSize: '14px' }}>
-                  Comment from another user
-                </Box>
-              </Box> */}
               <Box>
                 <Text size='xs' color='gray'>
                   {formatDate(post.createdAt)}
@@ -239,6 +231,7 @@ const PostCard = ({ post, setIsToastVisible }: Props) => {
         <Card.Section>
           <Divider />
           <Textarea
+            onChange={(e) => setNewComment(e.target.value)}
             placeholder='Add a comment'
             styles={(theme) => ({
               input: {

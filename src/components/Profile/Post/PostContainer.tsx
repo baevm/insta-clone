@@ -17,7 +17,7 @@ type Props = {
 const PostContainer = ({ post, name, avatar, setIsToastVisible, type }: Props) => {
   const { data } = useSession()
 
-  console.log(post)
+
   return (
     <Container
       size='xl'
@@ -102,8 +102,7 @@ const PostContainer = ({ post, name, avatar, setIsToastVisible, type }: Props) =
         {/* Desktop header on top of comments section */}
         <PostHeader name={name} avatar={avatar} postId={post.id} setIsToastVisible={setIsToastVisible} type='desktop' />
 
-        {/* Caption rendered separately cause it always should be on top */}
-        {post.caption || post.comments.length > 0 ? (
+        {post.comments.length > 0 ? (
           <Box
             p='0.5rem'
             sx={{
@@ -111,17 +110,6 @@ const PostContainer = ({ post, name, avatar, setIsToastVisible, type }: Props) =
               display: 'flex',
               flexDirection: 'column',
             }}>
-            {post.caption && (
-              <Comment
-                avatar={avatar}
-                date={post.createdAt}
-                name={name}
-                authUserName={data?.user.name}
-                text={post.caption}
-                commentId={'asdasdasdas1233'}
-              />
-            )}
-
             {post.comments &&
               post.comments.map((c: any) => (
                 <Comment
@@ -148,7 +136,7 @@ const PostContainer = ({ post, name, avatar, setIsToastVisible, type }: Props) =
           </Box>
         )}
 
-        <CommentControls postId={post.id} likes={post.likes} />
+        <CommentControls postId={post.id} likes={post.likedUsers.length} />
       </Box>
     </Container>
   )

@@ -38,6 +38,7 @@ const Profile: React.FC<{ profile: ProfileProps }> = ({ profile }) => {
     return sortedPosts
   }
 
+
   return (
     <Container
       size={935}
