@@ -1,16 +1,16 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
 import { MantineProvider } from '@mantine/core'
-import { withTRPC } from '@trpc/next'
-import { AppRouter } from '../server/route/app.router'
 import { httpBatchLink } from '@trpc/client/links/httpBatchLink'
 import { loggerLink } from '@trpc/client/links/loggerLink'
-import { url } from '../constants/url.const'
-import superjson from 'superjson'
-import { SessionProvider } from 'next-auth/react'
-import Layout from '../components/Layout'
+import { withTRPC } from '@trpc/next'
 import type { NextComponentType } from 'next'
+import { SessionProvider } from 'next-auth/react'
+import type { AppProps } from 'next/app'
 import Head from 'next/head'
+import superjson from 'superjson'
+import Layout from '../components/Layout'
+import { url } from '../constants/url.const'
+import { AppRouter } from '../server/router/app.router'
+import '../styles/globals.css'
 
 type CustomAppProps = AppProps & {
   Component: NextComponentType & { noHeader?: boolean }
@@ -67,13 +67,9 @@ export default withTRPC<AppRouter>({
 })(MyApp)
 
 // TODO:
-// 200% in windows settings breaks whole profile layout
+// add comment delete comment query after mutation
 // add likes to posts
 // add searching
-// check profiles without logging in,
-// fix second modal closes first modal in post
-// delete comment
-// following and followers modal on profile
 // animations
 // redux for interface updates ???
-// change caption to comment instead of separet
+// remove image from cloud when deleting post

@@ -136,7 +136,7 @@ const PostContainer = ({ post, name, avatar, setIsToastVisible, type }: Props) =
           </Box>
         )}
 
-        <CommentControls postId={post.id} likes={post.likedUsers.length} />
+        <CommentControls postId={post.id} likes={post.likedUsers} />
       </Box>
     </Container>
   )

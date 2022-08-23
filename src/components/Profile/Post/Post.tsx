@@ -8,6 +8,7 @@ import PostContainer from './PostContainer'
 const Post = ({ post, name, avatar, setIsToastVisible }: any) => {
   const router = useRouter()
 
+  
   // both links should have "shallow" parameter to prevent GSSP call on open/close modal
   return (
     <>

@@ -2,36 +2,73 @@ import { ActionIcon, Anchor, Box, Button, Group, Text, Textarea } from '@mantine
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import React, { useState } from 'react'
-import { IoBookmarkOutline, IoChatbubbleEllipsesOutline, IoHeartOutline, IoPaperPlaneOutline } from 'react-icons/io5'
+import {
+  IoBookmarkOutline,
+  IoChatbubbleEllipsesOutline,
+  IoHeartOutline,
+  IoPaperPlaneOutline,
+  IoHeart,
+} from 'react-icons/io5'
 import { trpc } from '../../../utils/trpc'
 
 type Props = {
   postId: string
-  likes: string
+  likes: string[]
 }
 
 const CommentControls = ({ postId, likes }: Props) => {
+  const utils = trpc.useContext()
   const { data } = useSession()
   const [comment, setComment] = useState('')
-  const { mutate } = trpc.useMutation('post.add-comment')
+  const addComment = trpc.useMutation('post.add-comment', {
+    onSuccess() {
+      utils.invalidateQueries('user.get-profile') // if on post modal
+      utils.invalidateQueries('post.get-post') // if on post page
+    },
+  })
+  const addLike = trpc.useMutation('post.like-post', {
+    onSuccess() {
+      utils.invalidateQueries('user.get-profile') // if on post modal
+      utils.invalidateQueries('post.get-post') // if on post page
+    },
+  })
+  const removeLike = trpc.useMutation('post.unlike-post', {
+    onSuccess() {
+      utils.invalidateQueries('user.get-profile') // if on post modal
+      utils.invalidateQueries('post.get-post') // if on post page
+    },
+  })
 
   const handleComment = () => {
     if (!comment) return
-    mutate({
+    addComment.mutate({
       postId,
       comment: comment,
     })
     setComment('')
   }
+
+  console.log(likes)
+
+  const LikeButton = () => {
+    return likes.find((like: any) => like.id === data?.user.id) ? (
+      <ActionIcon variant='transparent' color='dark' mr='0.5rem' onClick={() => removeLike.mutate({ postId })}>
+        <IoHeart size={30} color='tomato' />
+      </ActionIcon>
+    ) : (
+      <ActionIcon variant='transparent' color='dark' mr='0.5rem' onClick={() => addLike.mutate({ postId })}>
+        <IoHeartOutline size={30} />
+      </ActionIcon>
+    )
+  }
+
   return (
     <Box id='comments-controls' sx={{ minHeight: '18%', width: '100%', borderTop: '1px solid lightgray' }}>
       <Box p='0.5rem' sx={{ borderBottom: '1px solid lightgray' }}>
         {data?.user && (
           <Group position='apart' mb='0.5rem'>
             <Box sx={{ display: 'flex' }}>
-              <ActionIcon variant='transparent' color='dark' mr='0.5rem'>
-                <IoHeartOutline size={30} />
-              </ActionIcon>
+              {LikeButton()}
               <ActionIcon variant='transparent' color='dark' mx='0.5rem'>
                 <IoChatbubbleEllipsesOutline size={30} />
               </ActionIcon>
@@ -49,7 +86,7 @@ const CommentControls = ({ postId, likes }: Props) => {
 
         <Box p='0.2rem'>
           <Text weight='bold' size='sm'>
-            {likes} likes
+            {likes.length} likes
           </Text>
         </Box>
       </Box>

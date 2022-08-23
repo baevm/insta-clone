@@ -60,8 +60,10 @@ model User {
 
   accounts Account[]
   sessions Session[]
-  posts    Post[]
+  posts    Post[]     @relation(name: "PostOfUser")
+  likes    Post[]     @relation(name: "PostLikes")
   comments Comments[]
+  postId String?
 }
 
 model Post {
@@ -69,10 +71,10 @@ model Post {
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   images     String[]
-  User       User?      @relation(fields: [userId], references: [id])
-  userId     String?
-  likedUsers String[]   @default([])
+  User       User?      @relation(name: "PostOfUser", fields: [userId], references: [id])
+  likedUsers User[]     @relation(name: "PostLikes")
   comments   Comments[]
+  userId     String?
 }
 
 model Comments {

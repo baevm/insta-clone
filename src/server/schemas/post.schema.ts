@@ -32,6 +32,10 @@ export const DeleteCommentSchema = z.object({
   commentId: z.string(),
 })
 
+export const GetPostSchema = z.object({
+  postId: z.any(),
+})
+
 export type IDeletePostSchema = z.infer<typeof DeletePostSchema>
 
 export type IPostSchema = z.infer<typeof PostSchema>

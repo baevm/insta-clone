@@ -1,20 +1,7 @@
-import {
-  ActionIcon,
-  Anchor,
-  Avatar,
-  Box,
-  Button,
-  Center,
-  Input,
-  Loader,
-  Modal,
-  Skeleton,
-  Text,
-  Title,
-} from '@mantine/core'
+import { ActionIcon, Anchor, Avatar, Box, Button, Center, Input, Modal, Skeleton, Text, Title } from '@mantine/core'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { IoSettingsOutline } from 'react-icons/io5'
 import { MdKeyboardArrowDown, MdMoreHoriz } from 'react-icons/md'
 import { trpc } from '../../utils/trpc'

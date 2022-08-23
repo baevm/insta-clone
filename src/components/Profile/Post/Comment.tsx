@@ -15,8 +15,15 @@ type Props = {
 }
 
 const Comment = ({ avatar, name, text, date, authUserName, commentId }: Props) => {
+  const utils = trpc.useContext()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const deleteComment = trpc.useMutation('post.delete-comment')
+  const deleteComment = trpc.useMutation('post.delete-comment', {
+    onSuccess() {
+      utils.invalidateQueries('user.get-profile')
+    },
+  })
+
+  
 
   return (
     <Box

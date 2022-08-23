@@ -1,15 +1,14 @@
-import { Anchor, Center, Text, Title } from '@mantine/core'
 import { createSSGHelpers } from '@trpc/react/ssg'
 import { GetServerSidePropsContext } from 'next'
-import Link from 'next/link'
 import superjson from 'superjson'
+import FourOFourWarning from '../../components/FourOFourWarning'
 import Profile from '../../components/Profile/Profile'
 import { createContext } from '../../server/createContext'
-import { appRouter } from '../../server/route/app.router'
+import { appRouter } from '../../server/router/app.router'
 import { trpc } from '../../utils/trpc'
 
 type Props = {
-  slug: any
+  slug: string
 }
 
 const ProfilePage = ({ slug }: Props) => {
@@ -20,17 +19,7 @@ const ProfilePage = ({ slug }: Props) => {
   })
 
   if (!data) {
-    return (
-      <Center sx={{ flexDirection: 'column' }} py='4rem'>
-        <Title order={3}>Sorry this page isn&apos;t avaliable</Title>
-        <Text>
-          The link you followed may be broken, or the page may have been removed.{' '}
-          <Link href='/' passHref>
-            <Anchor>Go back to Instagram.</Anchor>
-          </Link>
-        </Text>
-      </Center>
-    )
+    return <FourOFourWarning />
   }
 
   return <Profile profile={data!.profile} />
@@ -38,12 +27,12 @@ const ProfilePage = ({ slug }: Props) => {
 
 export default ProfilePage
 
-export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+export const getServerSideProps = async (context: GetServerSidePropsContext<{ profile: string }>) => {
   const slug = context.params?.profile
 
   const ssg = createSSGHelpers({
     router: appRouter,
-    ctx: await createContext(context),
+    ctx: await createContext(context as any),
     transformer: superjson,
   })
 

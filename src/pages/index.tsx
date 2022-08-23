@@ -3,7 +3,7 @@ import type { GetServerSideProps, GetServerSidePropsContext, NextPage } from 'ne
 import superjson from 'superjson'
 import Feed from '../components/Feed/Feed'
 import { createContext } from '../server/createContext'
-import { appRouter } from '../server/route/app.router'
+import { appRouter } from '../server/router/app.router'
 
 const Home: NextPage = () => {
   return <Feed />
