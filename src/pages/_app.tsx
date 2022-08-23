@@ -67,9 +67,8 @@ export default withTRPC<AppRouter>({
 })(MyApp)
 
 // TODO:
-// add comment delete comment query after mutation
-// add likes to posts
 // add searching
 // animations
 // redux for interface updates ???
-// remove image from cloud when deleting post
+// if multiple photos show icon
+// upload avatar

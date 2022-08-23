@@ -198,6 +198,8 @@ export const postRouter = createRouter()
         },
       })
 
+      console.log(delPost)
+
       const delCommentsFromPost = ctx.prisma.comments.deleteMany({
         where: {
           postId: id,
