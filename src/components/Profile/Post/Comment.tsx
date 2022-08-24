@@ -36,10 +36,10 @@ const Comment = ({ avatar, name, text, date, authUserName, commentId }: Props) =
           </Anchor>
         </Link>
         <Box sx={{ width: '100%' }}>
-          <Group position='apart' align='center' sx={{ width: '100%', fontSize: '14px' }} py='0.2rem' color='black'>
+          <Group position='apart' align='center' sx={{ width: '100%', fontSize: '1rem' }} py='0.2rem' color='black'>
             <Box>
               <Link href={`/${name}`} passHref>
-                <Anchor underline={false} color='dark' sx={{ fontWeight: 'bold', fontSize: '14px' }}>
+                <Anchor underline={false} color='dark' sx={{ fontWeight: 'bold' }}>
                   {name}
                 </Anchor>
               </Link>{' '}

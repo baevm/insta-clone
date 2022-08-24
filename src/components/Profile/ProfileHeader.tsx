@@ -6,19 +6,23 @@ import { IoSettingsOutline } from 'react-icons/io5'
 import { MdKeyboardArrowDown, MdMoreHoriz } from 'react-icons/md'
 import { ProfileProps } from '../../types/app.types'
 import { trpc } from '../../utils/trpc'
+import UploadAvatarModal from './UploadAvatarModal'
 
-const ProfileHeader = ({ profile }: {profile: ProfileProps}) => {
+const ProfileHeader = ({ profile }: { profile: ProfileProps }) => {
   const utils = trpc.useContext()
   const [isModalOpened, setIsModalOpened] = useState<{ type: 'followers' | 'following' | ''; isOpen: boolean }>({
     type: '',
     isOpen: false,
   })
+  const [avatarModal, setAvatarModal] = useState(false)
   const { data, status } = useSession()
+
   const handleFollow = trpc.useMutation('follow.follow', {
     onSuccess() {
       utils.invalidateQueries('user.get-profile')
     },
   })
+
   const handleUnfollow = trpc.useMutation('follow.unfollow', {
     onSuccess() {
       utils.invalidateQueries('user.get-profile')
@@ -75,6 +79,8 @@ const ProfileHeader = ({ profile }: {profile: ProfileProps}) => {
         </Center>
       </Modal>
 
+      <UploadAvatarModal avatarModal={avatarModal} setAvatarModal={setAvatarModal} />
+
       <Box
         sx={{
           width: '100%',
@@ -89,7 +95,13 @@ const ProfileHeader = ({ profile }: {profile: ProfileProps}) => {
             display: 'flex',
             alignItems: 'center',
           }}>
-          <Avatar size={150} radius={100} src={profile.avatar ? profile.avatar : ''} />
+          <Avatar
+            size={150}
+            radius={100}
+            src={profile.avatar ? profile.avatar : ''}
+            sx={{ cursor: 'pointer' }}
+            onClick={() => setAvatarModal(true)}
+          />
 
           <Box sx={{ width: '100%', paddingLeft: '2rem', '@media (min-width: 556px)': { paddingLeft: '5rem' } }}>
             <Box

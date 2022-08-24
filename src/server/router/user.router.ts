@@ -2,42 +2,10 @@ import { createRouter } from '../createRouter'
 import { GetProfileSchema, UserSignupSchema } from '../schemas/user.schema'
 import * as trpc from '@trpc/server'
 import bcrypt from 'bcrypt'
+import { z } from 'zod'
+import { cloudinary } from '../../services/cloudinary'
 
 export const userRouter = createRouter()
-  .mutation('signup', {
-    input: UserSignupSchema,
-
-    async resolve({ ctx, input }) {
-      const { email, name, password } = input
-
-      const exists = await ctx.prisma.user.findFirst({
-        where: { email },
-      })
-
-      if (exists) {
-        throw new trpc.TRPCError({
-          code: 'CONFLICT',
-          message: `User with email ${email} already exists`,
-        })
-      }
-
-      const hashedPassword = bcrypt.hashSync(password, 10)
-
-      const newUser = await ctx.prisma.user.create({
-        data: {
-          email,
-          name,
-          password: hashedPassword,
-        },
-      })
-
-      return {
-        status: 201,
-        message: 'Account created.',
-        result: newUser.email,
-      }
-    },
-  })
   .query('get-profile', {
     input: GetProfileSchema,
     async resolve({ ctx, input }) {
@@ -45,11 +13,11 @@ export const userRouter = createRouter()
       let data
 
       /* if (slug.length > 1) {
-        throw new trpc.TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Link is invalid',
-        })
-      } */
+      throw new trpc.TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Link is invalid',
+      })
+    } */
 
       if (slug) {
         data = await ctx.prisma.user.findUnique({
@@ -92,5 +60,69 @@ export const userRouter = createRouter()
       return {
         profile: JSON.parse(JSON.stringify(data)),
       }
+    },
+  })
+  .mutation('signup', {
+    input: UserSignupSchema,
+
+    async resolve({ ctx, input }) {
+      const { email, name, password } = input
+
+      const exists = await ctx.prisma.user.findFirst({
+        where: { email },
+      })
+
+      if (exists) {
+        throw new trpc.TRPCError({
+          code: 'CONFLICT',
+          message: `User with email ${email} already exists`,
+        })
+      }
+
+      const hashedPassword = bcrypt.hashSync(password, 10)
+
+      const newUser = await ctx.prisma.user.create({
+        data: {
+          email,
+          name,
+          password: hashedPassword,
+        },
+      })
+
+      return {
+        status: 201,
+        message: 'Account created.',
+        result: newUser.email,
+      }
+    },
+  })
+  .mutation('set-avatar', {
+    input: z.object({ image: z.any() }),
+
+    resolve: async ({ ctx, input }) => {
+      const { image } = input
+
+      if (!ctx.session) {
+        throw new trpc.TRPCError({
+          code: 'FORBIDDEN',
+          message: 'You must be logged in to create a post',
+        })
+      }
+
+      const path = await cloudinary.uploader.upload(image, { upload_preset: 'react-upload' })
+      const url = path.secure_url
+
+      const uploadAvatar = await ctx.prisma.user.update({
+        where: {
+          id: ctx.session.user.id,
+        },
+        data: {
+          avatar: url,
+        },
+      })
+
+      if (!uploadAvatar) return null
+
+      return { status: 'ok' }
     },
   })

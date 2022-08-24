@@ -69,6 +69,5 @@ export default withTRPC<AppRouter>({
 // TODO:
 // add searching
 // animations
-// redux for interface updates ???
-// if multiple photos show icon
-// upload avatar
+// zustand for interface updates ???
+// zustand for saving user data

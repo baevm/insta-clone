@@ -14,7 +14,7 @@ export default Home
 export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
   const ssg = createSSGHelpers({
     router: appRouter,
-    ctx: await createContext(context),
+    ctx: await createContext(context as any),
     transformer: superjson,
   })
 

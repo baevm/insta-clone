@@ -1,8 +1,9 @@
 import { ActionIcon, Avatar, Box, Button, Center, Group, Modal, Text } from '@mantine/core'
+import { useMediaQuery } from '@mantine/hooks'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
-import { MdMoreHoriz } from 'react-icons/md'
+import { MdMoreHoriz, MdClose } from 'react-icons/md'
 import { trpc } from '../../../utils/trpc'
 
 type Props = {
@@ -14,6 +15,7 @@ type Props = {
 }
 
 const PostHeader = ({ name, avatar, type, setIsToastVisible, postId }: Props) => {
+  const mobileQuery = useMediaQuery('(max-width: 768px)', true)
   const router = useRouter()
   const { data } = useSession()
   const [isOpenModal, setIsOpenModal] = useState(false)
@@ -41,23 +43,33 @@ const PostHeader = ({ name, avatar, type, setIsToastVisible, postId }: Props) =>
           minHeight: '7%',
           borderBottom: '1px solid lightgray',
           '@media (min-width: 956px)': { display: type === 'mobile' ? 'none' : '' },
-          '@media (max-width: 956px)': { display: type === 'desktop' ? '' : 'none' },
+          '@media (max-width: 956px)': { display: type === 'desktop' ? 'none' : '' },
+          /* '@media (max-width: 956px)': { display: type === 'desktop' ? 'none' : '' }, */
         }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Avatar radius='xl' src={avatar} />
+          <Avatar radius='xl' src={avatar ? avatar : ''} />
           <Text weight='bold' size='sm' px='1rem' color='#262626'>
             {name}
           </Text>
         </Box>
-        <Box>
-          {data?.user.name === name ? (
-            <ActionIcon variant='transparent' onClick={() => setIsOpenModal(true)}>
-              <MdMoreHoriz size={30} />
-            </ActionIcon>
-          ) : (
-            <div></div>
+        <Group align='center'>
+          <Box>
+            {data?.user.name === name ? (
+              <ActionIcon variant='transparent' onClick={() => setIsOpenModal(true)}>
+                <MdMoreHoriz size={30} />
+              </ActionIcon>
+            ) : (
+              <div></div>
+            )}
+          </Box>
+          {mobileQuery && (
+            <Box>
+              <ActionIcon onClick={() => router.push(`/${name}`, undefined, { shallow: true })}>
+                <MdClose size={30} />
+              </ActionIcon>
+            </Box>
           )}
-        </Box>
+        </Group>
       </Group>
 
       <Modal

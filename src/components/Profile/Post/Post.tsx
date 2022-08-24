@@ -1,100 +1,144 @@
-import { Anchor, Box, Grid, Indicator, Modal, Text } from '@mantine/core'
-import NextImage from 'next/image'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
-import React, { useState } from 'react'
-import { IoIosPhotos } from 'react-icons/io'
-import PostContainer from './PostContainer'
-import { IoChatbubbleSharp, IoHeart } from 'react-icons/io5'
+import { Carousel } from '@mantine/carousel'
+import { Box, Container, Image, Title } from '@mantine/core'
+import { useSession } from 'next-auth/react'
+import React from 'react'
+import Comment from './Comment'
+import CommentControls from './CommentControls'
+import PostHeader from './PostHeader'
 
 type Props = {
-  post: {
-    id: string
-    images: string[]
-    likedUsers: string[]
-    comments: string[]
-  }
+  post: any
   name: string
   avatar: string
   setIsToastVisible: (v: boolean) => void
+  type: 'modal' | 'standalone'
 }
 
-const Post = ({ post, name, avatar, setIsToastVisible }: Props) => {
-  const [isHover, setIsHover] = useState(false)
-  const router = useRouter()
+const Post = ({ post, name, avatar, setIsToastVisible, type }: Props) => {
+  const { data } = useSession()
 
-  // both links should have "shallow" parameter to prevent GSSP call on open/close modal
   return (
-    <>
-      <Grid.Col span={4} sx={{ cursor: 'pointer' }}>
-        <Link href={`/[profile]?profile=${name}`} as={`/p/${post.id}`} passHref shallow>
-          <Anchor onMouseEnter={() => setIsHover(true)} onMouseLeave={() => setIsHover(false)}>
-            <Indicator
-              size={18}
-              offset={20}
-              label={post.images.length > 1 ? <IoIosPhotos size={18} color='white' /> : ''}>
-              <NextImage
-                src={post.images[0]}
-                alt='post'
-                width='100%'
-                height='100%'
-                layout='responsive'
-                objectFit='cover'
-                quality={85}
-                style={{
-                  backgroundColor: 'black',
-                  filter: isHover ? 'brightness(60%)' : '',
-                  /*  opacity: isHover ? '.9' : 1, */
-                  transition: '.2s ease',
-                }}
-              />
-              <Box
-                id='hover-stats'
-                sx={{
-                  transition: '.2s ease',
-                  opacity: isHover ? 1 : 0,
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  '-ms-transform': 'translate(-50%, -50%)',
-                  textAlign: 'center',
-                  color: 'white',
-                  display: 'flex',
-                  alignItems: 'center',
-                  fontSize: '1.3rem',
-                }}>
-                <Box mr='2rem' sx={{ display: 'flex', alignItems: 'center' }}>
-                  <IoHeart />
-                  <Text component='span' ml='0.5rem'>
-                    {post.likedUsers.length}
-                  </Text>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <IoChatbubbleSharp />
-                  <Text component='span' ml='0.5rem'>
-                    {post.comments.length}
-                  </Text>
-                </Box>
-              </Box>
-            </Indicator>
-          </Anchor>
-        </Link>
-      </Grid.Col>
+    <Container
+      size='xl'
+      p={0}
+      sx={{
+        backgroundColor: 'white',
+        borderTopRightRadius: 5,
+        borderBottomRightRadius: 5,
+        display: 'flex',
+        flexDirection: 'row',
+        width: '100%',
+        height: type === 'modal' ? '100%' : 'calc(100vh - 60px)',
+        borderRight: type === 'standalone' ? '1px solid lightgray' : '',
+        borderLeft: type === 'standalone' ? '1px solid lightgray' : '',
 
-      {/* Opened post modal */}
-      <Modal
-        opened={router.asPath === `/p/${post.id}`}
-        onClose={() => router.push(`/${name}`, undefined, { shallow: true })}
-        centered
-        withCloseButton={false}
-        size='70%'
-        padding={0}
-        zIndex={2000}>
-        <PostContainer type='modal' post={post} name={name} avatar={avatar} setIsToastVisible={setIsToastVisible} />
-      </Modal>
-    </>
+        '@media (max-width: 956px)': {
+          flexDirection: 'column',
+          overflowY: 'scroll',
+        },
+      }}>
+      {/* Mobile header on top of image */}
+      <PostHeader name={name} avatar={avatar} postId={post.id} setIsToastVisible={setIsToastVisible} type='mobile' />
+
+      <Box
+        id='post-image-container'
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          backgroundColor: 'black',
+          justifyContent: 'center',
+          width: 'clamp(15rem, 100%, 800px)',
+          height: 'clamp(15rem, 100%)',
+
+          '@media (max-width: 956px)': {
+            borderBottom: '1px solid lightgray',
+          },
+        }}>
+        {post.images.length > 1 ? (
+          <Carousel
+            slideSize='100%'
+            height='100%'
+            slideGap='md'
+            align='center'
+            sx={{ flex: 1 }}
+            styles={{
+              control: {
+                '&[data-inactive]': {
+                  opacity: 0,
+                  cursor: 'default',
+                },
+              },
+            }}>
+            {post.images.map((image: string, index: number) => (
+              <Carousel.Slide
+                key={index}
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Image src={image} alt='post' />
+              </Carousel.Slide>
+            ))}
+          </Carousel>
+        ) : (
+          <Image src={post.images} alt='post' />
+        )}
+      </Box>
+
+      <Box
+        id='comments-section'
+        sx={{
+          minHeight: '90vh',
+          minWidth: '40%',
+          width: '150px',
+          borderLeft: '1px solid lightgray',
+
+          '@media (max-width: 956px)': {
+            width: '100%',
+          },
+        }}>
+        {/* Desktop header on top of comments section */}
+        <PostHeader name={name} avatar={avatar} postId={post.id} setIsToastVisible={setIsToastVisible} type='desktop' />
+
+        {post.comments.length > 0 ? (
+          <Box
+            p='0.5rem'
+            sx={{
+              height: '75%',
+              display: 'flex',
+              flexDirection: 'column',
+            }}>
+            {post.comments &&
+              post.comments.map((c: any) => (
+                <Comment
+                  commentId={c.id}
+                  avatar={c.User.avatar}
+                  date={c.createdAt}
+                  name={c.User.name}
+                  authUserName={data?.user.name}
+                  text={c.body}
+                  key={c.id}
+                />
+              ))}
+          </Box>
+        ) : (
+          <Box
+            id='no-comments'
+            sx={{
+              height: '650px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Title order={3}>No comments yet</Title>
+          </Box>
+        )}
+
+        <CommentControls postId={post.id} likes={post.likedUsers} />
+      </Box>
+    </Container>
   )
 }
 
-export default React.memo(Post)
+export default Post

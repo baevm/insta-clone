@@ -19,6 +19,7 @@ import React, { useRef, useState } from 'react'
 import { BsUpload } from 'react-icons/bs'
 import { IoLocationOutline } from 'react-icons/io5'
 import { MdClose, MdPhoto } from 'react-icons/md'
+import { readFileAsUrl } from '../../utils/readFileAsUrl'
 import { trpc } from '../../utils/trpc'
 
 type Stages = 'upload' | 'preview' | 'post'
@@ -33,15 +34,16 @@ const AddPostModal = ({
   const utils = trpc.useContext()
   const matches = useMediaQuery('(min-width: 556px)', false)
   const openRef = useRef<() => void>(null)
-  const { mutate, isLoading } = trpc.useMutation(['post.create-post'], {
+  const [files, setFiles] = useState<File[]>([])
+  const [caption, setCaption] = useState('')
+  const [stage, setStage] = useState<Stages>('upload') // modal tabs
+
+  const createPost = trpc.useMutation(['post.create-post'], {
     onSuccess() {
       utils.invalidateQueries('post.get-feed')
       utils.invalidateQueries('user.get-profile')
     },
   })
-  const [files, setFiles] = useState<File[]>([])
-  const [caption, setCaption] = useState('')
-  const [stage, setStage] = useState<Stages>('upload') // modal tabs
 
   const previews = () => {
     if (files.length > 1) {
@@ -83,22 +85,6 @@ const AddPostModal = ({
     setStage('upload')
   }
 
-  function readFileAsUrl(file: any) {
-    return new Promise(function (resolve, reject) {
-      let fr = new FileReader()
-
-      fr.onload = function () {
-        resolve(fr.result)
-      }
-
-      fr.onerror = function () {
-        reject(fr)
-      }
-
-      fr.readAsDataURL(file)
-    })
-  }
-
   const handleSubmit = () => {
     if (!files) return
 
@@ -113,7 +99,7 @@ const AddPostModal = ({
   }
 
   const uploadImageToCloud = async (imges: any) => {
-    mutate({ images: imges, caption })
+    createPost.mutate({ images: imges, caption })
   }
 
   return (
@@ -229,7 +215,7 @@ const AddPostModal = ({
           )}
           {stage === 'post' && (
             <Center sx={{ width: '100%', height: '600px' }}>
-              {isLoading ? (
+              {createPost.isLoading ? (
                 <Loader size='xl' color='blue' />
               ) : (
                 <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>

@@ -48,7 +48,6 @@ const CommentControls = ({ postId, likes }: Props) => {
     setComment('')
   }
 
-
   const LikeButton = () => {
     return likes.find((like: any) => like.id === data?.user.id) ? (
       <ActionIcon variant='transparent' color='dark' mr='0.5rem' onClick={() => removeLike.mutate({ postId })}>
@@ -62,8 +61,8 @@ const CommentControls = ({ postId, likes }: Props) => {
   }
 
   return (
-    <Box id='comments-controls' sx={{ minHeight: '18%', width: '100%', borderTop: '1px solid lightgray' }}>
-      <Box p='0.5rem' sx={{ borderBottom: '1px solid lightgray' }}>
+    <Box id='comments-controls' sx={{ height: '155px', width: '100%', borderTop: '1px solid lightgray' }}>
+      <Box p='0.5rem' sx={{ borderBottom: '1px solid lightgray', height: '75px' }}>
         {data?.user && (
           <Group position='apart' mb='0.5rem'>
             <Box sx={{ display: 'flex' }}>
@@ -90,17 +89,19 @@ const CommentControls = ({ postId, likes }: Props) => {
         </Box>
       </Box>
       {data?.user ? (
-        <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', height: '100%' }}>
+        <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', height: '75px' }}>
           <Textarea
             variant='unstyled'
             px='0.5rem'
             sx={{ height: '100%', width: '85%' }}
-            size='md'
+            autosize={false}
+            minRows={3}
+            size='xs'
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder='Add a comment...'
           />
-          <Button sx={{ width: '15%' }} onClick={handleComment}>
+          <Button size='xs' onClick={handleComment}>
             add
           </Button>
         </Box>

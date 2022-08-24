@@ -51,7 +51,7 @@ const Buttons = ({ avatar }: { avatar: string }) => {
         {/* Avatar menu */}
         <Menu shadow='md' width={200} withArrow>
           <Menu.Target>
-            <Avatar src={avatar} radius='xl' mx='0.4rem' sx={{ cursor: 'pointer' }} />
+            <Avatar src={avatar ? avatar : ''} radius='xl' mx='0.4rem' sx={{ cursor: 'pointer' }} />
           </Menu.Target>
           <Menu.Dropdown p={0}>
             <Menu.Item icon={<HiOutlineUserCircle size={16} />} onClick={() => router.push(`/${data?.user.name}`)}>

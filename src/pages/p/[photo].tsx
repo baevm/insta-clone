@@ -3,7 +3,7 @@ import { GetServerSidePropsContext } from 'next'
 import { useState } from 'react'
 import superjson from 'superjson'
 import FourOFourWarning from '../../components/FourOFourWarning'
-import PostContainer from '../../components/Profile/Post/PostContainer'
+import Post from '../../components/Profile/Post/Post'
 import { createContext } from '../../server/createContext'
 import { appRouter } from '../../server/router/app.router'
 import { trpc } from '../../utils/trpc'
@@ -25,7 +25,7 @@ const PhotoPage = ({ postId }: Props) => {
   }
 
   return (
-    <PostContainer
+    <Post
       avatar={data!.post.User.avatar}
       post={data!.post}
       name={data!.post.User.name}

@@ -6,7 +6,7 @@ import { MdOutlinePhotoCamera } from 'react-icons/md'
 import { RiAccountPinBoxLine } from 'react-icons/ri'
 import { ProfileProps } from '../../types/app.types'
 import Toast from '../Toast'
-import Post from './Post/Post'
+import PostContainer from './Post/PostContainer'
 import ProfileHeader from './ProfileHeader'
 
 const Profile = ({ profile }: { profile: ProfileProps }) => {
@@ -24,7 +24,7 @@ const Profile = ({ profile }: { profile: ProfileProps }) => {
     const sortedPosts = profile.posts
       .sort((a: any, b: any) => -a.createdAt.localeCompare(b.createdAt))
       .map((post: any) => (
-        <Post
+        <PostContainer
           post={post}
           name={profile.name}
           avatar={profile.avatar}
