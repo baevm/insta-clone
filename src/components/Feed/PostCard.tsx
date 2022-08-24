@@ -10,29 +10,24 @@ import {
   Divider,
   Group,
   Image,
-  Modal,
-  Spoiler,
-  Text,
-  Textarea,
+  Modal, Text,
+  Textarea
 } from '@mantine/core'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useState } from 'react'
 import { IoBookmarkOutline, IoChatbubbleOutline, IoHeartOutline, IoPaperPlaneOutline } from 'react-icons/io5'
 import { MdMoreHoriz } from 'react-icons/md'
+import { User } from '../../types/app.types'
 import { formatDate } from '../../utils/formatDate'
 import { trpc } from '../../utils/trpc'
 
 type Props = {
   post: {
-    User: {
-      name: string | null
-      id: string
-      avatar: string | null
-    } | null
+    User: User
     id: string
     createdAt: Date
-    likedUsers: string[]
+    likedUsers: User[]
     images: string[]
     comments: any
   }

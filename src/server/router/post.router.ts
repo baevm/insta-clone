@@ -5,6 +5,7 @@ import {
   AddCommentSchema,
   DeleteCommentSchema,
   DeletePostSchema,
+  GetPostSchema,
   LikePostSchema,
   PostSchema,
 } from '../schemas/post.schema'
@@ -89,6 +90,43 @@ export const postRouter = createRouter()
       }
     },
   })
+  .query('get-post', {
+    input: GetPostSchema,
+    resolve: async ({ ctx, input }) => {
+      const { postId } = input
+      
+      const post = await ctx.prisma.post.findUnique({
+        where: {
+          id: postId,
+        },
+
+        include: {
+          likedUsers: true,
+          User: {
+            select: {
+              name: true,
+              avatar: true,
+              id: true,
+            },
+          },
+          comments: {
+            include: {
+              User: true,
+            },
+          },
+        },
+      })
+
+      if (!post) {
+        throw new trpc.TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'User not found',
+        })
+      }
+
+      return { post: JSON.parse(JSON.stringify(post)) }
+    },
+  })
   .mutation('create-post', {
     input: PostSchema,
 
@@ -137,9 +175,7 @@ export const postRouter = createRouter()
       }
 
       return {
-        status: 201,
-        message: 'Post created.',
-        /*  result: { image: post?.images, caption: post?.caption }, */
+        status: 'ok',
       }
     },
   })
@@ -162,6 +198,8 @@ export const postRouter = createRouter()
         },
       })
 
+      console.log(delPost)
+
       const delCommentsFromPost = ctx.prisma.comments.deleteMany({
         where: {
           postId: id,
@@ -170,13 +208,10 @@ export const postRouter = createRouter()
 
       const transaction = await ctx.prisma.$transaction([delCommentsFromPost, delPost])
 
-      
-
       // del image from cloudinary after deleting post
 
       return {
-        status: 200,
-        message: 'Post deleted.',
+        status: 'ok',
       }
     },
   })
@@ -185,6 +220,53 @@ export const postRouter = createRouter()
 
     resolve: async ({ ctx, input }) => {
       const { postId } = input
+
+      if (!ctx.session) {
+        throw new trpc.TRPCError({
+          code: 'FORBIDDEN',
+          message: 'You must be logged in.',
+        })
+      }
+
+      const liked = await ctx.prisma.post.update({
+        where: {
+          id: postId,
+        },
+        data: {
+          likedUsers: {
+            connect: {
+              id: ctx.session.user.id,
+            },
+          },
+        },
+      })
+    },
+  })
+  .mutation('unlike-post', {
+    input: LikePostSchema,
+
+    resolve: async ({ ctx, input }) => {
+      const { postId } = input
+
+      if (!ctx.session) {
+        throw new trpc.TRPCError({
+          code: 'FORBIDDEN',
+          message: 'You must be logged in.',
+        })
+      }
+
+      const unliked = await ctx.prisma.post.update({
+        where: {
+          id: postId,
+        },
+        data: {
+          likedUsers: {
+            disconnect: {
+              id: ctx.session.user.id,
+            },
+          },
+        },
+      })
     },
   })
   .mutation('add-comment', {
@@ -209,8 +291,7 @@ export const postRouter = createRouter()
       })
 
       return {
-        status: 200,
-        message: 'Comment added.',
+        status: 'ok',
       }
     },
   })
@@ -232,6 +313,6 @@ export const postRouter = createRouter()
         },
       })
 
-      return { status: 201, message: 'Comment deleted.' }
+      return { status: 'ok' }
     },
   })

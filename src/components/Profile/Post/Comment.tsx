@@ -1,6 +1,6 @@
 import { ActionIcon, Anchor, Avatar, Box, Button, Group, Popover, Text } from '@mantine/core'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React from 'react'
 import { MdMoreHoriz } from 'react-icons/md'
 import { getTimeAgo } from '../../../utils/formatDate'
 import { trpc } from '../../../utils/trpc'
@@ -15,8 +15,12 @@ type Props = {
 }
 
 const Comment = ({ avatar, name, text, date, authUserName, commentId }: Props) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const deleteComment = trpc.useMutation('post.delete-comment')
+  const utils = trpc.useContext()
+  const deleteComment = trpc.useMutation('post.delete-comment', {
+    onSuccess() {
+      utils.invalidateQueries('user.get-profile')
+    },
+  })
 
   return (
     <Box
@@ -32,10 +36,10 @@ const Comment = ({ avatar, name, text, date, authUserName, commentId }: Props) =
           </Anchor>
         </Link>
         <Box sx={{ width: '100%' }}>
-          <Group position='apart' align='center' sx={{ width: '100%', fontSize: '14px' }} py='0.2rem' color='black'>
+          <Group position='apart' align='center' sx={{ width: '100%', fontSize: '1rem' }} py='0.2rem' color='black'>
             <Box>
               <Link href={`/${name}`} passHref>
-                <Anchor underline={false} color='dark' sx={{ fontWeight: 'bold', fontSize: '14px' }}>
+                <Anchor underline={false} color='dark' sx={{ fontWeight: 'bold' }}>
                   {name}
                 </Anchor>
               </Link>{' '}

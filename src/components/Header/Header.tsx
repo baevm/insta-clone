@@ -1,4 +1,4 @@
-import { Anchor, Button, Container } from '@mantine/core'
+import { Anchor, Button, Container, Skeleton } from '@mantine/core'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -8,7 +8,7 @@ import Buttons from './Buttons'
 import Search from './Search'
 
 const Header = () => {
-  const { data } = useSession()
+  const { data, status } = useSession()
   const router = useRouter()
   return (
     <Container
@@ -30,7 +30,9 @@ const Header = () => {
           </Anchor>
         </Link>
 
-        {data?.user ? (
+        {status === 'loading' ? (
+          <Skeleton width='150' height='30' />
+        ) : data?.user ? (
           <>
             <Search />
             <Buttons avatar={data.user.avatar} />

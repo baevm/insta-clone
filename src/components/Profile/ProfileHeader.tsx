@@ -1,36 +1,28 @@
-import {
-  ActionIcon,
-  Anchor,
-  Avatar,
-  Box,
-  Button,
-  Center,
-  Input,
-  Loader,
-  Modal,
-  Skeleton,
-  Text,
-  Title,
-} from '@mantine/core'
+import { ActionIcon, Anchor, Avatar, Box, Button, Center, Input, Modal, Skeleton, Text, Title } from '@mantine/core'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { IoSettingsOutline } from 'react-icons/io5'
 import { MdKeyboardArrowDown, MdMoreHoriz } from 'react-icons/md'
+import { ProfileProps } from '../../types/app.types'
 import { trpc } from '../../utils/trpc'
+import UploadAvatarModal from './UploadAvatarModal'
 
-const ProfileHeader = ({ profile }: any) => {
+const ProfileHeader = ({ profile }: { profile: ProfileProps }) => {
   const utils = trpc.useContext()
   const [isModalOpened, setIsModalOpened] = useState<{ type: 'followers' | 'following' | ''; isOpen: boolean }>({
     type: '',
     isOpen: false,
   })
+  const [avatarModal, setAvatarModal] = useState(false)
   const { data, status } = useSession()
+
   const handleFollow = trpc.useMutation('follow.follow', {
     onSuccess() {
       utils.invalidateQueries('user.get-profile')
     },
   })
+
   const handleUnfollow = trpc.useMutation('follow.unfollow', {
     onSuccess() {
       utils.invalidateQueries('user.get-profile')
@@ -87,6 +79,8 @@ const ProfileHeader = ({ profile }: any) => {
         </Center>
       </Modal>
 
+      <UploadAvatarModal avatarModal={avatarModal} setAvatarModal={setAvatarModal} />
+
       <Box
         sx={{
           width: '100%',
@@ -101,7 +95,13 @@ const ProfileHeader = ({ profile }: any) => {
             display: 'flex',
             alignItems: 'center',
           }}>
-          <Avatar size={150} radius={100} src={profile.avatar ? profile.avatar : ''} />
+          <Avatar
+            size={150}
+            radius={100}
+            src={profile.avatar ? profile.avatar : ''}
+            sx={{ cursor: 'pointer' }}
+            onClick={() => setAvatarModal(true)}
+          />
 
           <Box sx={{ width: '100%', paddingLeft: '2rem', '@media (min-width: 556px)': { paddingLeft: '5rem' } }}>
             <Box
@@ -206,16 +206,16 @@ const ProfileHeader = ({ profile }: any) => {
             borderTop: '1px solid lightgray',
             '@media (min-width: 756px)': { display: 'none' },
           }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Box sx={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Text weight='bold'>{profile.posts.length}</Text> <Text color='gray'>posts</Text>
           </Box>
           <Box
-            sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+            sx={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             onClick={() => setIsModalOpened({ type: 'followers', isOpen: true })}>
             <Text weight='bold'>{profile.followedBy.length}</Text> <Text color='gray'>followers</Text>
           </Box>
           <Box
-            sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+            sx={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             onClick={() => setIsModalOpened({ type: 'following', isOpen: true })}>
             <Text weight='bold'>{profile.following.length}</Text> <Text color='gray'>following</Text>
           </Box>
