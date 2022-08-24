@@ -23,7 +23,13 @@ import { trpc } from '../../utils/trpc'
 
 type Stages = 'upload' | 'preview' | 'post'
 
-const AddPostModal = ({ isModalOpened, setIsModalOpened }: any) => {
+const AddPostModal = ({
+  isModalOpened,
+  setIsModalOpened,
+}: {
+  isModalOpened: boolean
+  setIsModalOpened: (v: boolean) => void
+}) => {
   const utils = trpc.useContext()
   const matches = useMediaQuery('(min-width: 556px)', false)
   const openRef = useRef<() => void>(null)
@@ -133,8 +139,6 @@ const AddPostModal = ({ isModalOpened, setIsModalOpened }: any) => {
           <div></div>
         )}
       </Group>
-
-      
 
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', width: '100%' }}>
         <Box sx={{ display: 'flex', flexDirection: matches ? 'row' : 'column', width: '100%' }}>

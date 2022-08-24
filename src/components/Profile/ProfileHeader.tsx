@@ -4,9 +4,10 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { IoSettingsOutline } from 'react-icons/io5'
 import { MdKeyboardArrowDown, MdMoreHoriz } from 'react-icons/md'
+import { ProfileProps } from '../../types/app.types'
 import { trpc } from '../../utils/trpc'
 
-const ProfileHeader = ({ profile }: any) => {
+const ProfileHeader = ({ profile }: {profile: ProfileProps}) => {
   const utils = trpc.useContext()
   const [isModalOpened, setIsModalOpened] = useState<{ type: 'followers' | 'following' | ''; isOpen: boolean }>({
     type: '',
@@ -193,16 +194,16 @@ const ProfileHeader = ({ profile }: any) => {
             borderTop: '1px solid lightgray',
             '@media (min-width: 756px)': { display: 'none' },
           }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Box sx={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Text weight='bold'>{profile.posts.length}</Text> <Text color='gray'>posts</Text>
           </Box>
           <Box
-            sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+            sx={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             onClick={() => setIsModalOpened({ type: 'followers', isOpen: true })}>
             <Text weight='bold'>{profile.followedBy.length}</Text> <Text color='gray'>followers</Text>
           </Box>
           <Box
-            sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+            sx={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             onClick={() => setIsModalOpened({ type: 'following', isOpen: true })}>
             <Text weight='bold'>{profile.following.length}</Text> <Text color='gray'>following</Text>
           </Box>

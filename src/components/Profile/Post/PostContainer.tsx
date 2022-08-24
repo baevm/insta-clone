@@ -17,7 +17,6 @@ type Props = {
 const PostContainer = ({ post, name, avatar, setIsToastVisible, type }: Props) => {
   const { data } = useSession()
 
-
   return (
     <Container
       size='xl'

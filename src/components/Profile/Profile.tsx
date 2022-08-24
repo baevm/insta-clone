@@ -1,5 +1,4 @@
 import { Box, Center, Container, Grid, Tabs, Title } from '@mantine/core'
-import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { IoMdGrid } from 'react-icons/io'
@@ -10,8 +9,7 @@ import Toast from '../Toast'
 import Post from './Post/Post'
 import ProfileHeader from './ProfileHeader'
 
-const Profile: React.FC<{ profile: ProfileProps }> = ({ profile }) => {
-  const { data } = useSession()
+const Profile = ({ profile }: { profile: ProfileProps }) => {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState<string | null>('/')
   const [isToastVisible, setIsToastVisible] = useState(false)
@@ -29,7 +27,6 @@ const Profile: React.FC<{ profile: ProfileProps }> = ({ profile }) => {
         <Post
           post={post}
           name={profile.name}
-          userId={data?.user.id}
           avatar={profile.avatar}
           key={post.id}
           setIsToastVisible={setIsToastVisible}
@@ -37,7 +34,6 @@ const Profile: React.FC<{ profile: ProfileProps }> = ({ profile }) => {
       ))
     return sortedPosts
   }
-
 
   return (
     <Container

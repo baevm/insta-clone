@@ -48,7 +48,6 @@ const CommentControls = ({ postId, likes }: Props) => {
     setComment('')
   }
 
-  console.log(likes)
 
   const LikeButton = () => {
     return likes.find((like: any) => like.id === data?.user.id) ? (

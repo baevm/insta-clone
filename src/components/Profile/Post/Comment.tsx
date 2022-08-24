@@ -1,6 +1,6 @@
 import { ActionIcon, Anchor, Avatar, Box, Button, Group, Popover, Text } from '@mantine/core'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React from 'react'
 import { MdMoreHoriz } from 'react-icons/md'
 import { getTimeAgo } from '../../../utils/formatDate'
 import { trpc } from '../../../utils/trpc'
@@ -16,14 +16,11 @@ type Props = {
 
 const Comment = ({ avatar, name, text, date, authUserName, commentId }: Props) => {
   const utils = trpc.useContext()
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const deleteComment = trpc.useMutation('post.delete-comment', {
     onSuccess() {
       utils.invalidateQueries('user.get-profile')
     },
   })
-
-  
 
   return (
     <Box

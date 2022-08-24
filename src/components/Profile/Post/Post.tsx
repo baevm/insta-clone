@@ -7,7 +7,19 @@ import { IoIosPhotos } from 'react-icons/io'
 import PostContainer from './PostContainer'
 import { IoChatbubbleSharp, IoHeart } from 'react-icons/io5'
 
-const Post = ({ post, name, avatar, setIsToastVisible }: any) => {
+type Props = {
+  post: {
+    id: string
+    images: string[]
+    likedUsers: string[]
+    comments: string[]
+  }
+  name: string
+  avatar: string
+  setIsToastVisible: (v: boolean) => void
+}
+
+const Post = ({ post, name, avatar, setIsToastVisible }: Props) => {
   const [isHover, setIsHover] = useState(false)
   const router = useRouter()
 

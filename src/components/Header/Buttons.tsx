@@ -1,5 +1,6 @@
 import { ActionIcon, Avatar, Box, Divider, Menu } from '@mantine/core'
 import { signOut, useSession } from 'next-auth/react'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { HiOutlineUserCircle, HiSwitchVertical } from 'react-icons/hi'
@@ -14,7 +15,7 @@ import {
 } from 'react-icons/io5'
 import { MdOutlineAddBox } from 'react-icons/md'
 
-import AddPostModal from './AddPostModal'
+const AddPostModal = dynamic(() => import('./AddPostModal')) 
 
 const Buttons = ({ avatar }: { avatar: string }) => {
   const [isModalOpened, setIsModalOpened] = useState(false)
