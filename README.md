@@ -1,3 +1,4 @@
+![Vercel](http://therealsujitk-vercel-badge.vercel.app/?app=insta-clone)
 ## instagram clone
 made for educational purpose with:
  - next.js
