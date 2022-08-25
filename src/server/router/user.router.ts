@@ -69,13 +69,22 @@ export const userRouter = createRouter()
       const { email, name, password } = input
 
       const exists = await ctx.prisma.user.findFirst({
-        where: { email },
+        where: { OR: [{ email }, { name }] },
       })
 
-      if (exists) {
+     
+
+      if (exists?.email === email) {
         throw new trpc.TRPCError({
           code: 'CONFLICT',
           message: `User with email ${email} already exists`,
+        })
+      }
+
+      if (exists?.name === name) {
+        throw new trpc.TRPCError({
+          code: 'CONFLICT',
+          message: `User with name ${name} already exists`,
         })
       }
 

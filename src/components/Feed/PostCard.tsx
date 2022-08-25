@@ -6,39 +6,30 @@ import {
   Box,
   Button,
   Card,
-  Center,
-  Divider,
-  Group,
+  Center, Group,
   Image,
-  Modal, Text,
-  Textarea
+  Modal
 } from '@mantine/core'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { IoBookmarkOutline, IoChatbubbleOutline, IoHeartOutline, IoPaperPlaneOutline } from 'react-icons/io5'
 import { MdMoreHoriz } from 'react-icons/md'
-import { User } from '../../types/app.types'
-import { formatDate } from '../../utils/formatDate'
+import { Post } from '../../types/app.types'
 import { trpc } from '../../utils/trpc'
+import PostCardControls from './PostCardControls'
 
 type Props = {
-  post: {
-    User: User
-    id: string
-    createdAt: Date
-    likedUsers: User[]
-    images: string[]
-    comments: any
-  }
+  post: Post
   setIsToastVisible: (v: boolean) => void
 }
 
 const PostCard = ({ post, setIsToastVisible }: Props) => {
+  const router = useRouter()
   const { data } = useSession()
   const utils = trpc.useContext()
   const [isOpenModal, setIsOpenModal] = useState(false)
-  const [newComment, setNewComment] = useState('')
+  
 
   const deletePost = trpc.useMutation(['post.delete-post'], {
     async onSuccess() {
@@ -51,7 +42,7 @@ const PostCard = ({ post, setIsToastVisible }: Props) => {
     },
   })
 
-  const addComment = trpc.useMutation(['post.add-comment'])
+
   return (
     <>
       <Modal
@@ -90,7 +81,7 @@ const PostCard = ({ post, setIsToastVisible }: Props) => {
               </Button>
             </Center>
             <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem' }}>
-              <Button variant='white' fullWidth compact color='dark' disabled>
+              <Button variant='white' fullWidth compact color='dark' onClick={() => router.push(`/p/${post.id}`)}>
                 Go to post
               </Button>
             </Center>
@@ -168,73 +159,7 @@ const PostCard = ({ post, setIsToastVisible }: Props) => {
           )}
         </Card.Section>
 
-        <Card.Section py='xs' px='xs'>
-          <Group position='apart'>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <ActionIcon color='dark' variant='transparent' size='md' mr='xs'>
-                <IoHeartOutline size='1.8rem' />
-              </ActionIcon>
-              <ActionIcon color='dark' variant='transparent' size='md' mr='xs'>
-                <IoChatbubbleOutline size='1.5rem' />
-              </ActionIcon>
-              <ActionIcon color='dark' variant='transparent' size='md' mr='xs'>
-                <IoPaperPlaneOutline size='1.5rem' />
-              </ActionIcon>
-            </Box>
-            <Box>
-              <ActionIcon color='dark' variant='transparent' size='md' mr='xs'>
-                <IoBookmarkOutline size='1.5rem' />
-              </ActionIcon>
-            </Box>
-          </Group>
-        </Card.Section>
-
-        <Card.Section px='xs'>
-          <Box>
-            <Text weight='bold' size='sm'>
-              {post.likedUsers.length} likes
-            </Text>
-          </Box>
-
-          <Box py='xs'>
-            {post.comments.length > 0 && (
-              <Box color='black' sx={{ fontSize: '14px' }}>
-                <Box component='span' sx={{ fontWeight: 'bold', fontSize: '14px' }}>
-                  {post.comments[0].User?.name}
-                </Box>{' '}
-                {post.comments[0].body}
-              </Box>
-            )}
-
-            <Box>
-              <Text size='sm'>
-                <Link href={`/p/${post.id}`} passHref>
-                  <Anchor underline={false} color='gray'>
-                    View all comments
-                  </Anchor>
-                </Link>
-              </Text>
-              <Box>
-                <Text size='xs' color='gray'>
-                  {formatDate(post.createdAt)}
-                </Text>
-              </Box>
-            </Box>
-          </Box>
-        </Card.Section>
-
-        <Card.Section>
-          <Divider />
-          <Textarea
-            onChange={(e) => setNewComment(e.target.value)}
-            placeholder='Add a comment'
-            styles={(theme) => ({
-              input: {
-                border: '0px solid black',
-              },
-            })}
-          />
-        </Card.Section>
+        <PostCardControls post={post}/>
       </Card>
     </>
   )

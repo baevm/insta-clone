@@ -48,9 +48,9 @@ const Feed = () => {
           gap: '2rem',
         }}>
         {feed && displaySortedPosts()}
-        <SuggestionsCarousel suggestions={suggestions} />
+        {suggestions.length > 0 &&  <SuggestionsCarousel suggestions={suggestions} /> }
       </Container>
-      {feed && <Suggestions name={feed.name} avatar={feed.avatar} suggestions={suggestions} />}
+      {suggestions.length > 0 && <Suggestions name={feed.name} avatar={feed.avatar} suggestions={suggestions} />}
 
       {isToastVisible && <Toast text='Post deleted.' />}
     </Container>

@@ -4,7 +4,6 @@ import React from 'react'
 import { Suggestions } from '../../types/app.types'
 import { trpc } from '../../utils/trpc'
 
-
 type Props = {
   name: string | null
   avatar: string | null
@@ -12,7 +11,13 @@ type Props = {
 }
 
 const Suggestions = ({ name, avatar, suggestions }: Props) => {
-  const { mutate } = trpc.useMutation('follow.follow')
+  const utils = trpc.useContext()
+  const { mutate } = trpc.useMutation('follow.follow', {
+    onSuccess() {
+      utils.invalidateQueries('post.get-feed')
+      utils.invalidateQueries('post.get-suggestions')
+    },
+  })
 
   const handleFollow = (id: string) => {
     mutate({ userId: id })

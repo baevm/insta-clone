@@ -21,3 +21,12 @@ export type Suggestions = {
   followedBy: User[]
   id: string
 }[]
+
+export type Post = {
+  User: User
+  id: string
+  createdAt: Date
+  likedUsers: User[]
+  images: string[]
+  comments: any
+}

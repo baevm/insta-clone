@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form'
 import { ISignupSchema, UserSignupSchema, UserLoginSchema } from '../../server/schemas/user.schema'
 import { trpc } from '../../utils/trpc'
 import { zodResolver } from '@hookform/resolvers/zod'
+import Toast from '../Toast'
 
 type TypeProps = 'login' | 'signup'
 
@@ -19,8 +20,18 @@ const AuthForm = ({ type }: { type: TypeProps }) => {
   } = useForm<ISignupSchema>({
     resolver: zodResolver(type === 'login' ? UserLoginSchema : UserSignupSchema),
   })
-  const { mutate, error } = trpc.useMutation(['user.signup'])
+
+  const signup = trpc.useMutation(['user.signup'], {
+    onSuccess() {
+      setIsToastOpen(true)
+
+      setTimeout(() => {
+        setIsToastOpen(false)
+      }, 6000)
+    },
+  })
   const [loginError, setLoginError] = useState<string | undefined>('')
+  const [isToastOpen, setIsToastOpen] = useState(false)
 
   const handleLogin = async (values: ISignupSchema) => {
     await signIn('credentials', { ...values, redirect: false }).then((res) => {
@@ -32,8 +43,9 @@ const AuthForm = ({ type }: { type: TypeProps }) => {
     })
   }
 
-  const registerAccount = (values: ISignupSchema) => {
-    mutate({ ...values })
+
+  const handleRegister = (values: ISignupSchema) => {
+    signup.mutate({ ...values })
   }
 
   return (
@@ -62,7 +74,7 @@ const AuthForm = ({ type }: { type: TypeProps }) => {
           },
         }}>
         <Image src='/logo.svg' alt='logo' width={200} mb='2rem' />
-        <form onSubmit={handleSubmit(type === 'login' ? handleLogin : registerAccount)}>
+        <form onSubmit={handleSubmit(type === 'login' ? handleLogin : handleRegister)}>
           <Input type='email' placeholder='email' {...register('email')} variant='filled' sx={{ width: '240px' }} />
           {errors.email?.message && (
             <Text color='red' size='xs'>
@@ -105,9 +117,10 @@ const AuthForm = ({ type }: { type: TypeProps }) => {
             {type === 'login' ? 'Login' : 'Sign up'}
           </Button>
         </form>
-        {error && (
+        
+        {signup.error && (
           <Text color='red' mt='1rem' size='xs'>
-            {error?.message}
+            {signup.error?.message}
           </Text>
         )}
 
@@ -149,6 +162,7 @@ const AuthForm = ({ type }: { type: TypeProps }) => {
           </Box>
         )}
       </Box>
+      {isToastOpen && <Toast text='Account successfully created.' />}
     </Container>
   )
 }

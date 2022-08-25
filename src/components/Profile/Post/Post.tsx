@@ -47,18 +47,18 @@ const Post = ({ post, name, avatar, setIsToastVisible, type }: Props) => {
           alignItems: 'center',
           backgroundColor: 'black',
           justifyContent: 'center',
-          width: 'clamp(15rem, 100%, 800px)',
-          height: 'clamp(15rem, 100%)',
+          maxHeight: '880px',
+          maxWidth: '800px',
+          width: 'calc(100% - 40%)',
 
           '@media (max-width: 956px)': {
+            width: '100%',
             borderBottom: '1px solid lightgray',
           },
         }}>
         {post.images.length > 1 ? (
           <Carousel
             slideSize='100%'
-            height='100%'
-            slideGap='md'
             align='center'
             sx={{ flex: 1 }}
             styles={{
@@ -76,13 +76,16 @@ const Post = ({ post, name, avatar, setIsToastVisible, type }: Props) => {
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
+                  maxHeight: '880px',
+                  maxWidth: '800px',
+                  width: 'calc(100% - 40%)',
                 }}>
-                <Image src={image} alt='post' />
+                <img src={image} alt='post' style={{ width: '100%', height: '100%' }}/>
               </Carousel.Slide>
             ))}
           </Carousel>
         ) : (
-          <Image src={post.images} alt='post' />
+          <img src={post.images} alt='post' style={{ width: '100%', height: '100%' }} />
         )}
       </Box>
 
