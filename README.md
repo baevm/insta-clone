@@ -1,5 +1,6 @@
 ![Vercel](http://therealsujitk-vercel-badge.vercel.app/?app=insta-clone)
 ## Instagram clone
+📌 Live Demo: [https://insta-clone-roan.vercel.app/](https://insta-clone-roan.vercel.app/)
 #### Made for educational purpose with:
  - next.js
  - next-auth
@@ -26,7 +27,7 @@
 ------------
 
 
-#####  Test login data:
+#####  Test login details:
 **email:** user@test.com
 
 **password:** password
