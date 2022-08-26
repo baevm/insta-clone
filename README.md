@@ -1,6 +1,6 @@
 ![Vercel](http://therealsujitk-vercel-badge.vercel.app/?app=insta-clone)
-## instagram clone
-made for educational purpose with:
+## Instagram clone
+#### Made for educational purpose with:
  - next.js
  - next-auth
  - trpc
@@ -8,6 +8,14 @@ made for educational purpose with:
  - mantine
  - react-hook-form
  
+ #### Features:
+- [x] auth page
+- [x] creating post with one or multiple images
+- [x] commenting & liking posts
+- [x] following profiles
+- [x] instagram style post modal as routes
+- [ ] feed live updates
+- [ ] search
  
  **yarn install** to install dependencies
  
@@ -18,7 +26,7 @@ made for educational purpose with:
 ------------
 
 
-#####  test login data:
+#####  Test login data:
 **email:** user@test.com
 
 **password:** password
