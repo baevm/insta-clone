@@ -1,15 +1,5 @@
 import { Carousel } from '@mantine/carousel'
-import {
-  ActionIcon,
-  Anchor,
-  Avatar,
-  Box,
-  Button,
-  Card,
-  Center, Group,
-  Image,
-  Modal
-} from '@mantine/core'
+import { ActionIcon, Anchor, Avatar, Box, Button, Card, Center, CopyButton, Group, Image, Modal } from '@mantine/core'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -29,7 +19,6 @@ const PostCard = ({ post, setIsToastVisible }: Props) => {
   const { data } = useSession()
   const utils = trpc.useContext()
   const [isOpenModal, setIsOpenModal] = useState(false)
-  
 
   const deletePost = trpc.useMutation(['post.delete-post'], {
     async onSuccess() {
@@ -42,6 +31,11 @@ const PostCard = ({ post, setIsToastVisible }: Props) => {
     },
   })
 
+  const unfollow = trpc.useMutation(['follow.unfollow'], {
+    onSuccess() {
+      utils.invalidateQueries('post.get-feed')
+    },
+  })
 
   return (
     <>
@@ -53,6 +47,7 @@ const PostCard = ({ post, setIsToastVisible }: Props) => {
         withCloseButton={false}
         padding={0}
         zIndex={2000}
+        
         styles={(theme) => ({
           modal: {
             borderRadius: '10px',
@@ -94,21 +89,43 @@ const PostCard = ({ post, setIsToastVisible }: Props) => {
         ) : (
           <Box>
             <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', color: 'red', cursor: 'pointer' }}>
-              Report
+              <Button variant='white' fullWidth compact color='red' disabled>
+                Report
+              </Button>
             </Center>
             <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', color: 'red', cursor: 'pointer' }}>
-              Unfollow
+              <Button variant='white' fullWidth compact color='red' onClick={() => unfollow.mutate({userId: post.User!.id})}>
+                Unfollow
+              </Button>
             </Center>
             <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>
-              Go to post
+              <Button variant='white' fullWidth compact color='dark' onClick={() => router.push(`/p/${post.id}`)}>
+                Go to post
+              </Button>
             </Center>
-            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>Share to</Center>
             <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>
-              Copy link
+              <Button variant='white' fullWidth compact color='dark' disabled>
+                Share to
+              </Button>
             </Center>
-            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>Embed</Center>
+            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>
+              <CopyButton value={`${typeof window !== 'undefined' ? window.location.origin : ''}/p/${post.id}`}>
+                {({ copied, copy }) => (
+                  <Button variant='white' fullWidth compact color='dark' onClick={copy}>
+                    {copied ? 'Copied post link' : 'Copy link'}
+                  </Button>
+                )}
+              </CopyButton>
+            </Center>
+            <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', cursor: 'pointer' }}>
+              <Button variant='white' fullWidth compact color='dark' disabled>
+                Embed
+              </Button>
+            </Center>
             <Center sx={{ padding: '0.5rem', cursor: 'pointer' }} onClick={() => setIsOpenModal(false)}>
-              Cancel
+              <Button variant='white' fullWidth compact color='dark'>
+                Cancel
+              </Button>
             </Center>
           </Box>
         )}
@@ -159,7 +176,7 @@ const PostCard = ({ post, setIsToastVisible }: Props) => {
           )}
         </Card.Section>
 
-        <PostCardControls post={post}/>
+        <PostCardControls post={post} />
       </Card>
     </>
   )

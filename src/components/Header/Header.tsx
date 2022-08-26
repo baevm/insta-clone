@@ -12,15 +12,16 @@ const Header = () => {
   return (
     <Container
       fluid
-      px='xs'
+      p={0}
       sx={{
         height: '60px',
         borderBottom: '1px solid lightgray',
-        position: 'fixed',
-        width: '100%',
+        position: 'sticky',
+        width: '100vw',
         backgroundColor: 'white',
         top: 0,
         zIndex: 1000,
+      
       }}>
       <Container px={0} sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Link href='/' passHref>
