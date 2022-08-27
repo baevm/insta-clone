@@ -1,4 +1,5 @@
 import * as trpc from '@trpc/server'
+import { z } from 'zod'
 import { cloudinary } from '../../services/cloudinary'
 import { createRouter } from '../createRouter'
 import {
@@ -12,13 +13,20 @@ import {
 
 export const postRouter = createRouter()
   .query('get-feed', {
-    resolve: async ({ ctx }) => {
+    input: z.object({
+      limit: z.number().min(1).max(100).nullish(),
+      cursor: z.string().nullish(), // <-- "cursor" needs to exist, but can be any type
+    }),
+    resolve: async ({ ctx, input }) => {
       if (!ctx.session) {
         throw new trpc.TRPCError({
           code: 'FORBIDDEN',
           message: 'You must be logged in to access this resource',
         })
       }
+
+      const limit = input.limit ?? 5
+      const { cursor } = input
 
       /*   const feed = await ctx.prisma.user.findUnique({
         where: {
@@ -98,11 +106,21 @@ export const postRouter = createRouter()
         orderBy: {
           createdAt: 'desc',
         },
-        take: 10
+        take: limit + 1,
+        cursor: cursor ? { id: cursor } : undefined,
       })
+
+      let nextCursor: typeof cursor | undefined = undefined;
+
+      if (posts.length > limit) {
+        const nextItem = posts.pop()
+        console.log(nextItem)
+        nextCursor = nextItem!.id;
+      }
 
       return {
         feed: JSON.parse(JSON.stringify(posts)) as typeof posts,
+        nextCursor
       }
     },
   })

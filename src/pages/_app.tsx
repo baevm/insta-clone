@@ -72,4 +72,5 @@ export default withTRPC<AppRouter>({
 // zustand for interface updates ???
 // max height for image post ???
 // comment post from feed
-// write what functions working at readme
+// feed live updates
+// search

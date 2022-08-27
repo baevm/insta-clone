@@ -1,5 +1,5 @@
-import { Container } from '@mantine/core'
-import { useState } from 'react'
+import { Container, Loader } from '@mantine/core'
+import { useEffect, useState } from 'react'
 import { useMe } from '../../hooks/useMe'
 import { trpc } from '../../utils/trpc'
 import Toast from '../Toast'
@@ -9,19 +9,33 @@ import SuggestionsCarousel from './SuggestionsCarousel'
 
 const Feed = () => {
   const [isToastVisible, setIsToastVisible] = useState(false)
-  const { data: f } = trpc.useQuery(['post.get-feed'])
+  const feedQuery = trpc.useInfiniteQuery(['post.get-feed', { limit: 5 }], {
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+  })
   const { data: s } = trpc.useQuery(['post.get-suggestions'])
   const { me } = useMe()
-  const feed = f!.feed!
+  const pages = feedQuery.data?.pages
   const suggestions = s!.suggestions!
 
-  const displaySortedPosts = () => {
-    const sortedPosts = feed
-     
-      .map((post: typeof feed[number]) => <PostCard key={post.id} post={post} setIsToastVisible={setIsToastVisible} />)
+  const displayPosts = () => {
+    const postsArr = pages?.map(({ feed }) =>
+      feed.map((post: typeof feed[number]) => (
+        <PostCard key={post.id} post={post} setIsToastVisible={setIsToastVisible} />
+      ))
+    )
 
-    return sortedPosts
+    return postsArr
   }
+
+  useEffect(() => {
+    function handleScroll() {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+        feedQuery.fetchNextPage()
+      }
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   return (
     <Container
@@ -45,13 +59,15 @@ const Feed = () => {
           flexDirection: 'column',
           gap: '2rem',
         }}>
-        {feed && displaySortedPosts()}
+        {pages && displayPosts()}
+
+        {feedQuery.isFetching && <Loader color='gray' sx={{ alignSelf: 'center' }} />}
         {suggestions.length > 0 && <SuggestionsCarousel suggestions={suggestions} />}
       </Container>
+
       {suggestions.length > 0 && (
         <Suggestions name={me?.profile.name} avatar={me?.profile.avatar} suggestions={suggestions} />
       )}
-
       {isToastVisible && <Toast text='Post deleted.' />}
     </Container>
   )

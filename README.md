@@ -15,6 +15,7 @@
 - [x] commenting & liking posts
 - [x] following profiles
 - [x] instagram style post modal as routes
+- [x] infinite feed scrolling
 - [ ] feed live updates
 - [ ] search
  
