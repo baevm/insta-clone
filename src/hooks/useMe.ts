@@ -20,5 +20,5 @@ export const useMe = () => {
 
  
 
-  return { me: query.data, isLoadingMe: !query.data}
+  return { me: query.data, isLoadingMe: !query.data, status}
 }

@@ -1,5 +1,6 @@
 import { Container } from '@mantine/core'
 import { useState } from 'react'
+import { useMe } from '../../hooks/useMe'
 import { trpc } from '../../utils/trpc'
 import Toast from '../Toast'
 import PostCard from './PostCard'
@@ -10,17 +11,14 @@ const Feed = () => {
   const [isToastVisible, setIsToastVisible] = useState(false)
   const { data: f } = trpc.useQuery(['post.get-feed'])
   const { data: s } = trpc.useQuery(['post.get-suggestions'])
+  const { me } = useMe()
   const feed = f!.feed!
   const suggestions = s!.suggestions!
 
-  // map authed user posts with posts of users he follows
   const displaySortedPosts = () => {
-    const OtherUsersPosts = feed!.following.flatMap((f: any) => f.posts)
-    const AllPosts = [...OtherUsersPosts, ...feed!.posts]
-
-    const sortedPosts = AllPosts.sort((a: any, b: any) => -a.createdAt.localeCompare(b.createdAt)).map(
-      (post: typeof feed.posts[number]) => <PostCard key={post.id} post={post} setIsToastVisible={setIsToastVisible} />
-    )
+    const sortedPosts = feed
+     
+      .map((post: typeof feed[number]) => <PostCard key={post.id} post={post} setIsToastVisible={setIsToastVisible} />)
 
     return sortedPosts
   }
@@ -48,9 +46,11 @@ const Feed = () => {
           gap: '2rem',
         }}>
         {feed && displaySortedPosts()}
-        {suggestions.length > 0 &&  <SuggestionsCarousel suggestions={suggestions} /> }
+        {suggestions.length > 0 && <SuggestionsCarousel suggestions={suggestions} />}
       </Container>
-      {suggestions.length > 0 && <Suggestions name={feed.name} avatar={feed.avatar} suggestions={suggestions} />}
+      {suggestions.length > 0 && (
+        <Suggestions name={me?.profile.name} avatar={me?.profile.avatar} suggestions={suggestions} />
+      )}
 
       {isToastVisible && <Toast text='Post deleted.' />}
     </Container>

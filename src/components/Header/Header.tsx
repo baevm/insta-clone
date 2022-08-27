@@ -1,13 +1,15 @@
-import { Anchor, Container } from '@mantine/core'
+import { Anchor, Box, Button, Container, Group, Skeleton } from '@mantine/core'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import React from 'react'
 import { useMe } from '../../hooks/useMe'
 import Buttons from './Buttons'
 import Search from './Search'
 
 const Header = () => {
-  const { me } = useMe()
+  const router = useRouter()
+  const { me, status, isLoadingMe } = useMe()
 
   return (
     <Container
@@ -21,7 +23,6 @@ const Header = () => {
         backgroundColor: 'white',
         top: 0,
         zIndex: 1000,
-      
       }}>
       <Container px={0} sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Link href='/' passHref>
@@ -31,8 +32,27 @@ const Header = () => {
         </Link>
 
         <Search />
-        <Buttons avatar={me?.profile.avatar} />
+        {isLoadingMe ? (
+          <Group spacing={24} noWrap>
+            <Skeleton width='26px' height='26px' />
+            <Skeleton width='26px' height='26px' />
+            <Skeleton width='26px' height='26px' />
+            <Skeleton width='26px' height='26px' />
+            <Skeleton width='26px' height='26px' />
+            <Skeleton height='38px' circle />
+          </Group>
+        ) : status === 'authenticated' ? (
+          <Buttons avatar={me?.profile.avatar} />
+        ) : (
+          <Box sx={{ width: '300px', display: 'flex', justifyContent: 'flex-end' }}>
+            <Button mr='1rem' onClick={() => router.push('/login')}>
+              Log in
+            </Button>
+          </Box>
+        )}
+        
       </Container>
+      
     </Container>
   )
 }

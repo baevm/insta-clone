@@ -70,7 +70,6 @@ export default withTRPC<AppRouter>({
 // add searching
 // animations
 // zustand for interface updates ???
-// mutate feed when following from suggestions
 // max height for image post ???
 // comment post from feed
 // write what functions working at readme

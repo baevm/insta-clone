@@ -20,7 +20,7 @@ export const postRouter = createRouter()
         })
       }
 
-      const feed = await ctx.prisma.user.findUnique({
+      /*   const feed = await ctx.prisma.user.findUnique({
         where: {
           id: ctx.session?.user.id,
         },
@@ -40,6 +40,7 @@ export const postRouter = createRouter()
               },
             },
           },
+
           following: {
             select: {
               posts: {
@@ -57,10 +58,51 @@ export const postRouter = createRouter()
             },
           },
         },
+      }) */
+
+      const followingUsers = await ctx.prisma.user.findFirst({
+        where: {
+          id: ctx.session.user.id,
+        },
+        select: {
+          following: {
+            select: {
+              name: true,
+              id: true,
+            },
+          },
+        },
+      })
+
+      const followingUsersIds = followingUsers?.following.map((user) => user.id)
+      const followingIdsWithMe = followingUsersIds ? [...followingUsersIds, ctx.session.user.id] : [ctx.session.user.id]
+
+      const posts = await ctx.prisma.post.findMany({
+        where: {
+          User: {
+            id: {
+              in: followingIdsWithMe,
+            },
+          },
+        },
+        select: {
+          id: true,
+          likedUsers: true,
+          images: true,
+          createdAt: true,
+          comments: { select: { body: true, createdAt: true, id: true, User: { select: { name: true } } } },
+          User: {
+            select: { id: true, name: true, avatar: true },
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        take: 10
       })
 
       return {
-        feed: JSON.parse(JSON.stringify(feed)) as typeof feed,
+        feed: JSON.parse(JSON.stringify(posts)) as typeof posts,
       }
     },
   })
@@ -94,7 +136,7 @@ export const postRouter = createRouter()
     input: GetPostSchema,
     resolve: async ({ ctx, input }) => {
       const { postId } = input
-      
+
       const post = await ctx.prisma.post.findUnique({
         where: {
           id: postId,
