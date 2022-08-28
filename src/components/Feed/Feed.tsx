@@ -9,10 +9,10 @@ import SuggestionsCarousel from './SuggestionsCarousel'
 
 const Feed = () => {
   const [isToastVisible, setIsToastVisible] = useState(false)
-  const feedQuery = trpc.useInfiniteQuery(['post.get-feed', { limit: 5 }], {
+  const feedQuery = trpc.useInfiniteQuery(['feed.get-feed', { limit: 5 }], {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
   })
-  const { data: s } = trpc.useQuery(['post.get-suggestions'])
+  const { data: s } = trpc.useQuery(['feed.get-suggestions'])
   const { me } = useMe()
   const pages = feedQuery.data?.pages
   const suggestions = s!.suggestions!

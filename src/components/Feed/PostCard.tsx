@@ -22,7 +22,7 @@ const PostCard = ({ post, setIsToastVisible }: Props) => {
 
   const deletePost = trpc.useMutation(['post.delete-post'], {
     async onSuccess() {
-      await utils.invalidateQueries('post.get-feed')
+      await utils.invalidateQueries('feed.get-feed')
       setIsToastVisible(true)
 
       setTimeout(() => {
@@ -33,7 +33,7 @@ const PostCard = ({ post, setIsToastVisible }: Props) => {
 
   const unfollow = trpc.useMutation(['follow.unfollow'], {
     onSuccess() {
-      utils.invalidateQueries('post.get-feed')
+      utils.invalidateQueries('feed.get-feed')
     },
   })
 

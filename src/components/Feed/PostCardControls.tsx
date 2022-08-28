@@ -19,14 +19,14 @@ const PostCardControls = ({ post }: Props) => {
 
   const addLike = trpc.useMutation(['post.like-post'], {
     async onSuccess() {
-      await utils.invalidateQueries('post.get-feed')
+      await utils.invalidateQueries('feed.get-feed')
       setLikesCount(likesCount + 1)
     },
   })
 
   const removeLike = trpc.useMutation(['post.unlike-post'], {
     async onSuccess() {
-      await utils.invalidateQueries('post.get-feed')
+      await utils.invalidateQueries('feed.get-feed')
       setLikesCount(likesCount - 1)
     },
   })

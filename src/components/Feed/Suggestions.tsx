@@ -14,8 +14,8 @@ const Suggestions = ({ name, avatar, suggestions }: Props) => {
   const utils = trpc.useContext()
   const { mutate } = trpc.useMutation('follow.follow', {
     onSuccess() {
-      utils.invalidateQueries('post.get-feed')
-      utils.invalidateQueries('post.get-suggestions')
+      utils.invalidateQueries('feed.get-feed')
+      utils.invalidateQueries('feed.get-suggestions')
     },
   })
 
