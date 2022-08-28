@@ -1,4 +1,5 @@
 import * as trpc from '@trpc/server'
+import { z } from 'zod'
 import { cloudinary } from '../../services/cloudinary'
 import { createRouter } from '../createRouter'
 import {
@@ -11,127 +12,6 @@ import {
 } from '../schemas/post.schema'
 
 export const postRouter = createRouter()
-  .query('get-feed', {
-    resolve: async ({ ctx }) => {
-      if (!ctx.session) {
-        throw new trpc.TRPCError({
-          code: 'FORBIDDEN',
-          message: 'You must be logged in to access this resource',
-        })
-      }
-
-      /*   const feed = await ctx.prisma.user.findUnique({
-        where: {
-          id: ctx.session?.user.id,
-        },
-        select: {
-          email: true,
-          name: true,
-          avatar: true,
-          posts: {
-            select: {
-              id: true,
-              likedUsers: true,
-              images: true,
-              createdAt: true,
-              comments: { select: { body: true, createdAt: true, id: true, User: { select: { name: true } } } },
-              User: {
-                select: { id: true, name: true, avatar: true },
-              },
-            },
-          },
-
-          following: {
-            select: {
-              posts: {
-                select: {
-                  id: true,
-                  likedUsers: true,
-                  images: true,
-                  createdAt: true,
-                  comments: { select: { body: true, createdAt: true, id: true, User: { select: { name: true } } } },
-                  User: {
-                    select: { id: true, name: true, avatar: true },
-                  },
-                },
-              },
-            },
-          },
-        },
-      }) */
-
-      const followingUsers = await ctx.prisma.user.findFirst({
-        where: {
-          id: ctx.session.user.id,
-        },
-        select: {
-          following: {
-            select: {
-              name: true,
-              id: true,
-            },
-          },
-        },
-      })
-
-      const followingUsersIds = followingUsers?.following.map((user) => user.id)
-      const followingIdsWithMe = followingUsersIds ? [...followingUsersIds, ctx.session.user.id] : [ctx.session.user.id]
-
-      const posts = await ctx.prisma.post.findMany({
-        where: {
-          User: {
-            id: {
-              in: followingIdsWithMe,
-            },
-          },
-        },
-        select: {
-          id: true,
-          likedUsers: true,
-          images: true,
-          createdAt: true,
-          comments: { select: { body: true, createdAt: true, id: true, User: { select: { name: true } } } },
-          User: {
-            select: { id: true, name: true, avatar: true },
-          },
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-        take: 10
-      })
-
-      return {
-        feed: JSON.parse(JSON.stringify(posts)) as typeof posts,
-      }
-    },
-  })
-  .query('get-suggestions', {
-    resolve: async ({ ctx }) => {
-      if (!ctx.session) {
-        throw new trpc.TRPCError({
-          code: 'FORBIDDEN',
-          message: 'You must be logged in to create a post',
-        })
-      }
-
-      const suggestions = await ctx.prisma.user.findMany({
-        where: {
-          AND: [{ NOT: { id: ctx.session?.user.id } }, { NOT: { followedBy: { some: { id: ctx.session?.user.id } } } }],
-        },
-        select: {
-          id: true,
-          name: true,
-          followedBy: true,
-          avatar: true,
-        },
-        take: 4,
-      })
-      return {
-        suggestions: JSON.parse(JSON.stringify(suggestions)) as typeof suggestions,
-      }
-    },
-  })
   .query('get-post', {
     input: GetPostSchema,
     resolve: async ({ ctx, input }) => {
@@ -240,8 +120,6 @@ export const postRouter = createRouter()
         },
       })
 
-      console.log(delPost)
-
       const delCommentsFromPost = ctx.prisma.comments.deleteMany({
         where: {
           postId: id,
@@ -250,7 +128,11 @@ export const postRouter = createRouter()
 
       const transaction = await ctx.prisma.$transaction([delCommentsFromPost, delPost])
 
-      // del image from cloudinary after deleting post
+      // get ids of images in format '/folder/id.jpg'
+      const cloudinaryIds = transaction[1].images.map((image) => image.split('/').splice(-2, 2).join('/').slice(0, -4))
+
+      // del images from cloudinary
+      await cloudinary.api.delete_resources(cloudinaryIds as string[])
 
       return {
         status: 'ok',

@@ -13,6 +13,10 @@ type TypeProps = 'login' | 'signup'
 
 const AuthForm = ({ type }: { type: TypeProps }) => {
   const router = useRouter()
+  const [loading, setLoading] = useState(false)
+  const [loginError, setLoginError] = useState<string | undefined>('')
+  const [isToastOpen, setIsToastOpen] = useState(false)
+  
   const {
     handleSubmit,
     register,
@@ -20,7 +24,7 @@ const AuthForm = ({ type }: { type: TypeProps }) => {
   } = useForm<ISignupSchema>({
     resolver: zodResolver(type === 'login' ? UserLoginSchema : UserSignupSchema),
   })
-
+ 
   const signup = trpc.useMutation(['user.signup'], {
     onSuccess() {
       setIsToastOpen(true)
@@ -30,19 +34,19 @@ const AuthForm = ({ type }: { type: TypeProps }) => {
       }, 6000)
     },
   })
-  const [loginError, setLoginError] = useState<string | undefined>('')
-  const [isToastOpen, setIsToastOpen] = useState(false)
+ 
 
   const handleLogin = async (values: ISignupSchema) => {
+    setLoading(true)
     await signIn('credentials', { ...values, redirect: false }).then((res) => {
       if (res?.ok) {
         router.push('/')
       } else {
         setLoginError(res?.error)
+        setLoading(false)
       }
     })
   }
-
 
   const handleRegister = (values: ISignupSchema) => {
     signup.mutate({ ...values })
@@ -113,11 +117,17 @@ const AuthForm = ({ type }: { type: TypeProps }) => {
               {errors.password?.message}
             </Text>
           )}
-          <Button type='submit' mt='1rem' size='xs' sx={{ width: '100%', fontSize: '14px' }}>
-            {type === 'login' ? 'Login' : 'Sign up'}
-          </Button>
+          {type === 'login' ? (
+            <Button type='submit' mt='1rem' size='xs' loading={loading} sx={{ width: '100%', fontSize: '14px' }}>
+              Login
+            </Button>
+          ) : (
+            <Button type='submit' mt='1rem' size='xs' loading={signup.isLoading} sx={{ width: '100%', fontSize: '14px' }}>
+              Sign up
+            </Button>
+          )}
         </form>
-        
+
         {signup.error && (
           <Text color='red' mt='1rem' size='xs'>
             {signup.error?.message}

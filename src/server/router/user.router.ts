@@ -52,7 +52,7 @@ export const userRouter = createRouter()
 
       if (!data) {
         throw new trpc.TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
+          code: 'NOT_FOUND',
           message: 'User not found',
         })
       }

@@ -18,8 +18,8 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
     transformer: superjson,
   })
 
-  await ssg.fetchQuery('post.get-feed')
-  await ssg.fetchQuery('post.get-suggestions')
+  await ssg.fetchInfiniteQuery('feed.get-feed', { limit: 5 })
+  await ssg.fetchQuery('feed.get-suggestions')
 
   return {
     props: {

@@ -40,7 +40,7 @@ const AddPostModal = ({
 
   const createPost = trpc.useMutation(['post.create-post'], {
     onSuccess() {
-      utils.invalidateQueries('post.get-feed')
+      utils.invalidateQueries('feed.get-feed')
       utils.invalidateQueries('user.get-profile')
     },
   })

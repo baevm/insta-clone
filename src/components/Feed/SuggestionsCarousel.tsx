@@ -9,7 +9,7 @@ const SuggestionsCarousel = ({ suggestions }: { suggestions: Suggestions }) => {
   const utils = trpc.useContext()
   const { mutate } = trpc.useMutation('follow.follow', {
     onSuccess() {
-      utils.invalidateQueries('post.get-suggestions')
+      utils.invalidateQueries('feed.get-suggestions')
     },
   })
 
