@@ -1,13 +1,16 @@
 import { signOut, useSession } from 'next-auth/react'
+import { useState } from 'react'
 import { trpc } from '../utils/trpc'
 
 // for logged in user only
 export const useMe = () => {
   const { data: session, status } = useSession()
   const name = session?.user?.name
+  
+
 
   const query = trpc.useQuery(['user.get-profile', { slug: name }], {
-    enabled: status !== 'loading',
+    enabled: status === 'authenticated',
     onError: (error) => {
       console.error('me query error: ', error.message)
 
@@ -18,7 +21,7 @@ export const useMe = () => {
     },
   })
 
- 
 
-  return { me: query.data, isLoadingMe: !query.data, status}
+
+  return { me: query.data, isLoadingMe: query.isFetching || status === 'loading', status }
 }

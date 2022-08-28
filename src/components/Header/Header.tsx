@@ -34,12 +34,7 @@ const Header = () => {
         <Search />
         {isLoadingMe ? (
           <Group spacing={24} noWrap>
-            <Skeleton width='26px' height='26px' />
-            <Skeleton width='26px' height='26px' />
-            <Skeleton width='26px' height='26px' />
-            <Skeleton width='26px' height='26px' />
-            <Skeleton width='26px' height='26px' />
-            <Skeleton height='38px' circle />
+            <Skeleton width='265px' height='35px' mr='1rem'/>
           </Group>
         ) : status === 'authenticated' ? (
           <Buttons avatar={me?.profile.avatar} />
@@ -50,9 +45,7 @@ const Header = () => {
             </Button>
           </Box>
         )}
-        
       </Container>
-      
     </Container>
   )
 }

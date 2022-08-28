@@ -120,8 +120,6 @@ export const postRouter = createRouter()
         },
       })
 
-      console.log(delPost)
-
       const delCommentsFromPost = ctx.prisma.comments.deleteMany({
         where: {
           postId: id,
@@ -130,7 +128,11 @@ export const postRouter = createRouter()
 
       const transaction = await ctx.prisma.$transaction([delCommentsFromPost, delPost])
 
-      // del image from cloudinary after deleting post
+      // get ids of images in format '/folder/id.jpg'
+      const cloudinaryIds = transaction[1].images.map((image) => image.split('/').splice(-2, 2).join('/').slice(0, -4))
+
+      // del images from cloudinary
+      await cloudinary.api.delete_resources(cloudinaryIds as string[])
 
       return {
         status: 'ok',

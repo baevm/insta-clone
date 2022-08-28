@@ -74,3 +74,5 @@ export default withTRPC<AppRouter>({
 // comment post from feed
 // feed live updates
 // search
+// next auth flashes login button
+// rewrite useMe hook to call db in next auth session callback

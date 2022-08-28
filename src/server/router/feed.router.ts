@@ -19,46 +19,7 @@ export const feedRouter = createRouter()
       const limit = input.limit ?? 5
       const { cursor } = input
 
-      /*   const feed = await ctx.prisma.user.findUnique({
-        where: {
-          id: ctx.session?.user.id,
-        },
-        select: {
-          email: true,
-          name: true,
-          avatar: true,
-          posts: {
-            select: {
-              id: true,
-              likedUsers: true,
-              images: true,
-              createdAt: true,
-              comments: { select: { body: true, createdAt: true, id: true, User: { select: { name: true } } } },
-              User: {
-                select: { id: true, name: true, avatar: true },
-              },
-            },
-          },
-
-          following: {
-            select: {
-              posts: {
-                select: {
-                  id: true,
-                  likedUsers: true,
-                  images: true,
-                  createdAt: true,
-                  comments: { select: { body: true, createdAt: true, id: true, User: { select: { name: true } } } },
-                  User: {
-                    select: { id: true, name: true, avatar: true },
-                  },
-                },
-              },
-            },
-          },
-        },
-      }) */
-
+      // get following from the current user
       const followingUsers = await ctx.prisma.user.findFirst({
         where: {
           id: ctx.session.user.id,
@@ -73,9 +34,13 @@ export const feedRouter = createRouter()
         },
       })
 
+      // get ids of following response
       const followingUsersIds = followingUsers?.following.map((user) => user.id)
+
+      // add current user to arr with following users is
       const followingIdsWithMe = followingUsersIds ? [...followingUsersIds, ctx.session.user.id] : [ctx.session.user.id]
 
+      // get posts from following users including current user
       const posts = await ctx.prisma.post.findMany({
         where: {
           User: {
@@ -103,9 +68,9 @@ export const feedRouter = createRouter()
 
       let nextCursor: typeof cursor | undefined = undefined
 
+      // get next post cursor if there are more posts
       if (posts.length > limit) {
         const nextItem = posts.pop()
-        console.log(nextItem)
         nextCursor = nextItem!.id
       }
 
