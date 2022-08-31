@@ -15,7 +15,7 @@ import {
 } from 'react-icons/io5'
 import { MdOutlineAddBox } from 'react-icons/md'
 
-const AddPostModal = dynamic(() => import('./AddPostModal')) 
+const AddPostModal = dynamic(() => import('./AddPostModal'), { ssr: false })
 
 const Buttons = ({ avatar }: { avatar: string }) => {
   const [isModalOpened, setIsModalOpened] = useState(false)

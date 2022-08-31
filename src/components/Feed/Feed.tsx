@@ -1,5 +1,5 @@
 import { Container, Loader } from '@mantine/core'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useMe } from '../../hooks/useMe'
 import { trpc } from '../../utils/trpc'
 import Toast from '../Toast'
@@ -8,6 +8,7 @@ import Suggestions from './Suggestions'
 import SuggestionsCarousel from './SuggestionsCarousel'
 
 const Feed = () => {
+  const observerElem = useRef<HTMLDivElement>(null)
   const [isToastVisible, setIsToastVisible] = useState(false)
   const feedQuery = trpc.useInfiniteQuery(['feed.get-feed', { limit: 5 }], {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -27,15 +28,23 @@ const Feed = () => {
     return postsArr
   }
 
-  useEffect(() => {
-    function handleScroll() {
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+  const handleObserver = useCallback(
+    (entries: any) => {
+      const [target] = entries
+      if (target.isIntersecting) {
         feedQuery.fetchNextPage()
       }
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    },
+    [feedQuery.fetchNextPage, feedQuery.hasNextPage]
+  )
+
+  useEffect(() => {
+    const element = observerElem.current
+    const option = { threshold: 0 }
+    const observer = new IntersectionObserver(handleObserver, option)
+    observer.observe(element as Element)
+    return () => observer.unobserve(element as Element)
+  }, [feedQuery.fetchNextPage, feedQuery.hasNextPage, handleObserver])
 
   return (
     <Container
@@ -61,7 +70,13 @@ const Feed = () => {
         }}>
         {pages && displayPosts()}
 
-        {feedQuery.isFetching && <Loader color='gray' sx={{ alignSelf: 'center' }} />}
+        <div ref={observerElem}>
+          {feedQuery.isFetching && feedQuery.hasNextPage ? (
+            <Loader color='gray' size='md' sx={{ justifySelf: 'center' }} />
+          ) : (
+            ''
+          )}
+        </div>
         {suggestions.length > 0 && <SuggestionsCarousel suggestions={suggestions} />}
       </Container>
 

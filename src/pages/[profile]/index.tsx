@@ -1,11 +1,13 @@
 import { createSSGHelpers } from '@trpc/react/ssg'
 import { GetServerSidePropsContext } from 'next'
+import dynamic from 'next/dynamic'
 import superjson from 'superjson'
-import FourOFourWarning from '../../components/FourOFourWarning'
 import Profile from '../../components/Profile/Profile'
 import { createContext } from '../../server/createContext'
 import { appRouter } from '../../server/router/app.router'
 import { trpc } from '../../utils/trpc'
+
+const FourOFourWarning = dynamic(() => import('../../components/FourOFourWarning'), { ssr: false })
 
 type Props = {
   slug: string
