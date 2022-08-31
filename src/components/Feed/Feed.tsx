@@ -1,4 +1,4 @@
-import { Container, Loader } from '@mantine/core'
+import { Box, Container, Loader } from '@mantine/core'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useMe } from '../../hooks/useMe'
 import { trpc } from '../../utils/trpc'
@@ -28,6 +28,7 @@ const Feed = () => {
     return postsArr
   }
 
+  // observe ref element, if its entered the viewport, fetch next page
   const handleObserver = useCallback(
     (entries: any) => {
       const [target] = entries
@@ -41,6 +42,7 @@ const Feed = () => {
   useEffect(() => {
     const element = observerElem.current
     const option = { threshold: 0 }
+    
     const observer = new IntersectionObserver(handleObserver, option)
     observer.observe(element as Element)
     return () => observer.unobserve(element as Element)
@@ -70,13 +72,13 @@ const Feed = () => {
         }}>
         {pages && displayPosts()}
 
-        <div ref={observerElem}>
+        <Box ref={observerElem} sx={{ display: 'flex', justifyContent: 'center' }}>
           {feedQuery.isFetching && feedQuery.hasNextPage ? (
             <Loader color='gray' size='md' sx={{ justifySelf: 'center' }} />
           ) : (
             ''
           )}
-        </div>
+        </Box>
         {suggestions.length > 0 && <SuggestionsCarousel suggestions={suggestions} />}
       </Container>
 

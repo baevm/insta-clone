@@ -34,10 +34,10 @@ const Header = () => {
         <Search />
         {isLoadingMe ? (
           <Group spacing={24} noWrap>
-            <Skeleton width='265px' height='35px' mr='1rem'/>
+            <Skeleton width='265px' height='35px' mr='1rem' />
           </Group>
         ) : status === 'authenticated' ? (
-          <Buttons avatar={me?.profile.avatar} />
+          <Buttons avatar={me?.profile.avatar} name={me?.profile.name}/>
         ) : (
           <Box sx={{ width: '300px', display: 'flex', justifyContent: 'flex-end' }}>
             <Button mr='1rem' onClick={() => router.push('/login')}>

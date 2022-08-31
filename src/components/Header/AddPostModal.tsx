@@ -1,18 +1,5 @@
 import { Carousel } from '@mantine/carousel'
-import {
-  Accordion,
-  Avatar,
-  Box,
-  Button,
-  Center,
-  Group,
-  Image,
-  Input,
-  Loader,
-  Modal,
-  Text,
-  Textarea,
-} from '@mantine/core'
+import { Accordion, Box, Button, Center, Group, Image, Input, Loader, Modal, Text, Textarea } from '@mantine/core'
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone'
 import { useMediaQuery } from '@mantine/hooks'
 import React, { useRef, useState } from 'react'
@@ -21,16 +8,18 @@ import { IoLocationOutline } from 'react-icons/io5'
 import { MdClose, MdPhoto } from 'react-icons/md'
 import { readFileAsUrl } from '../../utils/readFileAsUrl'
 import { trpc } from '../../utils/trpc'
+import AvatarName from '../common/AvatarName'
 
 type Stages = 'upload' | 'preview' | 'post'
 
-const AddPostModal = ({
-  isModalOpened,
-  setIsModalOpened,
-}: {
+type Props = {
   isModalOpened: boolean
   setIsModalOpened: (v: boolean) => void
-}) => {
+  avatar: string
+  name: string
+}
+
+const AddPostModal = ({ isModalOpened, setIsModalOpened, avatar, name }: Props) => {
   const utils = trpc.useContext()
   const matches = useMediaQuery('(min-width: 556px)', false)
   const openRef = useRef<() => void>(null)
@@ -171,8 +160,7 @@ const AddPostModal = ({
               <Box sx={{ borderLeft: '1px solid lightgray', width: '30%' }}>
                 <Box sx={{ borderBottom: '1px solid lightgray' }}>
                   <Group p='0.5rem'>
-                    <Avatar radius='xl' />
-                    <Text weight='bold'>dezzerlol</Text>
+                    <AvatarName avatar={avatar} name={name} />
                   </Group>
                   <Textarea
                     onChange={(e) => setCaption(e.target.value)}
@@ -195,10 +183,7 @@ const AddPostModal = ({
                   <Accordion variant='filled'>
                     <Accordion.Item value='customization'>
                       <Accordion.Control>Accessibility</Accordion.Control>
-                      <Accordion.Panel>
-                        Alt text describes your photos for people with visual impairments. Alt text will be
-                        automatically created for your photos or you can choose to write your own.
-                      </Accordion.Panel>
+                      <Accordion.Panel>Work in progress...</Accordion.Panel>
                     </Accordion.Item>
                   </Accordion>
                 </Box>
@@ -206,7 +191,7 @@ const AddPostModal = ({
                   <Accordion variant='filled'>
                     <Accordion.Item value='customization'>
                       <Accordion.Control>Advanced settings</Accordion.Control>
-                      <Accordion.Panel>Add here advanced settings l8</Accordion.Panel>
+                      <Accordion.Panel>Work in progress...</Accordion.Panel>
                     </Accordion.Item>
                   </Accordion>
                 </Box>

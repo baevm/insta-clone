@@ -1,10 +1,11 @@
-import { ActionIcon, Avatar, Box, Button, Center, Group, Modal, Text } from '@mantine/core'
+import { ActionIcon, Box, Button, Center, Group, Modal } from '@mantine/core'
 import { useMediaQuery } from '@mantine/hooks'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import React, { useState } from 'react'
-import { MdMoreHoriz, MdClose } from 'react-icons/md'
+import { useState } from 'react'
+import { MdClose, MdMoreHoriz } from 'react-icons/md'
 import { trpc } from '../../../utils/trpc'
+import AvatarName from '../../common/AvatarName'
 
 type Props = {
   name: string
@@ -46,12 +47,7 @@ const PostHeader = ({ name, avatar, type, setIsToastVisible, postId }: Props) =>
           '@media (max-width: 956px)': { display: type === 'desktop' ? 'none' : '' },
           /* '@media (max-width: 956px)': { display: type === 'desktop' ? 'none' : '' }, */
         }}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Avatar radius='xl' src={avatar ? avatar : ''} />
-          <Text weight='bold' size='sm' px='1rem' color='#262626'>
-            {name}
-          </Text>
-        </Box>
+        <AvatarName avatar={avatar} name={name} />
         <Group align='center'>
           <Box>
             {data?.user.name === name ? (

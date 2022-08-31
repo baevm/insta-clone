@@ -17,14 +17,15 @@ import { MdOutlineAddBox } from 'react-icons/md'
 
 const AddPostModal = dynamic(() => import('./AddPostModal'), { ssr: false })
 
-const Buttons = ({ avatar }: { avatar: string }) => {
+const Buttons = ({ avatar, name }: { avatar: string; name: string }) => {
   const [isModalOpened, setIsModalOpened] = useState(false)
   const router = useRouter()
-  const { data } = useSession()
 
   return (
     <>
-      {isModalOpened && <AddPostModal isModalOpened={isModalOpened} setIsModalOpened={setIsModalOpened} />}
+      {isModalOpened && (
+        <AddPostModal isModalOpened={isModalOpened} setIsModalOpened={setIsModalOpened} name={name} avatar={avatar} />
+      )}
 
       <Box sx={{ height: '36px', display: 'flex', alignItems: 'center' }}>
         {/* Button to home page */}
@@ -54,7 +55,7 @@ const Buttons = ({ avatar }: { avatar: string }) => {
             <Avatar src={avatar ? avatar : ''} radius='xl' mx='0.4rem' sx={{ cursor: 'pointer' }} />
           </Menu.Target>
           <Menu.Dropdown p={0}>
-            <Menu.Item icon={<HiOutlineUserCircle size={16} />} onClick={() => router.push(`/${data?.user.name}`)}>
+            <Menu.Item icon={<HiOutlineUserCircle size={16} />} onClick={() => router.push(`/${name}`)}>
               Profile
             </Menu.Item>
             <Menu.Item icon={<IoBookmarkOutline size={16} />}>Saved</Menu.Item>

@@ -1,8 +1,8 @@
-import { Anchor, Avatar, Box, Button, Group, Text } from '@mantine/core'
-import Link from 'next/link'
+import { Box, Button, Group, Text } from '@mantine/core'
 import React from 'react'
 import { Suggestions } from '../../types/app.types'
 import { trpc } from '../../utils/trpc'
+import AvatarName from '../common/AvatarName'
 
 type Props = {
   name: string | null
@@ -26,18 +26,7 @@ const Suggestions = ({ name, avatar, suggestions }: Props) => {
   return (
     <Box sx={{ width: '35%', '@media (max-width: 756px)': { display: 'none' } }}>
       <Group position='apart'>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Link href={`/${name}`} passHref>
-            <Anchor>
-              <Avatar radius='xl' size='md' src={avatar ? avatar : ''} />
-            </Anchor>
-          </Link>
-          <Link href={`/${name}`} passHref>
-            <Anchor weight='bold' ml='0.5rem' color='dark' underline={false}>
-              {name}
-            </Anchor>
-          </Link>
-        </Box>
+        <AvatarName avatar={avatar} name={name} />
         <Box>
           <Button variant='subtle' compact>
             Switch
@@ -57,24 +46,7 @@ const Suggestions = ({ name, avatar, suggestions }: Props) => {
       <Box>
         {suggestions.map((s: typeof suggestions[number]) => (
           <Group position='apart' key={s.id}>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Link href={`/${s.name}`} passHref>
-                <Anchor>
-                  <Avatar size='md' radius='xl' src={s.avatar ? s.avatar : ''} />
-                </Anchor>
-              </Link>
-              <Box ml='0.5rem'>
-                <Link href={`/${s.name}`} passHref>
-                  <Anchor weight='bold' color='dark' underline={false}>
-                    {s.name}
-                  </Anchor>
-                </Link>
-                <Text size='xs' color='gray'>
-                  Popular
-                </Text>
-              </Box>
-            </Box>
-
+            <AvatarName avatar={s.avatar} name={s.name} undername='Popular' />
             <Button variant='subtle' compact onClick={() => handleFollow(s.id)}>
               Follow
             </Button>

@@ -1,6 +1,7 @@
 import { Carousel } from '@mantine/carousel'
-import { Box, Container, Image, Title } from '@mantine/core'
+import { Box, Container, Title } from '@mantine/core'
 import { useSession } from 'next-auth/react'
+import Image from 'next/image'
 import React from 'react'
 import Comment from './Comment'
 import CommentControls from './CommentControls'
@@ -34,7 +35,7 @@ const Post = ({ post, name, avatar, setIsToastVisible, type }: Props) => {
 
         '@media (max-width: 956px)': {
           flexDirection: 'column',
-          overflowY: 'scroll',
+         
         },
       }}>
       {/* Mobile header on top of image */}
@@ -48,7 +49,7 @@ const Post = ({ post, name, avatar, setIsToastVisible, type }: Props) => {
           backgroundColor: 'black',
           justifyContent: 'center',
           maxHeight: '880px',
-          maxWidth: '800px',
+          maxWidth: '850px',
           width: 'calc(100% - 40%)',
 
           '@media (max-width: 956px)': {
@@ -77,15 +78,15 @@ const Post = ({ post, name, avatar, setIsToastVisible, type }: Props) => {
                   justifyContent: 'center',
                   alignItems: 'center',
                   maxHeight: '880px',
-                  maxWidth: '800px',
+                  maxWidth: '850px',
                   width: 'calc(100% - 40%)',
                 }}>
-                <img src={image} alt='post' style={{ width: '100%', height: '100%' }}/>
+                <Image src={image} alt='post' width='850' height='850' quality={100} objectFit='cover' />
               </Carousel.Slide>
             ))}
           </Carousel>
         ) : (
-          <img src={post.images} alt='post' style={{ width: '100%', height: '100%' }} />
+          <Image src={post.images[0]} alt='post' width='850' height='850' quality={100} objectFit='cover' />
         )}
       </Box>
 

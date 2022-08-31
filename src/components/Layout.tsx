@@ -6,7 +6,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <Header />
-      <Container fluid px={0} sx={{ minHeight: '100vh', backgroundColor: '#FAFAFA', }}>{children}</Container>
+      <Container fluid px={0} sx={{ minHeight: 'calc(100vh - 60px)', backgroundColor: '#FAFAFA', }}>{children}</Container>
     </>
   )
 }

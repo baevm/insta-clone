@@ -1,24 +1,25 @@
-import { Anchor, Avatar, Box, Group, Input, Popover, Text, Title } from '@mantine/core'
-import Link from 'next/link'
+import { Box, Group, Input, Popover, Text, Title } from '@mantine/core'
 import React, { ChangeEvent, MutableRefObject, useRef, useState } from 'react'
 import { IoSearchOutline } from 'react-icons/io5'
-import { trpc } from '../../utils/trpc'
 import { User } from '../../types/app.types'
+import { trpc } from '../../utils/trpc'
+import AvatarName from '../common/AvatarName'
 
 const Search = () => {
   const [isPopoverOpened, setIsPopoverOpened] = useState(false)
   const timeout: { current: NodeJS.Timeout | null } = useRef(null)
   const inputRef = useRef() as MutableRefObject<HTMLInputElement>
-  const { mutate } = trpc.useMutation(['feed.search-user'], {
-    onSuccess(data) {
-      setSearchResult(data)
-    },
-  })
   const [searchResult, setSearchResult] = useState<{
     searchResult: User[]
     status?: number
     message?: string
   } | null>(null)
+
+  const { mutate } = trpc.useMutation(['feed.search-user'], {
+    onSuccess(data) {
+      setSearchResult(data)
+    },
+  })
 
   const handleDebouncedSearch = (e: ChangeEvent) => {
     clearTimeout(timeout.current as NodeJS.Timeout)
@@ -36,7 +37,7 @@ const Search = () => {
 
   return (
     <Box sx={{ width: '250px', display: 'none', '@media (min-width: 768px)': { display: 'block' } }}>
-      <Popover width='target' radius={0} withArrow shadow='md'>
+      <Popover width='target' radius={0} withArrow shadow='md' opened={isPopoverOpened}>
         <Popover.Target>
           <Box onFocusCapture={() => setIsPopoverOpened(true)} onBlurCapture={() => setIsPopoverOpened(false)}>
             <Input
@@ -48,26 +49,17 @@ const Search = () => {
             />
           </Box>
         </Popover.Target>
-        <Popover.Dropdown p={0} sx={{ height: '220px' }}>
+        <Popover.Dropdown p={0} sx={{ height: '222px', overflowY: 'auto' }}>
           {searchResult?.searchResult?.length! > 0 ? (
             <>
               {searchResult?.searchResult?.map((user) => (
                 <Group p={'0.5rem'} key={user!.id} sx={{ borderBottom: '1px solid lightgray' }}>
-                  <Link href='/nickname' passHref>
-                    <Anchor>
-                      <Avatar src={user!.avatar} radius='xl' />
-                    </Anchor>
-                  </Link>
-                  <Link href='/nickname' passHref>
-                    <Anchor weight='bold' color='dark' underline={false} size='xs'>
-                      {user!.name}
-                    </Anchor>
-                  </Link>
+                  <AvatarName avatar={user?.avatar} name={user?.name} />
                 </Group>
               ))}
             </>
           ) : (
-            <Box sx={{ height: '100%' }} p='0.5rem'>
+            <Box sx={{ height: '90%' }} p='0.5rem'>
               <Title order={5}>{searchResult?.status === 404 ? 'Search' : 'Recent'}</Title>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
                 <Text color='gray'>{searchResult?.status === 404 ? 'No users found' : 'No recent searches'}</Text>

@@ -125,6 +125,7 @@ export const feedRouter = createRouter()
           name: true,
           avatar: true,
         },
+        take: 10,
       })
 
       if (searchResult.length === 0) {

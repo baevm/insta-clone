@@ -1,10 +1,11 @@
 import { Carousel } from '@mantine/carousel'
-import { ActionIcon, Anchor, Avatar, Box, Card, Group, Image } from '@mantine/core'
+import { ActionIcon, Box, Card, Group } from '@mantine/core'
 import dynamic from 'next/dynamic'
-import Link from 'next/link'
+import Image from 'next/image'
 import { useState } from 'react'
 import { MdMoreHoriz } from 'react-icons/md'
 import { Post } from '../../types/app.types'
+import AvatarName from '../common/AvatarName'
 import PostCardControls from './PostCardControls'
 
 const PostCardModal = dynamic(() => import('./PostCardModal'), { ssr: false })
@@ -29,18 +30,8 @@ const PostCard = ({ post, setIsToastVisible }: Props) => {
       <Card withBorder radius='md'>
         <Card.Section py='xs' px='xs'>
           <Group position='apart' align='center'>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Link href={`/${post.User?.name}`} passHref>
-                <Anchor>
-                  <Avatar radius='xl' src={post.User?.avatar ? post.User.avatar : ''} />
-                </Anchor>
-              </Link>
-              <Link href={`/${post.User?.name}`} passHref>
-                <Anchor pl='0.5rem' weight='bold' size='sm' color='dark' underline={false}>
-                  {post.User?.name}
-                </Anchor>
-              </Link>
-            </Box>
+            <AvatarName avatar={post.User?.avatar} name={post.User?.name} />
+
             <ActionIcon color='dark' variant='transparent' size='md' onClick={() => setIsOpenModal(true)}>
               <MdMoreHoriz size='1.8rem' />
             </ActionIcon>
@@ -61,16 +52,22 @@ const PostCard = ({ post, setIsToastVisible }: Props) => {
               {post.images.map((image: any) => (
                 <Carousel.Slide
                   key={image}
-                  sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'black' }}>
-                  <Image src={image} alt='post' />
+                  sx={{
+                    display: 'flex',
+                    width: '100%',
+                    height: '100%',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: 'black',
+                  }}>
+                  <Image src={image} alt='post' width='600' height='550' quality={100} objectFit='cover' />
                 </Carousel.Slide>
               ))}
             </Carousel>
           ) : (
-            <Image src={post.images[0]} alt='post' />
+            <Image src={post.images[0]} alt='post' width='600' height='550' quality={100} objectFit='cover' />
           )}
         </Card.Section>
-
         <PostCardControls post={post} />
       </Card>
     </>
