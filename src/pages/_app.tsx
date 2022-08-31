@@ -40,7 +40,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: CustomAppPro
 
 export default withTRPC<AppRouter>({
   config({ ctx }) {
-    const links = [loggerLink(), httpBatchLink({ maxBatchSize: 10, url })]
+    const links = [loggerLink(), httpBatchLink({ maxBatchSize: 10, url, })]
 
     return {
       queryClientConfig: {
@@ -49,21 +49,27 @@ export default withTRPC<AppRouter>({
             staleTime: Infinity,
             /* refetchOnWindowFocus: false, */
             /* refetchOnReconnect: false, */
+            
           },
         },
+        
       },
       headers() {
         if (ctx?.req) {
           return { ...ctx.req.headers, 'x-ssr': '1' }
         }
 
+        
+
         return {}
       },
       links,
       transformer: superjson,
+      
     }
   },
   ssr: false,
+  
 })(MyApp)
 
 // TODO:
