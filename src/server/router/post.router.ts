@@ -10,6 +10,7 @@ import {
   LikePostSchema,
   PostSchema,
 } from '../schemas/post.schema'
+import { Post } from '../../types/app.types'
 
 export const postRouter = createRouter()
   .query('get-post', {
@@ -23,7 +24,7 @@ export const postRouter = createRouter()
         },
 
         include: {
-          likedUsers: true,
+          likedUsers: { select: { id: true, name: true, avatar: true } },
           User: {
             select: {
               name: true,
@@ -33,8 +34,17 @@ export const postRouter = createRouter()
           },
           comments: {
             include: {
-              User: true,
+              User: {
+                select: {
+                  name: true,
+                  avatar: true,
+                  id: true,
+                },
+              },
             },
+            orderBy: {
+              createdAt: 'desc'
+            }
           },
         },
       })
@@ -42,11 +52,11 @@ export const postRouter = createRouter()
       if (!post) {
         throw new trpc.TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: 'User not found',
+          message: 'Post not found',
         })
       }
 
-      return { post: JSON.parse(JSON.stringify(post)) }
+      return { post: JSON.parse(JSON.stringify(post)) as Post }
     },
   })
   .mutation('create-post', {
@@ -212,10 +222,20 @@ export const postRouter = createRouter()
           userId: ctx.session.user.id,
           body: comment,
         },
+        include: {
+          User: {
+            select: {
+              name: true,
+              avatar: true,
+              id: true,
+            },
+          },
+        },
       })
 
       return {
         status: 'ok',
+        commentAdded,
       }
     },
   })

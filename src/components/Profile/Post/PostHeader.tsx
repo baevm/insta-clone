@@ -8,8 +8,8 @@ import { trpc } from '../../../utils/trpc'
 import AvatarName from '../../common/AvatarName'
 
 type Props = {
-  name: string
-  avatar: string
+  name: string | null | undefined
+  avatar: string | null | undefined
   type: 'mobile' | 'desktop'
   setIsToastVisible: any
   postId: string

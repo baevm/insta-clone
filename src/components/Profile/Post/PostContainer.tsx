@@ -7,23 +7,20 @@ import { IoIosPhotos } from 'react-icons/io'
 import Post from './Post'
 import { IoChatbubbleSharp, IoHeart } from 'react-icons/io5'
 import { useMediaQuery } from '@mantine/hooks'
+import { Post as PostProps } from '../../../types/app.types'
+
 
 type Props = {
-  post: {
-    id: string
-    images: string[]
-    likedUsers: string[]
-    comments: string[]
-  }
+  post: PostProps
   name: string
-  avatar: string
   setIsToastVisible: (v: boolean) => void
 }
 
-const PostContainer = ({ post, name, avatar, setIsToastVisible }: Props) => {
+const PostContainer = ({ post, name, setIsToastVisible }: Props) => {
   const mobileQuery = useMediaQuery('(max-width: 768px)', true)
   const [isHover, setIsHover] = useState(false)
   const router = useRouter()
+
 
   // both links should have "shallow" parameter to prevent GSSP call on open/close modal
   return (
@@ -94,7 +91,7 @@ const PostContainer = ({ post, name, avatar, setIsToastVisible }: Props) => {
         padding={0}
         size='70%'
         zIndex={2000}>
-        <Post type='modal' post={post} name={name} avatar={avatar} setIsToastVisible={setIsToastVisible} />
+        <Post type='modal' postId={post.id} setIsToastVisible={setIsToastVisible} />
       </Modal>
     </>
   )

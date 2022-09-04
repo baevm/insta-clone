@@ -13,26 +13,9 @@ type Props = {
 }
 
 const PhotoPage = ({ postId }: Props) => {
-  const { data } = trpc.useQuery(['post.get-post', { postId }], {
-    retry: false,
-    retryOnMount: false,
-    refetchOnWindowFocus: false,
-  })
   const [isToastVisible, setIsToastVisible] = useState(false)
 
-  if (!data) {
-    return <FourOFourWarning />
-  }
-
-  return (
-    <Post
-      avatar={data!.post.User.avatar}
-      post={data!.post}
-      name={data!.post.User.name}
-      type='standalone'
-      setIsToastVisible={setIsToastVisible}
-    />
-  )
+  return <Post postId={postId} type='standalone' setIsToastVisible={setIsToastVisible} />
 }
 
 export default PhotoPage
@@ -49,7 +32,12 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<{ ph
   try {
     await ssg.fetchQuery('post.get-post', { postId })
   } catch (error) {
-    console.error(error)
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/404',
+      },
+    }
   }
 
   return {

@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { IoMdGrid } from 'react-icons/io'
 import { MdOutlinePhotoCamera } from 'react-icons/md'
 import { RiAccountPinBoxLine } from 'react-icons/ri'
-import { ProfileProps } from '../../types/app.types'
+import { Post, ProfileProps } from '../../types/app.types'
 import Toast from '../Toast'
 import PostContainer from './Post/PostContainer'
 import ProfileHeader from './ProfileHeader'
@@ -21,17 +21,9 @@ const Profile = ({ profile }: { profile: ProfileProps }) => {
   }
 
   const displaySortedPosts = () => {
-    const sortedPosts = profile.posts
-      .sort((a: any, b: any) => -a.createdAt.localeCompare(b.createdAt))
-      .map((post: any) => (
-        <PostContainer
-          post={post}
-          name={profile.name}
-          avatar={profile.avatar}
-          key={post.id}
-          setIsToastVisible={setIsToastVisible}
-        />
-      ))
+    const sortedPosts = profile.posts.map((post: Post) => (
+      <PostContainer post={post} name={profile.name} key={post.id} setIsToastVisible={setIsToastVisible} />
+    ))
     return sortedPosts
   }
 

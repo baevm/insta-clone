@@ -27,7 +27,7 @@ const PostCard = ({ post, setIsToastVisible }: Props) => {
         setIsToastVisible={setIsToastVisible}
       />
 
-      <Card withBorder radius='md'>
+      <Card withBorder radius='md' p={0}>
         <Card.Section py='xs' px='xs'>
           <Group position='apart' align='center'>
             <AvatarName avatar={post.User?.avatar} name={post.User?.name} />

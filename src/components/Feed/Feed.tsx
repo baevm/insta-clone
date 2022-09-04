@@ -42,12 +42,13 @@ const Feed = () => {
   useEffect(() => {
     const element = observerElem.current
     const option = { threshold: 0 }
-    
+
     const observer = new IntersectionObserver(handleObserver, option)
     observer.observe(element as Element)
     return () => observer.unobserve(element as Element)
   }, [feedQuery.fetchNextPage, feedQuery.hasNextPage, handleObserver])
 
+  console.log(feedQuery.data)
   return (
     <Container
       px={0}

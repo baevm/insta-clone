@@ -2,18 +2,14 @@ import { ActionIcon, Anchor, Box, Button, Group, Text, Textarea } from '@mantine
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import React, { useState } from 'react'
-import {
-  IoBookmarkOutline,
-  IoChatbubbleEllipsesOutline,
-  IoHeartOutline,
-  IoPaperPlaneOutline,
-  IoHeart,
-} from 'react-icons/io5'
+import { IoBookmarkOutline, IoChatbubbleEllipsesOutline, IoPaperPlaneOutline } from 'react-icons/io5'
+import { User } from '../../../types/app.types'
 import { trpc } from '../../../utils/trpc'
+import LikeButton from '../../common/LikeButton'
 
 type Props = {
   postId: string
-  likes: string[]
+  likes: User[]
 }
 
 const CommentControls = ({ postId, likes }: Props) => {
@@ -21,21 +17,16 @@ const CommentControls = ({ postId, likes }: Props) => {
   const { data } = useSession()
   const [comment, setComment] = useState('')
   const addComment = trpc.useMutation('post.add-comment', {
-    onSuccess() {
-      utils.invalidateQueries('user.get-profile') // if on post modal
-      utils.invalidateQueries('post.get-post') // if on post page
-    },
-  })
-  const addLike = trpc.useMutation('post.like-post', {
-    onSuccess() {
-      utils.invalidateQueries('user.get-profile') // if on post modal
-      utils.invalidateQueries('post.get-post') // if on post page
-    },
-  })
-  const removeLike = trpc.useMutation('post.unlike-post', {
-    onSuccess() {
-      utils.invalidateQueries('user.get-profile') // if on post modal
-      utils.invalidateQueries('post.get-post') // if on post page
+    async onSuccess(res) {
+      const snapshot = utils.getQueryData(['post.get-post', { postId }])
+
+      utils.setQueryData(['post.get-post', { postId }], {
+        post: {
+          ...snapshot!.post,
+          comments: [res.commentAdded, ...snapshot!.post.comments],
+        },
+      })
+      return { snapshot }
     },
   })
 
@@ -48,25 +39,13 @@ const CommentControls = ({ postId, likes }: Props) => {
     setComment('')
   }
 
-  const LikeButton = () => {
-    return likes.find((like: any) => like.id === data?.user.id) ? (
-      <ActionIcon variant='transparent' color='dark' mr='0.5rem' onClick={() => removeLike.mutate({ postId })}>
-        <IoHeart size={30} color='tomato' />
-      </ActionIcon>
-    ) : (
-      <ActionIcon variant='transparent' color='dark' mr='0.5rem' onClick={() => addLike.mutate({ postId })}>
-        <IoHeartOutline size={30} />
-      </ActionIcon>
-    )
-  }
-
   return (
     <Box id='comments-controls' sx={{ height: '155px', width: '100%', borderTop: '1px solid lightgray' }}>
       <Box p='0.5rem' sx={{ borderBottom: '1px solid lightgray', height: '75px' }}>
         {data?.user && (
           <Group position='apart' mb='0.5rem'>
             <Box sx={{ display: 'flex' }}>
-              {LikeButton()}
+              <LikeButton likes={likes} postId={postId} />
               <ActionIcon variant='transparent' color='dark' mx='0.5rem'>
                 <IoChatbubbleEllipsesOutline size={30} />
               </ActionIcon>
@@ -93,6 +72,7 @@ const CommentControls = ({ postId, likes }: Props) => {
           <Textarea
             variant='unstyled'
             px='0.5rem'
+            disabled={addComment.isLoading}
             sx={{ height: '100%', width: '85%' }}
             autosize={false}
             minRows={3}
@@ -101,7 +81,7 @@ const CommentControls = ({ postId, likes }: Props) => {
             onChange={(e) => setComment(e.target.value)}
             placeholder='Add a comment...'
           />
-          <Button size='xs' onClick={handleComment}>
+          <Button size='xs' sx={{ width: '15%' }} onClick={handleComment} loading={addComment.isLoading}>
             add
           </Button>
         </Box>

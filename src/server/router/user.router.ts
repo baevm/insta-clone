@@ -72,8 +72,6 @@ export const userRouter = createRouter()
         where: { OR: [{ email }, { name }] },
       })
 
-     
-
       if (exists?.email === email) {
         throw new trpc.TRPCError({
           code: 'CONFLICT',
@@ -95,6 +93,7 @@ export const userRouter = createRouter()
           email,
           name,
           password: hashedPassword,
+          avatar: '0',
         },
       })
 
