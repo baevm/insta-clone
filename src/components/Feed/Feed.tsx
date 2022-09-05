@@ -48,7 +48,6 @@ const Feed = () => {
     return () => observer.unobserve(element as Element)
   }, [feedQuery.fetchNextPage, feedQuery.hasNextPage, handleObserver])
 
-  console.log(feedQuery.data)
   return (
     <Container
       px={0}

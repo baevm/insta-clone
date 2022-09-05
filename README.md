@@ -17,7 +17,7 @@
 - [x] instagram style post modal as routes
 - [x] infinite feed scrolling
 - [ ] feed live updates
-- [ ] search
+- [x] search
  
  **yarn install** to install dependencies
  

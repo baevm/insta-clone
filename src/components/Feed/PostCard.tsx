@@ -1,5 +1,5 @@
 import { Carousel } from '@mantine/carousel'
-import { ActionIcon, Box, Card, Group } from '@mantine/core'
+import { ActionIcon, Box, Card, Group, Transition } from '@mantine/core'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import { useState } from 'react'

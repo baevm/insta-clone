@@ -1,11 +1,13 @@
-import { ActionIcon, Anchor, Box, Button, Group, Text, Textarea } from '@mantine/core'
+import { Anchor, Box, Button, Group, Text, Textarea } from '@mantine/core'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import React, { useState } from 'react'
-import { IoBookmarkOutline, IoChatbubbleEllipsesOutline, IoPaperPlaneOutline } from 'react-icons/io5'
 import { User } from '../../../types/app.types'
 import { trpc } from '../../../utils/trpc'
+import CommentButton from '../../common/CommentButton'
+import FavoriteButton from '../../common/FavoriteButton'
 import LikeButton from '../../common/LikeButton'
+import ShareButton from '../../common/ShareButton'
 
 type Props = {
   postId: string
@@ -45,18 +47,12 @@ const CommentControls = ({ postId, likes }: Props) => {
         {data?.user && (
           <Group position='apart' mb='0.5rem'>
             <Box sx={{ display: 'flex' }}>
-              <LikeButton likes={likes} postId={postId} />
-              <ActionIcon variant='transparent' color='dark' mx='0.5rem'>
-                <IoChatbubbleEllipsesOutline size={30} />
-              </ActionIcon>
-              <ActionIcon variant='transparent' color='dark' mx='0.5rem'>
-                <IoPaperPlaneOutline size={30} />
-              </ActionIcon>
+              <LikeButton likes={likes} postId={postId} type='post' />
+              <CommentButton />
+              <ShareButton />
             </Box>
             <Box>
-              <ActionIcon variant='transparent' color='dark' mx='0.5rem'>
-                <IoBookmarkOutline size={30} />
-              </ActionIcon>
+              <FavoriteButton />
             </Box>
           </Group>
         )}

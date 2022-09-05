@@ -1,9 +1,8 @@
-import { Anchor, Avatar, Box, Button, Card, Group, Text, Title } from '@mantine/core'
-import React from 'react'
 import { Carousel } from '@mantine/carousel'
-import { trpc } from '../../utils/trpc'
+import { Anchor, Avatar, Button, Card, Group, Title } from '@mantine/core'
 import Link from 'next/link'
 import { Suggestions } from '../../types/app.types'
+import { trpc } from '../../utils/trpc'
 
 const SuggestionsCarousel = ({ suggestions }: { suggestions: Suggestions }) => {
   const utils = trpc.useContext()

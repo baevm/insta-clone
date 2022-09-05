@@ -2,11 +2,9 @@ import { createSSGHelpers } from '@trpc/react/ssg'
 import { GetServerSidePropsContext } from 'next'
 import { useState } from 'react'
 import superjson from 'superjson'
-import FourOFourWarning from '../../components/FourOFourWarning'
 import Post from '../../components/Profile/Post/Post'
 import { createContext } from '../../server/createContext'
 import { appRouter } from '../../server/router/app.router'
-import { trpc } from '../../utils/trpc'
 
 type Props = {
   postId: string

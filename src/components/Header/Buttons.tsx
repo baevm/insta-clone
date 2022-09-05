@@ -1,5 +1,5 @@
 import { ActionIcon, Avatar, Box, Divider, Menu } from '@mantine/core'
-import { signOut, useSession } from 'next-auth/react'
+import { signOut } from 'next-auth/react'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
@@ -8,10 +8,8 @@ import {
   IoBookmarkOutline,
   IoChatbubbleEllipsesOutline,
   IoCompassOutline,
-  IoHeartOutline,
-  IoSettingsOutline,
-  IoHomeOutline,
-  IoHomeSharp,
+  IoHeartOutline, IoHomeOutline,
+  IoHomeSharp, IoSettingsOutline
 } from 'react-icons/io5'
 import { MdOutlineAddBox } from 'react-icons/md'
 

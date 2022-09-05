@@ -3,6 +3,7 @@ import { GetServerSidePropsContext } from 'next'
 import dynamic from 'next/dynamic'
 import superjson from 'superjson'
 import Profile from '../../components/Profile/Profile'
+import SEO from '../../components/SEO'
 import { createContext } from '../../server/createContext'
 import { appRouter } from '../../server/router/app.router'
 import { trpc } from '../../utils/trpc'
@@ -21,10 +22,20 @@ const ProfilePage = ({ slug }: Props) => {
   })
 
   if (!data) {
-    return <FourOFourWarning />
+    return (
+      <>
+        <SEO title='Page not found' siteName='Instagram' />
+        <FourOFourWarning />
+      </>
+    )
   }
 
-  return <Profile profile={data!.profile} />
+  return (
+    <>
+      <SEO title={`@${data.profile.name}`} siteName='Instagram photos and videos' />
+      <Profile profile={data!.profile} />
+    </>
+  )
 }
 
 export default ProfilePage

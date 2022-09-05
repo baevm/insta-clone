@@ -1,11 +1,14 @@
 import { unstable_getServerSession } from 'next-auth'
 import AuthForm from '../../components/AuthPage/AuthForm'
+import SEO from '../../components/SEO'
 import { nextAuthOptions } from '../api/auth/[...nextauth]'
 
 const Login = () => {
-  
   return (
-    <AuthForm type='login' />
+    <>
+      <SEO title='Log in' siteName='Instagram' />
+      <AuthForm type='login' />
+    </>
   )
 }
 

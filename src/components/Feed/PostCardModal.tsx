@@ -4,12 +4,14 @@ import { useRouter } from 'next/router'
 import { Post } from '../../types/app.types'
 import { trpc } from '../../utils/trpc'
 
+
 type Props = {
   isOpenModal: boolean
   setIsOpenModal: (v: boolean) => void
   post: Post
   setIsToastVisible: (v: boolean) => void
 }
+
 
 const PostCardModal = ({ isOpenModal, setIsOpenModal, post, setIsToastVisible }: Props) => {
   const router = useRouter()

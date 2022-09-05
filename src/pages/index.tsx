@@ -2,11 +2,17 @@ import { createSSGHelpers } from '@trpc/react/ssg'
 import type { GetServerSideProps, GetServerSidePropsContext, NextPage } from 'next'
 import superjson from 'superjson'
 import Feed from '../components/Feed/Feed'
+import SEO from '../components/SEO'
 import { createContext } from '../server/createContext'
 import { appRouter } from '../server/router/app.router'
 
 const Home: NextPage = () => {
-  return <Feed />
+  return (
+    <>
+      <SEO title='Instagram' />
+      <Feed />
+    </>
+  )
 }
 
 export default Home
