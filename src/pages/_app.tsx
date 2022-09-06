@@ -6,6 +6,7 @@ import type { NextComponentType } from 'next'
 import { SessionProvider } from 'next-auth/react'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
+import NextNProgress from 'nextjs-progressbar'
 import superjson from 'superjson'
 import Layout from '../components/Layout'
 import { url } from '../constants/url.const'
@@ -25,6 +26,10 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: CustomAppPro
 
       <SessionProvider session={session}>
         <MantineProvider withGlobalStyles withNormalizeCSS>
+          <NextNProgress
+            color='linear-gradient(90deg, rgba(121,9,88,1) 0%, rgba(228,191,23,1) 50%, rgba(121,9,88,1) 100%)'
+            options={{ showSpinner: false, easing: 'ease', speed: 400 }}
+          />
           {Component.noHeader ? (
             <Component {...pageProps} />
           ) : (
