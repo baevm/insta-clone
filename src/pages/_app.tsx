@@ -18,6 +18,7 @@ type CustomAppProps = AppProps & {
 }
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: CustomAppProps) {
+  
   return (
     <>
       <Head>

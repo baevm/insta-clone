@@ -6,22 +6,16 @@ import { trpc } from '../utils/trpc'
 export const useMe = () => {
   const { data: session, status } = useSession()
   const name = session?.user?.name
-  
-
 
   const query = trpc.useQuery(['user.get-profile', { slug: name }], {
     enabled: status === 'authenticated',
     onError: (error) => {
-      console.error('me query error: ', error.message)
-
       // name exists but not valid session, clear it
       if (name && error.data?.code === 'NOT_FOUND') {
         signOut()
       }
     },
   })
-
-
 
   return { me: query.data, isLoadingMe: query.isFetching || status === 'loading', status }
 }
