@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import prisma from '../src/utils/prisma'
+import prisma from '../../src/utils/prisma'
 
 // data to be removed after test
 const testUserSignup = {
