@@ -4,6 +4,7 @@ import React from 'react'
 const Toast = ({ text }: { text: string }) => {
   return (
     <Box
+      role='toast'
       sx={{
         position: 'fixed',
         bottom: '0',
