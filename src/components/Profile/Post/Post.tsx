@@ -1,15 +1,15 @@
 import { Carousel } from '@mantine/carousel'
-import { Box, Container, Loader, Skeleton, Stack, Title } from '@mantine/core'
+import { Box, Container, Skeleton, Stack, Title } from '@mantine/core'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import React from 'react'
+import { Post as PostProps } from '../../../types/app.types'
+import { formatDate } from '../../../utils/formatDate'
 import { trpc } from '../../../utils/trpc'
+import SEO from '../../SEO'
 import Comment from './Comment'
 import CommentControls from './CommentControls'
 import PostHeader from './PostHeader'
-import { Post as PostProps } from '../../../types/app.types'
-import SEO from '../../SEO'
-import { formatDate } from '../../../utils/formatDate'
 
 type Props = {
   postId: any

@@ -1,5 +1,5 @@
 import { Box, Container, Loader } from '@mantine/core'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { useMe } from '../../hooks/useMe'
 import useInterfaceStore from '../../store/InterfaceStore'
 import { Pages } from '../../types/app.types'
@@ -18,14 +18,14 @@ const DisplayPosts = ({ pages }: { pages: Pages }) => {
 const Feed = () => {
   const observerElem = useRef<HTMLDivElement>(null)
   const toast = useInterfaceStore((state: any) => state.toast)
+  const suggestionsQuery = trpc.useQuery(['feed.get-suggestions'])
+  const { me } = useMe()
   const feedQuery = trpc.useInfiniteQuery(['feed.get-feed', { limit: 5 }], {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
   })
-  const suggestionsQuery = trpc.useQuery(['feed.get-suggestions'])
-  const { me } = useMe()
+  
   const pages = feedQuery.data?.pages
   const suggestions = suggestionsQuery.data!.suggestions
-
   // observe ref element, if its entered the viewport, fetch next page
   const handleObserver = useCallback(
     (entries: any) => {

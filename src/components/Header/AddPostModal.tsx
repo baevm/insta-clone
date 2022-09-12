@@ -10,7 +10,6 @@ import useInterfaceStore from '../../store/InterfaceStore'
 import { readFileAsUrl } from '../../utils/readFileAsUrl'
 import { trpc } from '../../utils/trpc'
 import AvatarName from '../common/AvatarName'
-import shallow from 'zustand/shallow'
 
 type Stages = 'upload' | 'preview' | 'post'
 
@@ -105,7 +104,7 @@ const AddPostModal = ({ isModalOpened, setIsModalOpened, avatar, name }: Props) 
     })
   }
 
-  const uploadImageToCloud = async (imges: any) => {
+  const uploadImageToCloud = (imges: any) => {
     createPost.mutate({ images: imges, caption })
   }
 
@@ -152,7 +151,7 @@ const AddPostModal = ({ isModalOpened, setIsModalOpened, avatar, name }: Props) 
                 alignItems: 'center',
                 border: 0,
               })}>
-              <Group position='center' spacing='xl' style={{ minHeight: 600, pointerEvents: 'none' }}>
+              <Group position='center' spacing='xl' sx={{ minHeight: 600, pointerEvents: 'none' }}>
                 <Group sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                   <Dropzone.Idle>
                     <MdPhoto size={50} />

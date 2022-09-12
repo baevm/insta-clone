@@ -22,7 +22,7 @@ const PostCardModal = ({ isOpenModal, setIsOpenModal, post }: Props) => {
       withCloseButton={false}
       padding={0}
       zIndex={2000}
-      styles={(theme) => ({
+      styles={() => ({
         modal: {
           borderRadius: '10px',
         },

@@ -8,6 +8,29 @@ import { ProfileProps } from '../../types/app.types'
 import { trpc } from '../../utils/trpc'
 import UploadAvatarModal from './UploadAvatarModal'
 
+const ModalItem = ({ name, avatar, setIsModalOpened }: { name: string; avatar: string; setIsModalOpened: any }) => {
+  return (
+    <Box p='0.5rem' sx={{ width: '100%', display: 'flex', alignItems: 'center', borderBottom: '1px solid lightgray' }}>
+      <Link href={`/${name}`} passHref>
+        <Anchor onClick={() => setIsModalOpened({ type: '', isOpen: false })}>
+          <Avatar src={avatar ? avatar : ''} radius='xl' />
+        </Anchor>
+      </Link>
+      <Link href={`/${name}`} passHref>
+        <Anchor
+          ml='0.5rem'
+          underline={false}
+          color='dark'
+          weight='bold'
+          size='sm'
+          onClick={() => setIsModalOpened({ type: '', isOpen: false })}>
+          {name}
+        </Anchor>
+      </Link>
+    </Box>
+  )
+}
+
 const ProfileHeader = ({ profile }: { profile: ProfileProps }) => {
   const utils = trpc.useContext()
   const [isModalOpened, setIsModalOpened] = useState<{ type: 'followers' | 'following' | ''; isOpen: boolean }>({
@@ -29,31 +52,6 @@ const ProfileHeader = ({ profile }: { profile: ProfileProps }) => {
     },
   })
 
-  const ModalItem = ({ name, avatar }: { name: string; avatar: string }) => {
-    return (
-      <Box
-        p='0.5rem'
-        sx={{ width: '100%', display: 'flex', alignItems: 'center', borderBottom: '1px solid lightgray' }}>
-        <Link href={`/${name}`} passHref>
-          <Anchor onClick={() => setIsModalOpened({ type: '', isOpen: false })}>
-            <Avatar src={avatar ? avatar : ''} radius='xl' />
-          </Anchor>
-        </Link>
-        <Link href={`/${name}`} passHref>
-          <Anchor
-            ml='0.5rem'
-            underline={false}
-            color='dark'
-            weight='bold'
-            size='sm'
-            onClick={() => setIsModalOpened({ type: '', isOpen: false })}>
-            {name}
-          </Anchor>
-        </Link>
-      </Box>
-    )
-  }
-
   return (
     <>
       <Modal
@@ -73,8 +71,12 @@ const ProfileHeader = ({ profile }: { profile: ProfileProps }) => {
 
           <Box sx={{ width: '100%', maxHeight: '200px', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
             {isModalOpened.type === 'followers'
-              ? profile.followedBy.map((f: any) => <ModalItem avatar={f.avatar} name={f.name} key={f.id} />)
-              : profile.following.map((f: any) => <ModalItem avatar={f.avatar} name={f.name} key={f.id} />)}
+              ? profile.followedBy.map((f: any) => (
+                  <ModalItem avatar={f.avatar} name={f.name} key={f.id} setIsModalOpened={setIsModalOpened} />
+                ))
+              : profile.following.map((f: any) => (
+                  <ModalItem avatar={f.avatar} name={f.name} key={f.id} setIsModalOpened={setIsModalOpened} />
+                ))}
           </Box>
         </Center>
       </Modal>

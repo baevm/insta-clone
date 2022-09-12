@@ -1,6 +1,6 @@
 import * as trpc from '@trpc/server'
-import { z } from 'zod'
 import { cloudinary } from '../../services/cloudinary'
+import { Post } from '../../types/app.types'
 import { createRouter } from '../createRouter'
 import {
   AddCommentSchema,
@@ -10,7 +10,6 @@ import {
   LikePostSchema,
   PostSchema,
 } from '../schemas/post.schema'
-import { Post } from '../../types/app.types'
 
 export const postRouter = createRouter()
   .query('get-post', {
@@ -43,8 +42,8 @@ export const postRouter = createRouter()
               },
             },
             orderBy: {
-              createdAt: 'desc'
-            }
+              createdAt: 'desc',
+            },
           },
         },
       })
@@ -162,7 +161,8 @@ export const postRouter = createRouter()
         })
       }
 
-      const liked = await ctx.prisma.post.update({
+      // like post
+      await ctx.prisma.post.update({
         where: {
           id: postId,
         },
@@ -189,7 +189,8 @@ export const postRouter = createRouter()
         })
       }
 
-      const unliked = await ctx.prisma.post.update({
+      // unlike post
+      await ctx.prisma.post.update({
         where: {
           id: postId,
         },
@@ -251,7 +252,8 @@ export const postRouter = createRouter()
         })
       }
 
-      const commentDeleted = await ctx.prisma.comments.delete({
+      // delete comment
+      await ctx.prisma.comments.delete({
         where: {
           id: commentId,
         },

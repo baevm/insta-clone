@@ -1,10 +1,6 @@
-import { ActionIcon, Anchor, Box, Button, Card, Divider, Group, Skeleton, Text, Textarea } from '@mantine/core'
-import { useSession } from 'next-auth/react'
-import Link from 'next/link'
+import { Box, Button, Textarea } from '@mantine/core'
 import { useState } from 'react'
-import { IoBookmarkOutline, IoChatbubbleOutline, IoHeart, IoHeartOutline, IoPaperPlaneOutline } from 'react-icons/io5'
 import { Post } from '../../../types/app.types'
-import { formatDate } from '../../../utils/formatDate'
 import { trpc } from '../../../utils/trpc'
 
 type Props = {
@@ -37,9 +33,9 @@ const CommentArea = ({ post }: Props) => {
         placeholder='Add a comment'
         maxRows={4}
         minRows={1}
-        autosize={true}
+        autosize
         sx={{ width: '80%' }}
-        styles={(theme) => ({
+        styles={() => ({
           input: {
             border: 0,
           },

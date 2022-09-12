@@ -19,7 +19,7 @@ const CommentControls = ({ postId, likes }: Props) => {
   const { data } = useSession()
   const [comment, setComment] = useState('')
   const addComment = trpc.useMutation('post.add-comment', {
-    async onSuccess(res) {
+    onSuccess(res) {
       const snapshot = utils.getQueryData(['post.get-post', { postId }])
 
       utils.setQueryData(['post.get-post', { postId }], {

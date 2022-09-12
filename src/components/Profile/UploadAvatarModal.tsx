@@ -1,12 +1,30 @@
-import { Avatar, Box, Button, Center, Group, Image, Loader, Modal, Text } from '@mantine/core'
+import { Box, Button, Center, Group, Image, Loader, Modal, Text } from '@mantine/core'
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone'
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { BsUpload } from 'react-icons/bs'
 import { MdClose, MdPhoto } from 'react-icons/md'
 import { readFileAsUrl } from '../../utils/readFileAsUrl'
 import { trpc } from '../../utils/trpc'
 
 type Stages = 'upload' | 'preview' | 'post'
+
+const Previews = ({ file }: { file: File[] }) => {
+  return (
+    <>
+      {file.map((file, index) => {
+        const imageUrl = URL.createObjectURL(file)
+        return (
+          <Image
+            key={index}
+            src={imageUrl}
+            imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }}
+            alt='preview'
+          />
+        )
+      })}
+    </>
+  )
+}
 
 const UploadAvatarModal = ({ avatarModal, setAvatarModal }: any) => {
   const utils = trpc.useContext()
@@ -26,15 +44,6 @@ const UploadAvatarModal = ({ avatarModal, setAvatarModal }: any) => {
     setStage('upload')
   }
 
-  const previews = () => {
-    return file.map((file, index) => {
-      const imageUrl = URL.createObjectURL(file)
-      return (
-        <Image key={index} src={imageUrl} imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }} alt='preview' />
-      )
-    })
-  }
-
   const handleSubmit = () => {
     if (!file) return
     setStage('post')
@@ -50,7 +59,7 @@ const UploadAvatarModal = ({ avatarModal, setAvatarModal }: any) => {
 
   return (
     <Modal opened={avatarModal} onClose={handleClose} centered zIndex={2000} withCloseButton={false} padding={0}>
-      <Group position='apart' sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem' }}>
+      <Group id='modal-header' position='apart' sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem' }}>
         <div></div>
         <Box>Upload avatar</Box>
         {stage === 'preview' ? (
@@ -82,7 +91,7 @@ const UploadAvatarModal = ({ avatarModal, setAvatarModal }: any) => {
             alignItems: 'center',
             border: 0,
           })}>
-          <Group position='center' spacing='xl' style={{ minHeight: 600, pointerEvents: 'none' }}>
+          <Group position='center' spacing='xl' sx={{ minHeight: 600, pointerEvents: 'none' }}>
             <Group sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <Dropzone.Idle>
                 <MdPhoto size={50} />
@@ -104,9 +113,9 @@ const UploadAvatarModal = ({ avatarModal, setAvatarModal }: any) => {
       )}
 
       {stage === 'preview' && (
-        <>
-          <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>{previews()}</Box>
-        </>
+        <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
+          <Previews file={file} />
+        </Box>
       )}
 
       {stage === 'post' && (

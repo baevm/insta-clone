@@ -25,7 +25,7 @@ const PostContainer = ({ post, name }: Props) => {
   return (
     <>
       <Grid.Col span={4} sx={{ cursor: 'pointer' }}>
-        <Link href={`/[profile]?profile=${name}`} as={`/p/${post.id}`} passHref shallow={true}>
+        <Link href={`/[profile]?profile=${name}`} as={`/p/${post.id}`} passHref shallow>
           <Anchor onMouseEnter={() => setIsHover(true)} onMouseLeave={() => setIsHover(false)}>
             <Indicator
               size={18}

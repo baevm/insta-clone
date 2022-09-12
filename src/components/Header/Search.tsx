@@ -51,13 +51,11 @@ const Search = () => {
         </Popover.Target>
         <Popover.Dropdown p={0} sx={{ height: '222px', overflowY: 'auto' }}>
           {searchResult?.searchResult?.length! > 0 ? (
-            <>
-              {searchResult?.searchResult?.map((user) => (
-                <Group p={'0.5rem'} key={user!.id} sx={{ borderBottom: '1px solid lightgray' }}>
-                  <AvatarName avatar={user?.avatar} name={user?.name} />
-                </Group>
-              ))}
-            </>
+            searchResult?.searchResult?.map((user) => (
+              <Group p={'0.5rem'} key={user!.id} sx={{ borderBottom: '1px solid lightgray' }}>
+                <AvatarName avatar={user?.avatar} name={user?.name} />
+              </Group>
+            ))
           ) : (
             <Box sx={{ height: '90%' }} p='0.5rem'>
               <Title order={5}>{searchResult?.status === 404 ? 'Search' : 'Recent'}</Title>

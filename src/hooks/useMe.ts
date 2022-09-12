@@ -1,5 +1,4 @@
 import { signOut, useSession } from 'next-auth/react'
-import { useState } from 'react'
 import { trpc } from '../utils/trpc'
 
 // for logged in user only
