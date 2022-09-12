@@ -13,11 +13,10 @@ import { formatDate } from '../../../utils/formatDate'
 
 type Props = {
   postId: any
-  setIsToastVisible: (v: boolean) => void
   type: 'modal' | 'standalone'
 }
 
-const Post = ({ postId, setIsToastVisible, type }: Props) => {
+const Post = ({ postId, type }: Props) => {
   const { data } = useSession()
   const { data: postArr, isLoading } = trpc.useQuery(['post.get-post', { postId }])
 
@@ -46,13 +45,7 @@ const Post = ({ postId, setIsToastVisible, type }: Props) => {
         }}>
         {/* Mobile header on top of image */}
 
-        <PostHeader
-          name={post.User?.name}
-          avatar={post.User?.avatar}
-          postId={post.id}
-          setIsToastVisible={setIsToastVisible}
-          type='mobile'
-        />
+        <PostHeader name={post.User?.name} avatar={post.User?.avatar} postId={post.id} type='mobile' />
 
         {isLoading ? (
           <Skeleton
@@ -131,13 +124,7 @@ const Post = ({ postId, setIsToastVisible, type }: Props) => {
             },
           }}>
           {/* Desktop header on top of comments section */}
-          <PostHeader
-            name={post.User?.name}
-            avatar={post.User?.avatar}
-            postId={post.id}
-            setIsToastVisible={setIsToastVisible}
-            type='desktop'
-          />
+          <PostHeader name={post.User?.name} avatar={post.User?.avatar} postId={post.id} type='desktop' />
 
           {isLoading ? (
             <Box sx={{ height: '75%' }} />
@@ -153,6 +140,7 @@ const Post = ({ postId, setIsToastVisible, type }: Props) => {
               {post.comments &&
                 post.comments.map((c: any) => (
                   <Comment
+                    postId={postId}
                     commentId={c.id}
                     avatar={c.User.avatar}
                     date={c.createdAt}

@@ -9,6 +9,7 @@ export const useMe = () => {
 
   const query = trpc.useQuery(['user.get-profile', { slug: name }], {
     enabled: status === 'authenticated',
+    
     onError: (error) => {
       // name exists but not valid session, clear it
       if (name && error.data?.code === 'NOT_FOUND') {

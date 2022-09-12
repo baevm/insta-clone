@@ -1,32 +1,30 @@
 import { Box, Container, Loader } from '@mantine/core'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useMe } from '../../hooks/useMe'
+import useInterfaceStore from '../../store/InterfaceStore'
+import { Pages } from '../../types/app.types'
 import { trpc } from '../../utils/trpc'
 import Toast from '../Toast'
-import PostCard from './PostCard'
+import PostCard from './Post/PostCard'
 import Suggestions from './Suggestions'
 import SuggestionsCarousel from './SuggestionsCarousel'
 
+const DisplayPosts = ({ pages }: { pages: Pages }) => {
+  return (
+    <>{pages!.map(({ feed }) => feed.map((post: typeof feed[number]) => <PostCard key={post.id} post={post} />))}</>
+  )
+}
+
 const Feed = () => {
   const observerElem = useRef<HTMLDivElement>(null)
-  const [isToastVisible, setIsToastVisible] = useState(false)
+  const toast = useInterfaceStore((state: any) => state.toast)
   const feedQuery = trpc.useInfiniteQuery(['feed.get-feed', { limit: 5 }], {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
   })
-  const { data: s } = trpc.useQuery(['feed.get-suggestions'])
+  const suggestionsQuery = trpc.useQuery(['feed.get-suggestions'])
   const { me } = useMe()
   const pages = feedQuery.data?.pages
-  const suggestions = s!.suggestions!
-
-  const displayPosts = () => {
-    const postsArr = pages?.map(({ feed }) =>
-      feed.map((post: typeof feed[number]) => (
-        <PostCard key={post.id} post={post} setIsToastVisible={setIsToastVisible} />
-      ))
-    )
-
-    return postsArr
-  }
+  const suggestions = suggestionsQuery.data!.suggestions
 
   // observe ref element, if its entered the viewport, fetch next page
   const handleObserver = useCallback(
@@ -42,9 +40,9 @@ const Feed = () => {
   useEffect(() => {
     const element = observerElem.current
     const option = { threshold: 0 }
-
     const observer = new IntersectionObserver(handleObserver, option)
     observer.observe(element as Element)
+
     return () => observer.unobserve(element as Element)
   }, [feedQuery.fetchNextPage, feedQuery.hasNextPage, handleObserver])
 
@@ -70,8 +68,9 @@ const Feed = () => {
           flexDirection: 'column',
           gap: '2rem',
         }}>
-        {pages && displayPosts()}
+        {pages && <DisplayPosts pages={pages} />}
 
+        {/* If loading and has more posts show loader, else null */}
         <Box ref={observerElem} sx={{ display: 'flex', justifyContent: 'center' }}>
           {feedQuery.isFetching && feedQuery.hasNextPage ? (
             <Loader color='gray' size='md' sx={{ justifySelf: 'center' }} />
@@ -85,7 +84,8 @@ const Feed = () => {
       {suggestions.length > 0 && (
         <Suggestions name={me?.profile.name} avatar={me?.profile.avatar} suggestions={suggestions} />
       )}
-      {isToastVisible && <Toast text='Post deleted.' />}
+
+      {toast.open && <Toast text={toast.message} />}
     </Container>
   )
 }

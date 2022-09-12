@@ -30,3 +30,26 @@ export type Post = {
   images: string[]
   comments: any
 }
+
+export type Pages = {
+  feed: {
+    User: {
+      name: string | null
+      avatar: string | null
+      id: string
+    } | null
+    id: string
+    createdAt: Date
+    comments: {
+      User: {
+        name: string | null
+      } | null
+      id: string
+      body: string
+      createdAt: Date
+    }[]
+    likedUsers: User[]
+    images: string[]
+  }[]
+  nextCursor: string | undefined
+}[]

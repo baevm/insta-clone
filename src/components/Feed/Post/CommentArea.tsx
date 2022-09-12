@@ -3,9 +3,9 @@ import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useState } from 'react'
 import { IoBookmarkOutline, IoChatbubbleOutline, IoHeart, IoHeartOutline, IoPaperPlaneOutline } from 'react-icons/io5'
-import { Post } from '../../types/app.types'
-import { formatDate } from '../../utils/formatDate'
-import { trpc } from '../../utils/trpc'
+import { Post } from '../../../types/app.types'
+import { formatDate } from '../../../utils/formatDate'
+import { trpc } from '../../../utils/trpc'
 
 type Props = {
   post: Post

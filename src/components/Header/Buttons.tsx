@@ -8,8 +8,10 @@ import {
   IoBookmarkOutline,
   IoChatbubbleEllipsesOutline,
   IoCompassOutline,
-  IoHeartOutline, IoHomeOutline,
-  IoHomeSharp, IoSettingsOutline
+  IoHeartOutline,
+  IoHomeOutline,
+  IoHomeSharp,
+  IoSettingsOutline,
 } from 'react-icons/io5'
 import { MdOutlineAddBox } from 'react-icons/md'
 
@@ -34,8 +36,14 @@ const Buttons = ({ avatar, name }: { avatar: string; name: string }) => {
         <ActionIcon disabled color='dark' variant='transparent' size='lg' mx='0.4rem'>
           <IoChatbubbleEllipsesOutline size='1.6rem' />
         </ActionIcon>
-        {/* Button to add post */}
-        <ActionIcon color='dark' variant='transparent' size='lg' mx='0.4rem' onClick={() => setIsModalOpened(true)}>
+        {/* Button to create post */}
+        <ActionIcon
+          color='dark'
+          variant='transparent'
+          aria-label='Create post'
+          size='lg'
+          mx='0.4rem'
+          onClick={() => setIsModalOpened(true)}>
           <MdOutlineAddBox size='1.8rem' />
         </ActionIcon>
         {/* Button ??? */}

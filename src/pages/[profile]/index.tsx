@@ -1,14 +1,11 @@
 import { createSSGHelpers } from '@trpc/react/ssg'
 import { GetServerSidePropsContext } from 'next'
-import dynamic from 'next/dynamic'
 import superjson from 'superjson'
 import Profile from '../../components/Profile/Profile'
 import SEO from '../../components/SEO'
 import { createContext } from '../../server/createContext'
 import { appRouter } from '../../server/router/app.router'
 import { trpc } from '../../utils/trpc'
-
-const FourOFourWarning = dynamic(() => import('../../components/FourOFourWarning'), { ssr: false })
 
 type Props = {
   slug: string
@@ -21,18 +18,10 @@ const ProfilePage = ({ slug }: Props) => {
     refetchOnWindowFocus: false,
   })
 
-  if (!data) {
-    return (
-      <>
-        <SEO title='Page not found' siteName='Instagram' />
-        <FourOFourWarning />
-      </>
-    )
-  }
 
   return (
     <>
-      <SEO title={`@${data.profile.name}`} siteName='Instagram photos and videos' />
+      <SEO title={`@${data?.profile.name}`} siteName='Instagram photos and videos' />
       <Profile profile={data!.profile} />
     </>
   )
@@ -52,7 +41,10 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<{ pr
   try {
     await ssg.fetchQuery('user.get-profile', { slug })
   } catch (error) {
-    console.error(error)
+    return {
+      // notFound true shows 404 page without changing url for /404
+      notFound: true,
+    }
   }
 
   return {

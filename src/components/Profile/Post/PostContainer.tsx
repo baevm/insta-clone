@@ -13,10 +13,9 @@ import { Post as PostProps } from '../../../types/app.types'
 type Props = {
   post: PostProps
   name: string
-  setIsToastVisible: (v: boolean) => void
 }
 
-const PostContainer = ({ post, name, setIsToastVisible }: Props) => {
+const PostContainer = ({ post, name }: Props) => {
   const mobileQuery = useMediaQuery('(max-width: 768px)', true)
   const [isHover, setIsHover] = useState(false)
   const router = useRouter()
@@ -26,7 +25,7 @@ const PostContainer = ({ post, name, setIsToastVisible }: Props) => {
   return (
     <>
       <Grid.Col span={4} sx={{ cursor: 'pointer' }}>
-        <Link href={`/[profile]?profile=${name}`} as={`/p/${post.id}`} passHref shallow>
+        <Link href={`/[profile]?profile=${name}`} as={`/p/${post.id}`} passHref shallow={true}>
           <Anchor onMouseEnter={() => setIsHover(true)} onMouseLeave={() => setIsHover(false)}>
             <Indicator
               size={18}
@@ -43,7 +42,6 @@ const PostContainer = ({ post, name, setIsToastVisible }: Props) => {
                 style={{
                   backgroundColor: 'black',
                   filter: isHover ? 'brightness(60%)' : '',
-                  /*  opacity: isHover ? '.9' : 1, */
                   transition: '.2s ease',
                 }}
               />
@@ -91,7 +89,7 @@ const PostContainer = ({ post, name, setIsToastVisible }: Props) => {
         padding={0}
         size='70%'
         zIndex={2000}>
-        <Post type='modal' postId={post.id} setIsToastVisible={setIsToastVisible} />
+        <Post type='modal' postId={post.id} />
       </Modal>
     </>
   )

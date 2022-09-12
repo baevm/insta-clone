@@ -12,13 +12,14 @@ type Props = {
   date: string
   text: string
   commentId: string
+  postId: string
 }
 
-const Comment = ({ avatar, name, text, date, authUserName, commentId }: Props) => {
+const Comment = ({ avatar, name, text, date, authUserName, commentId, postId }: Props) => {
   const utils = trpc.useContext()
   const deleteComment = trpc.useMutation('post.delete-comment', {
     onSuccess() {
-      utils.invalidateQueries('user.get-profile')
+      utils.invalidateQueries(['post.get-post', { postId }])
     },
   })
 

@@ -14,7 +14,7 @@ const AvatarName = ({ avatar, name, undername }: Props) => {
       <Link href={`/${name}`} passHref>
         <Anchor>
           {avatar ? (
-            <Avatar radius='xl' src={avatar === '0' ? null : avatar} />
+            <Avatar radius='xl' src={avatar === '0' ? null : avatar} alt={name!} />
           ) : (
             <Skeleton width='30px' height='30px' radius='xl' />
           )}

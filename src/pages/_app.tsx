@@ -11,14 +11,13 @@ import superjson from 'superjson'
 import Layout from '../components/Layout'
 import { url } from '../constants/url.const'
 import { AppRouter } from '../server/router/app.router'
-import '../styles/globals.css'
+
 
 type CustomAppProps = AppProps & {
   Component: NextComponentType & { noHeader?: boolean }
 }
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: CustomAppProps) {
-  
   return (
     <>
       <Head>
@@ -30,6 +29,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: CustomAppPro
           <NextNProgress
             color='linear-gradient(90deg, rgba(121,9,88,1) 0%, rgba(228,191,23,1) 50%, rgba(121,9,88,1) 100%)'
             options={{ showSpinner: false, easing: 'ease', speed: 400 }}
+            showOnShallow={false}
           />
           {Component.noHeader ? (
             <Component {...pageProps} />
@@ -73,3 +73,5 @@ export default withTRPC<AppRouter>({
 
 // TODO:
 // feed live updates
+// BUG:
+// next js progress bar showing with shallow = false

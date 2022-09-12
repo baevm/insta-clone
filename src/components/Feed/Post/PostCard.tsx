@@ -4,18 +4,17 @@ import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import { useState } from 'react'
 import { MdMoreHoriz } from 'react-icons/md'
-import { Post } from '../../types/app.types'
-import AvatarName from '../common/AvatarName'
+import { Post } from '../../../types/app.types'
+import AvatarName from '../../common/AvatarName'
 import PostCardControls from './PostCardControls'
 
 const PostCardModal = dynamic(() => import('./PostCardModal'), { ssr: false })
 
 type Props = {
   post: Post
-  setIsToastVisible: (v: boolean) => void
 }
 
-const PostCard = ({ post, setIsToastVisible }: Props) => {
+const PostCard = ({ post }: Props) => {
   const [isOpenModal, setIsOpenModal] = useState(false)
 
   return (
@@ -24,13 +23,12 @@ const PostCard = ({ post, setIsToastVisible }: Props) => {
         isOpenModal={isOpenModal}
         post={post}
         setIsOpenModal={setIsOpenModal}
-        setIsToastVisible={setIsToastVisible}
       />
 
       <Card withBorder radius='md' p={0}>
         <Card.Section py='xs' px='xs'>
           <Group position='apart' align='center'>
-            <AvatarName avatar={post.User?.avatar} name={post.User?.name} />
+            <AvatarName avatar={post.User?.avatar} name={post.User!.name} />
 
             <ActionIcon color='dark' variant='transparent' size='md' onClick={() => setIsOpenModal(true)}>
               <MdMoreHoriz size='1.8rem' />

@@ -1,12 +1,12 @@
 import { Anchor, Box, Card, Divider, Group, Skeleton, Text } from '@mantine/core'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { Post } from '../../types/app.types'
-import { formatDate } from '../../utils/formatDate'
-import CommentButton from '../common/CommentButton'
-import FavoriteButton from '../common/FavoriteButton'
-import LikeButton from '../common/LikeButton'
-import ShareButton from '../common/ShareButton'
+import { Post } from '../../../types/app.types'
+import { formatDate } from '../../../utils/formatDate'
+import CommentButton from '../../common/CommentButton'
+import FavoriteButton from '../../common/FavoriteButton'
+import LikeButton from '../../common/LikeButton'
+import ShareButton from '../../common/ShareButton'
 import CommentArea from './CommentArea'
 
 type Props = {

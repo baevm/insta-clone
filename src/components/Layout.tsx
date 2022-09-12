@@ -5,9 +5,9 @@ import Header from './Header/Header'
 import SEO from './SEO'
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const { isLoadingMe } = useMe()
+  const { isLoadingMe, me } = useMe()
 
-  if (isLoadingMe) {
+  if (!me && isLoadingMe) {
     return (
       <>
         <SEO title='Instagram' />

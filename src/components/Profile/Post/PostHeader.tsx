@@ -4,35 +4,21 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { MdClose, MdMoreHoriz } from 'react-icons/md'
-import { trpc } from '../../../utils/trpc'
 import AvatarName from '../../common/AvatarName'
+import DeletePostButton from '../../common/DeletePostButton'
 
 type Props = {
   name: string | null | undefined
   avatar: string | null | undefined
   type: 'mobile' | 'desktop'
-  setIsToastVisible: any
   postId: string
 }
 
-const PostHeader = ({ name, avatar, type, setIsToastVisible, postId }: Props) => {
+const PostHeader = ({ name, avatar, type, postId }: Props) => {
   const mobileQuery = useMediaQuery('(max-width: 768px)', true)
   const router = useRouter()
   const { data } = useSession()
   const [isOpenModal, setIsOpenModal] = useState(false)
-  const utils = trpc.useContext()
-
-  const deletePost = trpc.useMutation(['post.delete-post'], {
-    async onSuccess() {
-      await utils.invalidateQueries('user.get-profile')
-      router.push(`/${name}`)
-      setIsToastVisible(true)
-
-      setTimeout(() => {
-        setIsToastVisible(false)
-      }, 6000)
-    },
-  })
 
   return (
     <>
@@ -45,7 +31,6 @@ const PostHeader = ({ name, avatar, type, setIsToastVisible, postId }: Props) =>
           borderBottom: '1px solid lightgray',
           '@media (min-width: 956px)': { display: type === 'mobile' ? 'none' : '' },
           '@media (max-width: 956px)': { display: type === 'desktop' ? 'none' : '' },
-          /* '@media (max-width: 956px)': { display: type === 'desktop' ? 'none' : '' }, */
         }}>
         <AvatarName avatar={avatar} name={name} />
         <Group align='center'>
@@ -76,15 +61,13 @@ const PostHeader = ({ name, avatar, type, setIsToastVisible, postId }: Props) =>
         withCloseButton={false}
         padding={0}
         zIndex={3000}
-        styles={(theme) => ({
+        styles={() => ({
           modal: {
             borderRadius: '10px',
           },
         })}>
         <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem', color: 'red' }}>
-          <Button variant='white' fullWidth compact color='red' onClick={() => deletePost.mutate({ id: postId })}>
-            Delete
-          </Button>
+          <DeletePostButton postId={postId} type='profile' name={name}/>
         </Center>
 
         <Center sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem' }}>

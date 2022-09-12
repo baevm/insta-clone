@@ -1,6 +1,5 @@
 import { createSSGHelpers } from '@trpc/react/ssg'
 import { GetServerSidePropsContext } from 'next'
-import { useState } from 'react'
 import superjson from 'superjson'
 import Post from '../../components/Profile/Post/Post'
 import { createContext } from '../../server/createContext'
@@ -11,9 +10,7 @@ type Props = {
 }
 
 const PhotoPage = ({ postId }: Props) => {
-  const [isToastVisible, setIsToastVisible] = useState(false)
-
-  return <Post postId={postId} type='standalone' setIsToastVisible={setIsToastVisible} />
+  return <Post postId={postId} type='standalone' />
 }
 
 export default PhotoPage
@@ -31,10 +28,8 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<{ ph
     await ssg.fetchQuery('post.get-post', { postId })
   } catch (error) {
     return {
-      redirect: {
-        permanent: false,
-        destination: '/404',
-      },
+      // not found true shows 404 page without changing url for /404
+      notFound: true,
     }
   }
 

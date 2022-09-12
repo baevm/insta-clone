@@ -6,9 +6,11 @@ import React, { useRef, useState } from 'react'
 import { BsUpload } from 'react-icons/bs'
 import { IoLocationOutline } from 'react-icons/io5'
 import { MdClose, MdPhoto } from 'react-icons/md'
+import useInterfaceStore from '../../store/InterfaceStore'
 import { readFileAsUrl } from '../../utils/readFileAsUrl'
 import { trpc } from '../../utils/trpc'
 import AvatarName from '../common/AvatarName'
+import shallow from 'zustand/shallow'
 
 type Stages = 'upload' | 'preview' | 'post'
 
@@ -19,6 +21,49 @@ type Props = {
   name: string
 }
 
+const Previews = ({ files }: { files: File[] }) => {
+  if (files.length > 1) {
+    return (
+      <Carousel
+        styles={{
+          control: {
+            '&[data-inactive]': {
+              opacity: 0,
+              cursor: 'default',
+            },
+          },
+        }}>
+        {files.map((file, index) => {
+          const imageUrl = URL.createObjectURL(file)
+          return (
+            <Carousel.Slide
+              key={index}
+              sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'black' }}>
+              <Image src={imageUrl} imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }} alt='preview' />
+            </Carousel.Slide>
+          )
+        })}
+      </Carousel>
+    )
+  }
+
+  return (
+    <>
+      {files.map((file, index) => {
+        const imageUrl = URL.createObjectURL(file)
+        return (
+          <Image
+            key={index}
+            src={imageUrl}
+            imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }}
+            alt='preview'
+          />
+        )
+      })}
+    </>
+  )
+}
+
 const AddPostModal = ({ isModalOpened, setIsModalOpened, avatar, name }: Props) => {
   const utils = trpc.useContext()
   const matches = useMediaQuery('(min-width: 556px)', false)
@@ -26,47 +71,20 @@ const AddPostModal = ({ isModalOpened, setIsModalOpened, avatar, name }: Props) 
   const [files, setFiles] = useState<File[]>([])
   const [caption, setCaption] = useState('')
   const [stage, setStage] = useState<Stages>('upload') // modal tabs
+  const openToast = useInterfaceStore((state: any) => state.openToast)
+  const closeToast = useInterfaceStore((state: any) => state.closeToast)
 
   const createPost = trpc.useMutation(['post.create-post'], {
     onSuccess() {
       utils.invalidateQueries('feed.get-feed')
       utils.invalidateQueries('user.get-profile')
+      openToast({ message: 'Post created.' })
+
+      setTimeout(() => {
+        closeToast()
+      }, 6000)
     },
   })
-
-  const previews = () => {
-    if (files.length > 1) {
-      return (
-        <Carousel
-          styles={{
-            control: {
-              '&[data-inactive]': {
-                opacity: 0,
-                cursor: 'default',
-              },
-            },
-          }}>
-          {files.map((file, index) => {
-            const imageUrl = URL.createObjectURL(file)
-            return (
-              <Carousel.Slide
-                key={index}
-                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'black' }}>
-                <Image src={imageUrl} imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }} alt='preview' />
-              </Carousel.Slide>
-            )
-          })}
-        </Carousel>
-      )
-    }
-
-    return files.map((file, index) => {
-      const imageUrl = URL.createObjectURL(file)
-      return (
-        <Image key={index} src={imageUrl} imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }} alt='preview' />
-      )
-    })
-  }
 
   const handleClose = () => {
     setFiles([])
@@ -106,7 +124,7 @@ const AddPostModal = ({ isModalOpened, setIsModalOpened, avatar, name }: Props) 
         <Box>Create new post</Box>
         {stage === 'preview' ? (
           <Box>
-            <Button variant='subtle' compact onClick={handleSubmit}>
+            <Button variant='subtle' aria-label='Share post' compact onClick={handleSubmit}>
               Share
             </Button>
           </Box>
@@ -156,7 +174,9 @@ const AddPostModal = ({ isModalOpened, setIsModalOpened, avatar, name }: Props) 
           )}
           {stage === 'preview' && (
             <>
-              <Box sx={{ width: '70%' }}>{previews()}</Box>
+              <Box sx={{ width: '70%' }}>
+                <Previews files={files} />
+              </Box>
               <Box sx={{ borderLeft: '1px solid lightgray', width: '30%' }}>
                 <Box sx={{ borderBottom: '1px solid lightgray' }}>
                   <Group p='0.5rem'>
