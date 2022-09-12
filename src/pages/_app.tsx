@@ -12,7 +12,6 @@ import Layout from '../components/Layout'
 import { url } from '../constants/url.const'
 import { AppRouter } from '../server/router/app.router'
 
-
 type CustomAppProps = AppProps & {
   Component: NextComponentType & { noHeader?: boolean }
 }
@@ -73,5 +72,6 @@ export default withTRPC<AppRouter>({
 
 // TODO:
 // feed live updates
+// change get-profile in useMe hook for get-account
 // BUG:
 // next js progress bar showing with shallow = false

@@ -1,11 +1,13 @@
 import { Box, Group, Input, Popover, Text, Title } from '@mantine/core'
 import React, { ChangeEvent, MutableRefObject, useRef, useState } from 'react'
 import { IoSearchOutline } from 'react-icons/io5'
+import { useOutsideClick } from '../../hooks/useOutsideClick'
 import { User } from '../../types/app.types'
 import { trpc } from '../../utils/trpc'
 import AvatarName from '../common/AvatarName'
 
 const Search = () => {
+  const popoverRef = useRef<HTMLDivElement>(null)
   const [isPopoverOpened, setIsPopoverOpened] = useState(false)
   const timeout: { current: NodeJS.Timeout | null } = useRef(null)
   const inputRef = useRef() as MutableRefObject<HTMLInputElement>
@@ -14,6 +16,7 @@ const Search = () => {
     status?: number
     message?: string
   } | null>(null)
+  useOutsideClick(popoverRef, () => setIsPopoverOpened(false))
 
   const { mutate } = trpc.useMutation(['feed.search-user'], {
     onSuccess(data) {
@@ -36,10 +39,10 @@ const Search = () => {
   }
 
   return (
-    <Box sx={{ width: '250px', display: 'none', '@media (min-width: 768px)': { display: 'block' } }}>
+    <Box sx={{ width: '250px', display: 'none', '@media (min-width: 768px)': { display: 'block' } }} ref={popoverRef}>
       <Popover width='target' radius={0} withArrow shadow='md' opened={isPopoverOpened}>
         <Popover.Target>
-          <Box onFocusCapture={() => setIsPopoverOpened(true)} onBlurCapture={() => setIsPopoverOpened(false)}>
+          <Box onFocus={() => setIsPopoverOpened(true)}>
             <Input
               placeholder='Search'
               variant='filled'
