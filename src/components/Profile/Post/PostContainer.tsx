@@ -1,14 +1,13 @@
 import { Anchor, Box, Grid, Indicator, Modal, Text } from '@mantine/core'
+import { useMediaQuery } from '@mantine/hooks'
 import NextImage from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { IoIosPhotos } from 'react-icons/io'
-import Post from './Post'
 import { IoChatbubbleSharp, IoHeart } from 'react-icons/io5'
-import { useMediaQuery } from '@mantine/hooks'
 import { Post as PostProps } from '../../../types/app.types'
-
+import Post from './Post'
 
 type Props = {
   post: PostProps
@@ -19,7 +18,6 @@ const PostContainer = ({ post, name }: Props) => {
   const mobileQuery = useMediaQuery('(max-width: 768px)', true)
   const [isHover, setIsHover] = useState(false)
   const router = useRouter()
-
 
   // both links should have "shallow" parameter to prevent GSSP call on open/close modal
   return (
@@ -54,7 +52,6 @@ const PostContainer = ({ post, name }: Props) => {
                   top: '50%',
                   left: '50%',
                   transform: 'translate(-50%, -50%)',
-                  '-ms-transform': 'translate(-50%, -50%)',
                   textAlign: 'center',
                   color: 'white',
                   display: 'flex',
@@ -80,17 +77,19 @@ const PostContainer = ({ post, name }: Props) => {
       </Grid.Col>
 
       {/* Opened post modal */}
-      <Modal
-        opened={router.asPath === `/p/${post.id}`}
-        onClose={() => router.push(`/${name}`, undefined, { shallow: true })}
-        centered
-        withCloseButton={false}
-        fullScreen={mobileQuery}
-        padding={0}
-        size='70%'
-        zIndex={2000}>
-        <Post type='modal' postId={post.id} />
-      </Modal>
+      {router.asPath === `/p/${post.id}` && (
+        <Modal
+          opened={router.asPath === `/p/${post.id}`}
+          onClose={() => router.push(`/${name}`, undefined, { shallow: true })}
+          centered
+          withCloseButton={false}
+          fullScreen={mobileQuery}
+          padding={0}
+          size='70%'
+          zIndex={2000}>
+          <Post type='modal' postId={post.id} />
+        </Modal>
+      )}
     </>
   )
 }

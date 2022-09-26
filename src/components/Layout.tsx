@@ -1,11 +1,14 @@
 import { Center, Container, Image } from '@mantine/core'
 import React from 'react'
 import { useMe } from '../hooks/useMe'
+import useInterfaceStore from '../store/InterfaceStore'
 import Header from './Header/Header'
 import SEO from './SEO'
+import Toast from './Toast'
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const { isLoadingMe, me } = useMe()
+  const toast = useInterfaceStore((state: any) => state.toast)
 
   if (!me && isLoadingMe) {
     return (
@@ -24,6 +27,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <Container fluid px={0} sx={{ minHeight: 'calc(100vh - 60px)', backgroundColor: '#FAFAFA' }}>
         {children}
       </Container>
+      {toast.open && <Toast text={toast.message} />}
     </>
   )
 }

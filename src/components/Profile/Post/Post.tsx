@@ -22,6 +22,7 @@ const Post = ({ postId, type }: Props) => {
 
   const post = postArr?.post || ({} as PostProps)
 
+  
   return (
     <>
       {!isLoading && <SEO title={`Instagram photo by ${post.User?.name}`} siteName={formatDate(post.createdAt)} />}

@@ -16,7 +16,7 @@ const AuthForm = ({ type }: { type: TypeProps }) => {
   const [loading, setLoading] = useState(false)
   const [loginError, setLoginError] = useState<string | undefined>('')
   const [isToastOpen, setIsToastOpen] = useState(false)
-  
+
   const {
     handleSubmit,
     register,
@@ -24,7 +24,7 @@ const AuthForm = ({ type }: { type: TypeProps }) => {
   } = useForm<ISignupSchema>({
     resolver: zodResolver(type === 'login' ? UserLoginSchema : UserSignupSchema),
   })
- 
+
   const signup = trpc.useMutation(['user.signup'], {
     onSuccess() {
       setIsToastOpen(true)
@@ -34,7 +34,6 @@ const AuthForm = ({ type }: { type: TypeProps }) => {
       }, 6000)
     },
   })
- 
 
   const handleLogin = async (values: ISignupSchema) => {
     setLoading(true)
@@ -122,7 +121,12 @@ const AuthForm = ({ type }: { type: TypeProps }) => {
               Login
             </Button>
           ) : (
-            <Button type='submit' mt='1rem' size='xs' loading={signup.isLoading} sx={{ width: '100%', fontSize: '14px' }}>
+            <Button
+              type='submit'
+              mt='1rem'
+              size='xs'
+              loading={signup.isLoading}
+              sx={{ width: '100%', fontSize: '14px' }}>
               Sign up
             </Button>
           )}

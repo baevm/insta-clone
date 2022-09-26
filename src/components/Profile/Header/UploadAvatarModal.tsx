@@ -1,10 +1,10 @@
 import { Box, Button, Center, Group, Image, Loader, Modal, Text } from '@mantine/core'
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone'
-import { useRef, useState } from 'react'
+import { Dispatch, SetStateAction, useRef, useState } from 'react'
 import { BsUpload } from 'react-icons/bs'
 import { MdClose, MdPhoto } from 'react-icons/md'
-import { readFileAsUrl } from '../../utils/readFileAsUrl'
-import { trpc } from '../../utils/trpc'
+import { readFileAsUrl } from '../../../utils/readFileAsUrl'
+import { trpc } from '../../../utils/trpc'
 
 type Stages = 'upload' | 'preview' | 'post'
 
@@ -26,7 +26,13 @@ const Previews = ({ file }: { file: File[] }) => {
   )
 }
 
-const UploadAvatarModal = ({ avatarModal, setAvatarModal }: any) => {
+const UploadAvatarModal = ({
+  isAvatarModal,
+  setIsAvatarModal,
+}: {
+  isAvatarModal: boolean
+  setIsAvatarModal: Dispatch<SetStateAction<boolean>>
+}) => {
   const utils = trpc.useContext()
   const [stage, setStage] = useState<Stages>('upload') // modal tabs
   const [file, setFile] = useState<File[]>([])
@@ -40,7 +46,7 @@ const UploadAvatarModal = ({ avatarModal, setAvatarModal }: any) => {
 
   const handleClose = () => {
     setFile([])
-    setAvatarModal(false)
+    setIsAvatarModal(false)
     setStage('upload')
   }
 
@@ -58,7 +64,7 @@ const UploadAvatarModal = ({ avatarModal, setAvatarModal }: any) => {
   }
 
   return (
-    <Modal opened={avatarModal} onClose={handleClose} centered zIndex={2000} withCloseButton={false} padding={0}>
+    <Modal opened={isAvatarModal} onClose={handleClose} centered zIndex={2000} withCloseButton={false} padding={0}>
       <Group id='modal-header' position='apart' sx={{ borderBottom: '1px solid lightgray', padding: '0.5rem' }}>
         <div></div>
         <Box>Upload avatar</Box>

@@ -1,43 +1,20 @@
-import { ActionIcon, Anchor, Avatar, Box, Button, Center, Input, Modal, Skeleton, Text, Title } from '@mantine/core'
+import { ActionIcon, Avatar, Box, Button, Skeleton, Text, Title } from '@mantine/core'
 import { useSession } from 'next-auth/react'
-import Link from 'next/link'
 import { useState } from 'react'
 import { IoSettingsOutline } from 'react-icons/io5'
 import { MdKeyboardArrowDown, MdMoreHoriz } from 'react-icons/md'
-import { ProfileProps } from '../../types/app.types'
-import { trpc } from '../../utils/trpc'
+import { ProfileProps } from '../../../types/app.types'
+import { trpc } from '../../../utils/trpc'
 import UploadAvatarModal from './UploadAvatarModal'
-
-const ModalItem = ({ name, avatar, setIsModalOpened }: { name: string; avatar: string; setIsModalOpened: any }) => {
-  return (
-    <Box p='0.5rem' sx={{ width: '100%', display: 'flex', alignItems: 'center', borderBottom: '1px solid lightgray' }}>
-      <Link href={`/${name}`} passHref>
-        <Anchor onClick={() => setIsModalOpened({ type: '', isOpen: false })}>
-          <Avatar src={avatar ? avatar : ''} radius='xl' />
-        </Anchor>
-      </Link>
-      <Link href={`/${name}`} passHref>
-        <Anchor
-          ml='0.5rem'
-          underline={false}
-          color='dark'
-          weight='bold'
-          size='sm'
-          onClick={() => setIsModalOpened({ type: '', isOpen: false })}>
-          {name}
-        </Anchor>
-      </Link>
-    </Box>
-  )
-}
+import UserFollowsModal from './UserFollowsModal'
 
 const ProfileHeader = ({ profile }: { profile: ProfileProps }) => {
   const utils = trpc.useContext()
-  const [isModalOpened, setIsModalOpened] = useState<{ type: 'followers' | 'following' | ''; isOpen: boolean }>({
+  const [isFollowsModal, setIsFollowsModal] = useState<{ type: 'followers' | 'following' | ''; isOpen: boolean }>({
     type: '',
     isOpen: false,
   })
-  const [avatarModal, setAvatarModal] = useState(false)
+  const [isAvatarModal, setisAvatarModal] = useState(false)
   const { data, status } = useSession()
 
   const handleFollow = trpc.useMutation('follow.follow', {
@@ -52,36 +29,13 @@ const ProfileHeader = ({ profile }: { profile: ProfileProps }) => {
     },
   })
 
+  console.log(isAvatarModal)
+
   return (
     <>
-      <Modal
-        opened={isModalOpened.isOpen}
-        onClose={() => setIsModalOpened({ type: '', isOpen: false })}
-        centered
-        sx={{ zIndex: 2000 }}
-        padding={0}
-        withCloseButton={false}
-        size='xs'>
-        <Center sx={{ flexDirection: 'column' }}>
-          <Title order={6} p='0.5rem' sx={{ textTransform: 'uppercase' }}>
-            {isModalOpened.type}
-          </Title>
+      <UserFollowsModal isFollowsModal={isFollowsModal} setIsFollowsModal={setIsFollowsModal} profile={profile} />
 
-          <Input placeholder='Search...' radius={0} sx={{ width: '100%' }} />
-
-          <Box sx={{ width: '100%', maxHeight: '200px', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
-            {isModalOpened.type === 'followers'
-              ? profile.followedBy.map((f: any) => (
-                  <ModalItem avatar={f.avatar} name={f.name} key={f.id} setIsModalOpened={setIsModalOpened} />
-                ))
-              : profile.following.map((f: any) => (
-                  <ModalItem avatar={f.avatar} name={f.name} key={f.id} setIsModalOpened={setIsModalOpened} />
-                ))}
-          </Box>
-        </Center>
-      </Modal>
-
-      <UploadAvatarModal avatarModal={avatarModal} setAvatarModal={setAvatarModal} />
+      <UploadAvatarModal isAvatarModal={isAvatarModal} setIsAvatarModal={setisAvatarModal} />
 
       <Box
         sx={{
@@ -102,7 +56,7 @@ const ProfileHeader = ({ profile }: { profile: ProfileProps }) => {
             radius={100}
             src={profile.avatar ? profile.avatar : ''}
             sx={{ cursor: 'pointer' }}
-            onClick={() => setAvatarModal(true)}
+            onClick={() => setisAvatarModal(true)}
           />
 
           <Box sx={{ width: '100%', paddingLeft: '2rem', '@media (min-width: 556px)': { paddingLeft: '5rem' } }}>
@@ -177,13 +131,13 @@ const ProfileHeader = ({ profile }: { profile: ProfileProps }) => {
                 </Text>{' '}
                 posts
               </Text>
-              <Text onClick={() => setIsModalOpened({ type: 'followers', isOpen: true })} sx={{ cursor: 'pointer' }}>
+              <Text onClick={() => setIsFollowsModal({ type: 'followers', isOpen: true })} sx={{ cursor: 'pointer' }}>
                 <Text span weight='bold'>
                   {profile.followedBy.length}
                 </Text>{' '}
                 followers
               </Text>
-              <Text onClick={() => setIsModalOpened({ type: 'following', isOpen: true })} sx={{ cursor: 'pointer' }}>
+              <Text onClick={() => setIsFollowsModal({ type: 'following', isOpen: true })} sx={{ cursor: 'pointer' }}>
                 <Text span weight='bold'>
                   {profile.following.length}
                 </Text>{' '}
@@ -213,12 +167,12 @@ const ProfileHeader = ({ profile }: { profile: ProfileProps }) => {
           </Box>
           <Box
             sx={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-            onClick={() => setIsModalOpened({ type: 'followers', isOpen: true })}>
+            onClick={() => setIsFollowsModal({ type: 'followers', isOpen: true })}>
             <Text weight='bold'>{profile.followedBy.length}</Text> <Text color='gray'>followers</Text>
           </Box>
           <Box
             sx={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-            onClick={() => setIsModalOpened({ type: 'following', isOpen: true })}>
+            onClick={() => setIsFollowsModal({ type: 'following', isOpen: true })}>
             <Text weight='bold'>{profile.following.length}</Text> <Text color='gray'>following</Text>
           </Box>
         </Box>

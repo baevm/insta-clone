@@ -1,10 +1,8 @@
 import { Box, Container, Loader } from '@mantine/core'
 import { useCallback, useEffect, useRef } from 'react'
 import { useMe } from '../../hooks/useMe'
-import useInterfaceStore from '../../store/InterfaceStore'
 import { Pages } from '../../types/app.types'
 import { trpc } from '../../utils/trpc'
-import Toast from '../Toast'
 import PostCard from './Post/PostCard'
 import Suggestions from './Suggestions'
 import SuggestionsCarousel from './SuggestionsCarousel'
@@ -17,7 +15,6 @@ const DisplayPosts = ({ pages }: { pages: Pages }) => {
 
 const Feed = () => {
   const observerElem = useRef<HTMLDivElement>(null)
-  const toast = useInterfaceStore((state: any) => state.toast)
   const suggestionsQuery = trpc.useQuery(['feed.get-suggestions'])
   const { me } = useMe()
   const feedQuery = trpc.useInfiniteQuery(['feed.get-feed', { limit: 5 }], {
@@ -85,7 +82,6 @@ const Feed = () => {
         <Suggestions name={me?.profile.name} avatar={me?.profile.avatar} suggestions={suggestions} />
       )}
 
-      {toast.open && <Toast text={toast.message} />}
     </Container>
   )
 }
