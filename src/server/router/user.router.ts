@@ -42,6 +42,9 @@ export const userRouter = createRouter()
                 },
                 likedUsers: { select: { id: true, name: true, avatar: true } },
               },
+              orderBy: {
+                createdAt: 'desc',
+              },
             },
             followedBy: { select: { avatar: true, createdAt: true, description: true, id: true, name: true } },
             following: { select: { avatar: true, createdAt: true, description: true, id: true, name: true } },
